@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/security
+		http://www.springframework.org/schema/security/spring-security.xsd ">
+
+	<!--不拦截URL配置-->
+	<http pattern="/is_login" security="none" />
+	<!-- 静态文件不拦截 -->
+	<!--<http pattern="/**/statics/**" security="none" />-->
+	<!--cxf URL不拦截-->
+	<!--<http pattern="/**/webservice/**" security="none" />-->
+
+    <!--登录成功处理器-->
+    <beans:bean id="authenticationSuccess" class="com.haoback.common.utils.loginUtils.AuthenticationSuccess" />
+    <!--登录失败处理器-->
+    <beans:bean id="authenticationFailure" class="com.haoback.common.utils.loginUtils.AuthenticationFailure" />
+    <!--成功登出处理器-->
+    <beans:bean id="logoutSuccess" class="com.haoback.common.utils.loginUtils.LogoutSuccess" />
+	<!--http session失效处理器-->
+	<beans:bean id="invalidSessionHandler" class="com.haoback.common.utils.loginUtils.InvalidSessionHandler" />
+
+	<http use-expressions="true" auto-config="true"> <!-- use-expressions表示可以使用表达式hasAnyRole -->
+        <!--<intercept-url pattern="/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />-->
+        <intercept-url pattern="/**" access="isAuthenticated()" />
+
+        <!--<intercept-url pattern="/login" access="permitAll"/>-->
+        <!--<intercept-url pattern="/login_fail" access="permitAll"/>-->
+        <!--<intercept-url pattern="/is_login" access="permitAll"/>-->
+
+		<form-login
+			password-parameter="password" 
+			username-parameter="userName" 
+			login-page="/login"
+			login-processing-url="/j_spring_security_check"
+			authentication-success-handler-ref="authenticationSuccess"
+			authentication-failure-handler-ref="authenticationFailure"
+		/>
+
+        <!--<form-login-->
+                <!--password-parameter="password"-->
+                <!--username-parameter="userName"-->
+                <!--login-page="/login"-->
+                <!--login-processing-url="/j_spring_security_check"-->
+                <!--default-target-url="/index"-->
+                <!--always-use-default-target="true"-->
+                <!--authentication-failure-url="/login_fail"-->
+                <!--authentication-success-handler-ref="authenticationSuccess"-->
+                <!--authentication-failure-handler-ref="authenticationFailure"-->
+        <!--/>-->
+
+		<logout
+			delete-cookies="JSESSIONID" 
+			logout-url="/j_spring_security_logout"
+            success-handler-ref="logoutSuccess"
+			invalidate-session="true"/>
+		<csrf disabled="true" />
+
+        <!--<logout-->
+                <!--delete-cookies="JSESSIONID"-->
+                <!--logout-url="/j_spring_security_logout"-->
+                <!--logout-success-url="/login"-->
+                <!--invalidate-session="true"/>-->
+        <!--<csrf disabled="true" />-->
+
+		<remember-me key="remember-me" user-service-ref="userDetailsServiceImpl"/>
+		<http-basic />
+
+		<!--会话管理，设置最多登录异常，error-if-maximum-exceeded = false为第二次登录就会使前一个登录失效-->
+		<session-management invalid-session-strategy-ref="invalidSessionHandler">
+			<concurrency-control max-sessions="1" error-if-maximum-exceeded="false" expired-url="/login" />
+		</session-management>
+
+		<!-- 添加自定义的过滤器 放在FILTER_SECURITY_INTERCEPTOR之前有效 -->
+		<!--<custom-filter ref="customFilterSecurityInterceptor" before="FILTER_SECURITY_INTERCEPTOR" />-->
+	</http>
+
+	<!-- 密码加密 -->
+	<!--<beans:bean name="bcryptEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />-->
+	<authentication-manager>
+		<authentication-provider user-service-ref="userDetailsServiceImpl">
+            <password-encoder hash="md5" >
+                <salt-source user-property="salt"></salt-source>
+            </password-encoder>
+			<!-- <user-service>
+				<user name="nong" password="12345" authorities="ROLE_USER,ROLE_ADMIN" />
+				<user name="bob" password="bobspassword" authorities="ROLE_USER" />
+			</user-service> -->
+		</authentication-provider>
+	</authentication-manager>
+
+	<beans:bean class="org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository" />
+
+    <!--<security:global-method-security pre-post-annotations="enabled">-->
+        <!--<security:expression-handler ref="expressionHandler"/>-->
+    <!--</security:global-method-security>-->
+
+    <!--pre-post-annotations="enabled"后可在controller层使用：@PreAuthorize、@PostAuthorize、@PreFilter和@PostFilter
+    其中前两者可以用来在方法调用前或者调用后进行权限检查，后两者可以用来对集合类型的参数或者返回值进行过滤-->
+    <global-method-security pre-post-annotations="enabled" secured-annotations="enabled">
+        <expression-handler ref="expressionHandler" />
+    </global-method-security>
+
+    <beans:bean id="expressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
+        <beans:property name="permissionEvaluator" ref="permissionEvaluatorHandler" />
+    </beans:bean>
+
+    <!--授权处理器-->
+    <beans:bean id="permissionEvaluatorHandler" class="com.haoback.common.utils.loginUtils.PermissionEvaluatorHandler" />
+
+	<!-- <beans:bean id="csrfFilter" class="org.springframework.security.web.csrf.CsrfFilter"> 
+		<beans:constructor-arg> HttpSessionCsrfTokenRepository是把token放到session中来存取 
+		<beans:bean class="org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository" 
+		/> </beans:constructor-arg> </beans:bean> 如果用的是spring mvc 的form标签，则配置此项时自动将crsf的token放入到一个hidden的input中，而不需要开发人员显式的写入form 
+		<beans:bean id="requestDataValueProcessor" class="org.springframework.security.web.servlet.support.csrf.CsrfRequestDataValueProcessor" 
+		/> -->
+
+	<!--配置过滤器  -->
+	<!--<beans:bean id="myFilter" class="net.security.MySecurityFilter">-->
+		<!--&lt;!&ndash; 用户拥有的权限 &ndash;&gt;-->
+		<!--<beans:property name="authenticationManager" ref="authenticationManager" />-->
+		<!--&lt;!&ndash;用户是否拥有所请求资源的权限   &ndash;&gt;-->
+		<!--<beans:property name="accessDecisionManager" ref="myAccessDecisionManager" />-->
+		<!--&lt;!&ndash;资源与权限对应关系 &ndash;&gt;-->
+		<!--<beans:property name="securityMetadataSource" ref="mySecurityMetadataSource" />-->
+	<!--</beans:bean>-->
+
+	<!--<beans:bean id="myAccessDecisionManager" class="net.security.MyAccessDecisionManager"></beans:bean>-->
+	<!--<beans:bean id="mySecurityMetadataSource" class="net.security.MySecurityMetadataSource">-->
+		<!--<beans:constructor-arg name="dataSource" ref="springSecurityDataSource"></beans:constructor-arg>-->
+		<!--&lt;!&ndash; <beans:constructor-arg name="AuthorityDAO" ref="AuthorityDAO"></beans:constructor-arg>  &ndash;&gt;-->
+		<!--&lt;!&ndash;         <beans:property name="dataSource" ref="springSecurityDataSource"/> &ndash;&gt;-->
+	<!--</beans:bean>-->
+	<!--&lt;!&ndash; <beans:bean id="ResourcesDAO" class="net.gvsun.dao.ResourcesDAOImpl" scope="prototype"></beans:bean> &ndash;&gt;-->
+	<!--&lt;!&ndash;     <beans:bean id="AuthorityDAO" class="net.gvsun.dao.AuthorityDAOImpl" scope="prototype"></beans:bean> &ndash;&gt;-->
+	<!--<beans:bean class="org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl" id="userDetailsService">-->
+		<!--<beans:property name="rolePrefix" value="ROLE_"/>-->
+		<!--<beans:property name="dataSource" ref="springSecurityDataSource"/>-->
+		<!--<beans:property name="usersByUsernameQuery" value="SELECT username,password,enabled FROM user WHERE username = ?"/>-->
+		<!--<beans:property name="authoritiesByUsernameQuery" value="SELECT u.username, a.authorityName FROM user u JOIN user_authority ua on u.username = ua.user_id JOIN authority a on ua.authority_id = a.id WHERE u.username = ?"/>-->
+	<!--</beans:bean>-->
+	<!--<global-method-security>-->
+	<!--</global-method-security>-->
+
+</beans:beans>
