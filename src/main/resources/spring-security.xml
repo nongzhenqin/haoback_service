@@ -8,6 +8,7 @@
 
 	<!--不拦截URL配置-->
 	<http pattern="/is_login" security="none" />
+	<http pattern="/**/goods/**" security="none" />
 	<!-- 静态文件不拦截 -->
 	<!--<http pattern="/**/statics/**" security="none" />-->
 	<!--cxf URL不拦截-->
