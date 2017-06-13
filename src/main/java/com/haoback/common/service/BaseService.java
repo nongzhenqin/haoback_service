@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 /**
  * 抽象service层基类 提供一些简便方法
@@ -109,7 +110,7 @@ public abstract class BaseService<M extends BaseEntity, ID extends Serializable>
 	 * @param pageable
 	 * @return
 	 */
-	public Page<M> findByPage(Pageable pageable){
-		return baseRepository.findAll(pageable);
+	public Page<M> findByPage(Specification<M> specification, Pageable pageable){
+		return baseRepository.findAll(specification, pageable);
 	}
 }

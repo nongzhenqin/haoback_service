@@ -27,6 +27,12 @@ public class Goods extends BaseEntity<Long> {
     private String name;
 
     /**
+     * 一句话简介
+     */
+    @Column(name = "INFO", length=255)
+    private String info;
+
+    /**
      * 品牌
      */
     @Column(name = "BRAND", length=55)
@@ -117,4 +123,10 @@ public class Goods extends BaseEntity<Long> {
      */
     @Column(name = "IS_DELETED")
     private Boolean deleted = Boolean.FALSE;
+
+    /**
+     * 商品缩略图URL
+     */
+    @Transient
+    private String thumbnailUrl;
 }
