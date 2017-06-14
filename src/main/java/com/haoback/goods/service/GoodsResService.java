@@ -36,6 +36,6 @@ public class GoodsResService extends BaseService<GoodsRes, Long> {
      */
     public String findThumbnail(Long goodsId){
         List<GoodsRes> goodsRes = goodsResRepository.getByType(goodsId, "thumbnail");
-        return CollectionUtils.isEmpty(goodsRes) ? null : goodsRes.get(0).getUrl();
+        return CollectionUtils.isEmpty(goodsRes) ? null : goodsRes.get(0).getFileId();
     }
 }

@@ -33,10 +33,10 @@ public class GoodsRes extends BaseEntity<Long> {
     private String type;
 
     /**
-     * 图片url
+     * 图片文件名
      */
-    @Column(name = "URL", length = 255)
-    private String url;
+    @Column(name = "FILE_ID", length = 255)
+    private String fileId;
 
     /**
      * 排序号，按数字顺序从小到大排序

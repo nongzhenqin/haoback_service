@@ -7,6 +7,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -49,6 +50,12 @@ public class Goods extends BaseEntity<Long> {
      */
     @Column(name = "UNIT", length=20)
     private Long unit;
+
+    /**
+     * 商品价格
+     */
+    @Column(name = "PRICE", precision = 19, scale = 2)
+    private BigDecimal price;
 
     /**
      * 所属商品类目

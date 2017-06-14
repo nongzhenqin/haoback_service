@@ -36,4 +36,10 @@ public class GoodsType extends BaseEntity<Long> {
     @Column(name = "ROOT_CODE", length = 25)
     private String rootCode;
 
+    /**
+     * 备用字段
+     */
+    @Column(name = "REMARK", length = 25)
+    private String remark;
+
 }
