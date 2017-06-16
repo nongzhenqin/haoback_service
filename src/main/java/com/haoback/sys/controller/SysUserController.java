@@ -19,14 +19,14 @@ import java.util.Map;
 @Controller
 @RequestMapping("/sys/user")
 // 操作权限控制 *、create、update、delete、view
-@PreAuthorize("hasPermission('com.nong.framework.core.sys.controller.SysUserController', 'view')")
+@PreAuthorize("hasPermission('com.haoback.sys.controller.SysUserController', 'view')")
 public class SysUserController {
 
 	@Autowired
 	private SysUserService sysUserService;
 
 	// 也可单独控制方法
-//	@PreAuthorize("hasPermission('com.nong.framework.core.sys.controller.SysUserController', 'view')")
+//	@PreAuthorize("hasPermission('com.haoback.sys.controller.SysUserController', 'view')")
 	@RequestMapping("/test")
 	@ResponseBody
 	public String loginPage(){
@@ -39,7 +39,7 @@ public class SysUserController {
 	 * @param newPassword
 	 * @return
 	 */
-	@PreAuthorize("hasPermission('com.nong.framework.core.sys.controller.SysUserController', 'update')")
+	@PreAuthorize("hasPermission('com.haoback.sys.controller.SysUserController', 'update')")
 	@RequestMapping(value = "/change_password", method = RequestMethod.POST)
 	@ResponseBody
 	public AjaxResult changePassword(String oldPassword, String newPassword, HttpServletRequest request){

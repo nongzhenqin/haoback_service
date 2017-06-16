@@ -54,7 +54,7 @@ public class GoodsController {
         params.put("pageSize", pageSize);
         params.put("goodsType", goodsType);
 
-        Page<Goods> page = goodsService.findByPage(params);
+        Page<Goods> page = goodsService.findByPageWeb(params);
 
         datas.put("code", "1");
         datas.put("data", page);

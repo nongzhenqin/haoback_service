@@ -78,7 +78,7 @@ public class Goods extends BaseEntity<Long> {
     private Integer salesNum;
 
     /**
-     * 排序权重，从0开始，数值越大越靠前，如果权重值一直则按ID从小到大排序
+     * 排序权重，从0开始，数值越大越靠前，如果权重值一致则按ID从小到大排序
      */
     @Column(name = "SORT", length=11)
     private Integer sort;

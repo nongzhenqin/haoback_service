@@ -58,6 +58,11 @@ public class IndexController {
         return "login.jsp";
     }
 
+    /**
+     * 判断是否已登录
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/is_login", method = RequestMethod.GET)
     @ResponseBody
     public AjaxResult loginPage(HttpServletRequest request){
