@@ -1,7 +1,9 @@
 package com.haoback.common.utils;
 
 import com.haoback.sys.entity.SysUser;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.context.SecurityContextImpl;
+import sun.misc.BASE64Decoder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -22,4 +24,5 @@ public class CommonUtils {
         SecurityContextImpl securityContext = (SecurityContextImpl) session.getAttribute("SPRING_SECURITY_CONTEXT");
         return (SysUser) securityContext.getAuthentication().getPrincipal();
     }
+
 }

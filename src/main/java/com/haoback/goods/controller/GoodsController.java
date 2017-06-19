@@ -5,6 +5,7 @@ import com.haoback.goods.entity.Goods;
 import com.haoback.goods.entity.GoodsType;
 import com.haoback.goods.service.GoodsService;
 import com.haoback.goods.service.GoodsTypeService;
+import com.haoback.goods.vo.GoodsVo;
 import org.apache.commons.httpclient.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -54,7 +55,7 @@ public class GoodsController {
         params.put("pageSize", pageSize);
         params.put("goodsType", goodsType);
 
-        Page<Goods> page = goodsService.findByPageWeb(params);
+        Page<GoodsVo> page = goodsService.findByPageWeb(params);
 
         datas.put("code", "1");
         datas.put("data", page);

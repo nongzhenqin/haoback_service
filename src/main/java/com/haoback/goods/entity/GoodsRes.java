@@ -41,7 +41,7 @@ public class GoodsRes extends BaseEntity<Long> {
     /**
      * 排序号，按数字顺序从小到大排序
      */
-    @Column(name = "SORT", length = 1)
+    @Column(name = "SORT", length = 11)
     private Integer sort;
 
     /**

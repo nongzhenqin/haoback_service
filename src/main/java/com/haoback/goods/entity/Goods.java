@@ -84,6 +84,12 @@ public class Goods extends BaseEntity<Long> {
     private Integer sort;
 
     /**
+     * 淘宝URL
+     */
+    @Column(name = "url_link", length=1000)
+    private String urlLink;
+
+    /**
      * 新增时间
      */
     @Temporal(TemporalType.TIMESTAMP)
@@ -131,9 +137,4 @@ public class Goods extends BaseEntity<Long> {
     @Column(name = "IS_DELETED")
     private Boolean deleted = Boolean.FALSE;
 
-    /**
-     * 商品缩略图URL
-     */
-    @Transient
-    private String thumbnailUrl;
 }

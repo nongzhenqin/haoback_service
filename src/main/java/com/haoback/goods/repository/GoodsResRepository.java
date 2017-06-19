@@ -17,6 +17,6 @@ public interface GoodsResRepository extends BaseRepository<GoodsRes, Long> {
      * @param type
      * @return
      */
-    @Query("SELECT t FROM GoodsRes t WHERE t.id = ?1 AND t.type = ?2 AND t.deleted = false")
+    @Query("SELECT t FROM GoodsRes t WHERE t.goods.id = ?1 AND t.type = ?2 AND t.deleted = false")
     List<GoodsRes> getByType(Long goodsId, String type);
 }

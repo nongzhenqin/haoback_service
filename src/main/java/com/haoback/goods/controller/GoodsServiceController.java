@@ -1,13 +1,19 @@
 package com.haoback.goods.controller;
 
 import com.haoback.common.entity.AjaxResult;
+import com.haoback.common.utils.CommonUtils;
 import com.haoback.goods.entity.Goods;
+import com.haoback.goods.service.GoodsResService;
 import com.haoback.goods.service.GoodsService;
+import com.haoback.goods.vo.GoodsVo;
+import com.haoback.sys.entity.SysUser;
 import org.apache.commons.httpclient.HttpStatus;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -54,11 +60,77 @@ public class GoodsServiceController {
         params.put("endDate", endDate);
         params.put("validind", validind);
 
-        Page<Goods> page = goodsService.findByPageService(params);
+        Page<GoodsVo> page = goodsService.findByPageService(params);
 
         datas.put("code", "1");
         datas.put("data", page);
 
+        ajaxresult.setDatas(datas);
+        ajaxresult.setStatus(HttpStatus.SC_OK);
+        return ajaxresult;
+    }
+
+    /**
+     * 保存商品
+     * @param goodsVo
+     * @return
+     */
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @ResponseBody
+    @PreAuthorize("hasPermission('com.haoback.goods.controller.GoodsServiceController', 'create,update')")
+    public AjaxResult saveGoods(GoodsVo goodsVo, HttpServletRequest request){
+        AjaxResult ajaxresult = new AjaxResult();
+        Map<String, Object> datas = new HashMap<>();
+
+        SysUser sysUser = CommonUtils.getSysUser(request);
+
+        Map<String, Object> map = goodsService.saveGoods(goodsVo, sysUser);
+
+        datas.put("code", map.get("code"));// 1-成功 0-失败
+
+        ajaxresult.setDatas(datas);
+        ajaxresult.setStatus(HttpStatus.SC_OK);
+        return ajaxresult;
+    }
+
+    /**
+     * 通过id查询商品信息
+     * @param goodsId
+     * @return
+     */
+    @RequestMapping(value = "/details/{goodsId}", method = RequestMethod.GET)
+    @ResponseBody
+    public AjaxResult findDetailsById(@PathVariable("goodsId") Long goodsId){
+        AjaxResult ajaxresult = new AjaxResult();
+        Map<String, Object> datas = new HashMap<>();
+
+        GoodsVo goodsVo = goodsService.findDetails(goodsId);
+        datas.put("code", "1");
+        datas.put("data", goodsVo);
+
+        ajaxresult.setDatas(datas);
+        ajaxresult.setStatus(HttpStatus.SC_OK);
+        return ajaxresult;
+    }
+
+    /**
+     * 逻辑删除商品
+     * @param goodsId
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @ResponseBody
+    @PreAuthorize("hasPermission('com.haoback.goods.controller.GoodsServiceController', 'delete')")
+    public AjaxResult delete(Long goodsId, HttpServletRequest request){
+        AjaxResult ajaxresult = new AjaxResult();
+        Map<String, Object> datas = new HashMap<>();
+
+        SysUser sysUser = CommonUtils.getSysUser(request);
+
+        goodsService.deleteLogic(goodsId, sysUser);
+
+        datas.put("code", "1");
         ajaxresult.setDatas(datas);
         ajaxresult.setStatus(HttpStatus.SC_OK);
         return ajaxresult;

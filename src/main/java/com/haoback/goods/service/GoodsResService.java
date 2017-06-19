@@ -34,8 +34,18 @@ public class GoodsResService extends BaseService<GoodsRes, Long> {
      * @param goodsId
      * @return
      */
-    public String findThumbnail(Long goodsId){
+    public String findFileId(Long goodsId){
         List<GoodsRes> goodsRes = goodsResRepository.getByType(goodsId, "thumbnail");
         return CollectionUtils.isEmpty(goodsRes) ? null : goodsRes.get(0).getFileId();
+    }
+
+    /**
+     * 查询商品缩略图对象
+     * @param goodsId
+     * @return
+     */
+    public GoodsRes findThumbnailGoodsRes(Long goodsId){
+        List<GoodsRes> goodsRes = goodsResRepository.getByType(goodsId, "thumbnail");
+        return CollectionUtils.isEmpty(goodsRes) ? null : goodsRes.get(0);
     }
 }

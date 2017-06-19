@@ -26,8 +26,26 @@ public class PermissionEvaluatorHandler implements PermissionEvaluator {
 
         if(permissionInDB.contains("*")){// 拥有所有操作权限
             return true;
-        }else if(permissionInDB.contains(permission)){// 拥有对应的操作权限
+        }else if(this.isHavedPermission(permissionInDB, permission)){// 拥有对应的操作权限
             return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * 判断是否包含权限
+     * @param permissionInDB
+     * @param permission
+     * @return
+     */
+    private boolean isHavedPermission(Set<String> permissionInDB, Object permission){
+        String permissionStr = permission.toString();
+        String[] perms = permissionStr.split(",");
+        for(String p : perms){
+            if(permissionInDB.contains(p)){
+                return true;
+            }
         }
 
         return false;

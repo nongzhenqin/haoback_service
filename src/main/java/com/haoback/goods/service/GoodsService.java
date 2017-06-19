@@ -1,29 +1,25 @@
 package com.haoback.goods.service;
 
 import com.haoback.common.service.BaseService;
+import com.haoback.common.utils.ImageUtil;
 import com.haoback.goods.entity.Goods;
+import com.haoback.goods.entity.GoodsRes;
 import com.haoback.goods.entity.GoodsType;
 import com.haoback.goods.repository.GoodsRepository;
+import com.haoback.goods.vo.GoodsVo;
+import com.haoback.sys.entity.SysUser;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.commons.lang3.time.FastDateFormat;
-import org.apache.commons.lang3.time.FastDateParser;
-import org.apache.commons.lang3.time.FastDatePrinter;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.*;
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by nong on 2017/6/5.
@@ -35,13 +31,15 @@ public class GoodsService extends BaseService<Goods, Long> {
     private GoodsRepository goodsRepository;
     @Autowired
     private GoodsResService goodsResService;
+    @Autowired
+    private GoodsTypeService goodsTypeService;
 
     /**
      * 分页查询页面端
      * @param params
      * @return
      */
-    public Page<Goods> findByPageWeb(Map<String, Object> params){
+    public Page<GoodsVo> findByPageWeb(Map<String, Object> params){
 
         Integer pageNo = (Integer) params.get("pageNo");
         Integer pageSize = (Integer) params.get("pageSize");
@@ -60,8 +58,9 @@ public class GoodsService extends BaseService<Goods, Long> {
         // 查询条件
         Specification<Goods> specification = (Root<Goods> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> {
             Predicate deleted = cb.equal(root.get("deleted").as(Boolean.class), false);
+            Predicate status = cb.equal(root.get("status").as(String.class), "1");
             if("hot".equals(goodsType)){
-                return cb.and(deleted);
+                return cb.and(deleted, status);
             }
 
             Subquery<GoodsType> subquery = query.subquery(GoodsType.class);
@@ -80,14 +79,24 @@ public class GoodsService extends BaseService<Goods, Long> {
         };
 
         Page<Goods> page = goodsRepository.findAll(specification, pageable);
-        if(page != null && page.hasContent()){
-            List<Goods> content = page.getContent();
-            for(Goods goods : content){
-                String thumbnailUrl = goodsResService.findThumbnail(goods.getId());
-                goods.setThumbnailUrl(thumbnailUrl);
-            }
+
+        List<Goods> content = page.getContent();
+        List<GoodsVo> result = new ArrayList<>();
+        GoodsVo goodsVo = null;
+        for(Goods goods : content){
+            goodsVo = new GoodsVo();
+            BeanUtils.copyProperties(goods, goodsVo);
+            goodsVo.setId(goods.getId());
+
+            String fileId = goodsResService.findFileId(goods.getId());
+            goodsVo.setFileId(fileId);
+
+            result.add(goodsVo);
         }
-        return page;
+
+        Page<GoodsVo> resultPage = new PageImpl(result, pageable, page.getTotalElements());
+
+        return resultPage;
     }
 
     /**
@@ -95,7 +104,7 @@ public class GoodsService extends BaseService<Goods, Long> {
      * @param params
      * @return
      */
-    public Page<Goods> findByPageService(Map<String, Object> params){
+    public Page<GoodsVo> findByPageService(Map<String, Object> params){
         Integer pageNo = (Integer) params.get("pageNo");
         Integer pageSize = (Integer) params.get("pageSize");
         String goodsType = (String) params.get("goodsType");
@@ -170,7 +179,157 @@ public class GoodsService extends BaseService<Goods, Long> {
 
         Page<Goods> page = goodsRepository.findAll(specification, pageable);
 
-        return page;
+        List<Goods> content = page.getContent();
+        List<GoodsVo> result = new ArrayList<>();
+        GoodsVo goodsVo = null;
+        for(Goods goods : content){
+            goodsVo = new GoodsVo();
+            BeanUtils.copyProperties(goods, goodsVo);
+            goodsVo.setId(goods.getId());
+            result.add(goodsVo);
+        }
+
+        Page<GoodsVo> resultPage = new PageImpl(result, pageable, page.getTotalElements());
+
+        return resultPage;
     }
 
+    /**
+     * 保存商品-管理平台调用
+     * @return
+     */
+    public Map<String, Object> saveGoods(GoodsVo goodsVo, SysUser operator){
+        Map<String, Object> result = null;
+        if(goodsVo.getId() == null){// 新增
+            result = this.addGoods(goodsVo, operator);
+        }else{
+            result = this.updateGoods(goodsVo, operator);
+        }
+
+        return result;
+    }
+
+    /**
+     * 更新商品
+     * @param goodsVo
+     * @return
+     */
+    private Map<String, Object> updateGoods(GoodsVo goodsVo, SysUser operator){
+        Map<String, Object> result = new HashMap<>();
+
+        Goods goods = this.findById(goodsVo.getId());
+        goods.setName(goodsVo.getName());
+        goods.setInfo(goodsVo.getInfo());
+        goods.setBrand(goodsVo.getBrand());
+        goods.setModels(goodsVo.getModels());
+        goods.setPrice(goodsVo.getPrice());
+        goods.setSalesNum(goodsVo.getSalesNum());
+        goods.setStatus(goodsVo.getStatus());
+        goods.setSort(goodsVo.getSort());
+        goods.setUrlLink(goodsVo.getUrlLink());
+        goods.setDeleted(goodsVo.getDeleted());
+        goods.setUpdateTime(new Date());
+        goods.setUpdateOperator(operator);
+        goods.setUpdateOperatorName(operator.getName());
+
+        // 商品类目
+        GoodsType goodsType = goodsTypeService.findById(goodsVo.getGoodsTypeId());
+        goods.setGoodsType(goodsType);
+
+        // 商品图片
+        // 当图片更改后是base64字符串，必然包含英文逗号，否则是url
+        if(StringUtils.isNotBlank(goodsVo.getImage()) && goodsVo.getImage().contains(",")){
+            GoodsRes goodsRes = goodsResService.findThumbnailGoodsRes(goods.getId());
+
+            String image = goodsVo.getImage();
+            image = image.substring(image.indexOf(",")+1);
+
+            // 获取图片保存路径 放在Tomcat根目录下的images中
+            String path = System.getProperty("user.dir");
+            path = path.substring(0, path.lastIndexOf(File.separator)) + File.separator + "images" + File.separator;
+            String fileId = goodsRes.getFileId() == null ? UUID.randomUUID().toString() : goodsRes.getFileId();
+            String filePath = path + fileId + ".jpg";
+            ImageUtil.imageBase64Save(image, filePath, ImageUtil.quality);
+        }
+
+        result.put("code", "1");
+
+        return result;
+    }
+
+    /**
+     * 新增商品
+     * @param goodsVo
+     * @return
+     */
+    private Map<String, Object> addGoods(GoodsVo goodsVo, SysUser operator){
+        Map<String, Object> result = new HashMap<>();
+
+        Goods goods = new Goods();
+        BeanUtils.copyProperties(goodsVo, goods);
+
+        GoodsType goodsType = goodsTypeService.findById(goodsVo.getGoodsTypeId());
+        goods.setGoodsType(goodsType);
+
+        goods.setAddTime(new Date());
+        goods.setAddOperator(operator);
+        goods.setAddOperatorName(operator.getName());
+
+        this.save(goods);
+
+        // 保存商品图片
+        String image = goodsVo.getImage();
+        image = image.substring(image.indexOf(",")+1);
+
+        // 获取图片保存路径 放在Tomcat根目录下的images中
+        String path = System.getProperty("user.dir");
+        path = path.substring(0, path.lastIndexOf(File.separator)) + File.separator + "images" + File.separator;
+        String fileId = UUID.randomUUID().toString();
+        String filePath = path + fileId + ".jpg";
+        ImageUtil.imageBase64Save(image, filePath, ImageUtil.quality);
+
+        GoodsRes goodsRes = new GoodsRes();
+        goodsRes.setGoods(goods);
+        goodsRes.setType("thumbnail");
+        goodsRes.setFileId(fileId);
+        goodsRes.setSort(1);
+        goodsResService.save(goodsRes);
+
+        result.put("code", "1");
+        return result;
+    }
+
+    /**
+     * 查找商品详情
+     * @param goodsId
+     * @return
+     */
+    public GoodsVo findDetails(Long goodsId){
+        Goods goods = this.findById(goodsId);
+        GoodsVo goodsVo = new GoodsVo();
+        BeanUtils.copyProperties(goods, goodsVo);
+        goodsVo.setId(goods.getId());
+
+        String fileId = goodsResService.findFileId(goods.getId());
+        goodsVo.setFileId(fileId);
+
+        goodsVo.setGoodsTypeId(goods.getGoodsType() == null ? null : goods.getGoodsType().getId());
+
+        return goodsVo;
+    }
+
+    /**
+     * 逻辑删除商品
+     * @param goodsId
+     * @param sysUser
+     */
+    public void deleteLogic(Long goodsId, SysUser sysUser){
+        Goods goods = this.findById(goodsId);
+        goods.setDeleted(true);
+        goods.setStatus("0");
+        goods.setUpdateTime(new Date());
+        goods.setUpdateOperator(sysUser);
+        goods.setUpdateOperatorName(sysUser.getName());
+        this.save(goods);
+    }
 }
