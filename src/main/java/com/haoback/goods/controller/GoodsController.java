@@ -94,7 +94,11 @@ public class GoodsController {
     @RequestMapping(value = "/image/{fileId}", method = RequestMethod.GET)
     public void findGoodsPic(@PathVariable(value = "fileId") String fileId, HttpServletRequest request, HttpServletResponse response){
         String path = System.getProperty("user.dir");
-        path = path.substring(0, path.lastIndexOf("/")) + "/images/";
+        if(path.lastIndexOf("/bin") > -1){
+            path = path.substring(0, path.lastIndexOf("/")) + "/images/";
+        }else{
+            path = path + "/images/";
+        }
 
         File file = new File(path + fileId + ".jpg");
 

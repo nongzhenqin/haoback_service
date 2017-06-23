@@ -2,20 +2,29 @@ package com.haoback.common.controller;
 
 import com.haoback.common.entity.AjaxResult;
 import com.haoback.common.utils.CommonUtils;
+import com.haoback.goods.entity.GoodsType;
+import com.haoback.goods.service.GoodsService;
+import com.haoback.goods.service.GoodsTypeService;
+import com.haoback.goods.vo.GoodsTypeVo;
+import com.haoback.goods.vo.GoodsVo;
 import com.haoback.sys.entity.SysUser;
 import com.haoback.sys.service.SysMenuService;
 import org.apache.commons.httpclient.HttpStatus;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +38,10 @@ public class IndexController {
 
     @Autowired
     private SysMenuService sysMenuService;
+    @Autowired
+    private GoodsTypeService goodsTypeService;
+    @Autowired
+    private GoodsService goodsService;
 
     /**
      * 登录页面跳转
@@ -47,14 +60,47 @@ public class IndexController {
         return "login.jsp";
     }
 
-    @RequestMapping(value="/index",method=RequestMethod.GET)
-    public String success(){
-        return "page/index.html";
+    @RequestMapping(value="/index.html",method=RequestMethod.GET)
+    public ModelAndView success(HttpServletRequest request){
+        ModelAndView mav = new ModelAndView("page/index.jsp");
+
+        // 查询商品分类
+        List<GoodsType> goodsTypes = goodsTypeService.findAll();
+        List<GoodsTypeVo> goodsTypesVo = new ArrayList<>();
+        GoodsTypeVo goodsTypeVo = null;
+        for(GoodsType goodsType : goodsTypes){
+            goodsTypeVo = new GoodsTypeVo();
+            BeanUtils.copyProperties(goodsType, goodsTypeVo);
+
+            // 查找商品
+            Map<String, Object> params = new HashMap<>();
+            params.put("pageNo", 0);
+            params.put("pageSize", 10);
+            params.put("goodsType", goodsType.getCode());
+            Page<GoodsVo> page = goodsService.findByPageWeb(params);
+            List<GoodsVo> content = page.getContent();
+
+            // 商品列表
+            goodsTypeVo.setGoodsList(content);
+
+            goodsTypesVo.add(goodsTypeVo);
+        }
+
+        // 查找热门推荐商品
+        Map<String, Object> params = new HashMap<>();
+        params.put("pageNo", 0);
+        params.put("pageSize", 5);
+        params.put("goodsType", "hot");
+        Page<GoodsVo> page = goodsService.findByPageWeb(params);
+
+        mav.addObject("goodsTypesHot", page.getContent());
+
+        mav.addObject("goodsTypes", goodsTypesVo);
+        return mav;
     }
 
     @RequestMapping(value="/login_fail",method=RequestMethod.GET)
     public String fail(){
-
         return "login.jsp";
     }
 

@@ -8,9 +8,14 @@
 
 	<!--不拦截URL配置-->
 	<http pattern="/is_login" security="none" />
+	<http pattern="/" security="none" />
+	<http pattern="/index.html" security="none" />
 	<http pattern="/**/goods/**" security="none" />
 	<!-- 静态文件不拦截 -->
-	<!--<http pattern="/**/images/**" security="none" />-->
+	<http pattern="/**/css/**" security="none" />
+	<http pattern="/**/js/**" security="none" />
+	<http pattern="/**/img/**" security="none" />
+	<http pattern="/**/static/**" security="none" />
 	<!--cxf URL不拦截-->
 	<!--<http pattern="/**/webservice/**" security="none" />-->
 

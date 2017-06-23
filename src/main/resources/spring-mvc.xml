@@ -19,9 +19,10 @@
 	<mvc:annotation-driven></mvc:annotation-driven>
 	
 	<!-- 静态文件不拦截 -->
-	<!--<mvc:resources location="/statics/" mapping="/statics/**"></mvc:resources>-->
-    <!--<mvc:resources location="/page/" mapping="/page/**.html"></mvc:resources>-->
-	<!--<mvc:resources location="/images/" mapping="/images/**"></mvc:resources>-->
+	<mvc:resources location="/css/" mapping="/css/**"></mvc:resources>
+    <mvc:resources location="/page/" mapping="/page/**.html"></mvc:resources>
+	<mvc:resources location="/img/" mapping="/img/**"></mvc:resources>
+	<mvc:resources location="/static/" mapping="/static/**"></mvc:resources>
 	
 	<!-- 自动扫描controller包下的所有类，使其认为spring mvc的控制器 -->
 	<context:component-scan base-package="com.haoback.**.controller" use-default-filters="false">
@@ -48,7 +49,7 @@
 	</bean>
 
 	<!--默认跳转-->
-	<!--<mvc:view-controller path="/" view-name="forward:page/index.html" />-->
+	<mvc:view-controller path="/" view-name="redirect:/index.html" />
 
 	<!-- 对模型视图名称的解析，即在模型视图名称添加前后缀 -->
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:prefix="/" p:suffix="" />

@@ -30,6 +30,7 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>haoback</finalName>
     </build>
 
     <properties>
