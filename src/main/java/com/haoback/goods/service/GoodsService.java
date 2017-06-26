@@ -227,6 +227,8 @@ public class GoodsService extends BaseService<Goods, Long> {
         goods.setStatus(goodsVo.getStatus());
         goods.setSort(goodsVo.getSort());
         goods.setUrlLink(goodsVo.getUrlLink());
+        goods.setUrlLinkCoupon(goodsVo.getUrlLinkCoupon());
+        goods.setIsTmall(goodsVo.getIsTmall());
         goods.setDeleted(goodsVo.getDeleted());
         goods.setUpdateTime(new Date());
         goods.setUpdateOperator(operator);

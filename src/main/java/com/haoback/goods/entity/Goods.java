@@ -84,10 +84,22 @@ public class Goods extends BaseEntity<Long> {
     private Integer sort;
 
     /**
-     * 淘宝URL
+     * 商品URL
      */
     @Column(name = "url_link", length=1000)
     private String urlLink;
+
+    /**
+     * 优惠券URL，当同时存在商品URL和优惠券URL时，默认用优惠券URL打开
+     */
+    @Column(name = "URL_LINK_COUPON", length=1000)
+    private String urlLinkCoupon;
+
+    /**
+     * 是否天猫商家 true-是 false-否
+     */
+    @Column(name = "IS_TMALL")
+    private Boolean isTmall = Boolean.FALSE;
 
     /**
      * 新增时间

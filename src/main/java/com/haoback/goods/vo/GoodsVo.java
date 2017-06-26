@@ -35,4 +35,6 @@ public class GoodsVo implements Serializable {
     private String fileId;// 商品缩略图名称
     private Boolean deleted;
     private String urlLink;
+    private String urlLinkCoupon;
+    private Boolean isTmall;
 }

@@ -21,6 +21,8 @@
 
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
     <%--<script src="http://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>--%>
+
+    <script src="static/jquery-3.2.1.min.js"></script>
 </head>
 
 <body>
@@ -52,14 +54,29 @@
             <c:if test="${status.index != 0 && status.index % 5 == 0}">
                 <div class="col-md-2"></div>
             </c:if>
-            <div class="col-md-4 col-style" onclick="window.open('${goods.urlLink}', '_bank')">
-                <img class="product-img" src="./goods/image/${goods.fileId}">
-                <h6 style="padding-left: 5px;padding-right: 5px;">${goods.name}</h6>
-                <c:if test="goods.info != null && goods.info.length > 0">
-                    <h6>${goods.info}</h6>
-                </c:if>
-                <span style="color: red;width: 100%;height: 100%;font-size: 20px;font-family: arial; color: #F40; font-weight: 700;">￥${goods.price}</span>
-                &nbsp;&nbsp;&nbsp;&nbsp;月销&nbsp;${goods.salesNum}
+            <div class="col-md-4 col-style" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
+                <div class="row" style="position: relative;height: 100%;">
+                    <div class="col-md-24">
+                        <img class="product-img" src="./goods/image/${goods.fileId}">
+                    </div>
+                    <div class="col-md-24" style="padding-top:8px;">
+                        <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
+                        <span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">月销&nbsp;${goods.salesNum}</span>
+                    </div>
+                    <div class="col-md-24" style="padding-top:8px;">
+                        <span style="font-size: 12px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.name}</span>
+                    </div>
+                    <c:if test="${goods.info != null && goods.info.length() > 0}">
+                        <div class="col-md-24" style="padding-top:8px;">
+                            <span style="color: #888;font-size: 10px;">${goods.info}</span>
+                        </div>
+                    </c:if>
+                    <c:if test="${goods.isTmall == true}">
+                        <div class="col-md-24" style="position: absolute;bottom: 0;">
+                            <img src="img/tmall.png" style="height: 16px;width: 16px;float: right;">
+                        </div>
+                    </c:if>
+                </div>
             </div>
         </c:forEach>
         <div class="col-md-2"></div>
@@ -79,14 +96,29 @@
                 <c:if test="${status.index != 0 && status.index % 5 == 0}">
                     <div class="col-md-2"></div>
                 </c:if>
-                <div class="col-md-4 col-style" onclick="window.open('${goods.urlLink}', '_bank')">
-                    <img class="product-img" src="./goods/image/${goods.fileId}">
-                    <h6 style="padding-left: 5px;padding-right: 5px;">${goods.name}</h6>
-                    <c:if test="goods.info != null && goods.info.length > 0">
-                        <h6>${goods.info}</h6>
-                    </c:if>
-                    <span style="color: red;width: 100%;height: 100%;font-size: 20px;font-family: arial; color: #F40; font-weight: 700;">￥${goods.price}</span>
-                    &nbsp;&nbsp;&nbsp;&nbsp;月销&nbsp;${goods.salesNum}
+                <div class="col-md-4 col-style" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
+                    <div class="row" style="position: relative;height: 100%;">
+                        <div class="col-md-24">
+                            <img class="product-img" src="./goods/image/${goods.fileId}">
+                        </div>
+                        <div class="col-md-24" style="padding-top:8px;">
+                            <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
+                            <span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">月销&nbsp;${goods.salesNum}</span>
+                        </div>
+                        <div class="col-md-24" style="padding-top:8px;">
+                            <span style="font-size: 12px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.name}</span>
+                        </div>
+                        <c:if test="${goods.info != null && goods.info.length() > 0}">
+                            <div class="col-md-24" style="padding-top:8px;">
+                                <span style="color: #888;font-size: 10px;">${goods.info}</span>
+                            </div>
+                        </c:if>
+                        <c:if test="${goods.isTmall == true}">
+                            <div class="col-md-24" style="position: absolute;bottom: 0;">
+                                <img src="img/tmall.png" style="height: 16px;width: 16px;float: right;">
+                            </div>
+                        </c:if>
+                    </div>
                 </div>
             </c:forEach>
             <div class="col-md-2"></div>
@@ -103,3 +135,14 @@
 </div>
 </body>
 </html>
+
+<script type="text/javascript">
+    // 点击事件
+    $(function(){
+        $('.col-style').on('click', function(){
+            window.open($(this).attr('url-data'), '_bank');
+            // 保存pv
+            $.post('./goods/pv_uv', {goodsId: $(this).attr('id-data')});
+        });
+    });
+</script>

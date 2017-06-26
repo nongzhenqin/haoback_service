@@ -1,11 +1,13 @@
 package com.haoback.goods.controller;
 
 import com.haoback.common.entity.AjaxResult;
-import com.haoback.goods.entity.Goods;
+import com.haoback.common.utils.IpUtils;
 import com.haoback.goods.entity.GoodsType;
 import com.haoback.goods.service.GoodsService;
 import com.haoback.goods.service.GoodsTypeService;
 import com.haoback.goods.vo.GoodsVo;
+import com.haoback.platform.entity.PvUvDetail;
+import com.haoback.platform.service.PvUvDetailService;
 import org.apache.commons.httpclient.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,10 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.persistence.criteria.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +40,8 @@ public class GoodsController {
     private GoodsService goodsService;
     @Autowired
     private GoodsTypeService goodsTypeService;
+    @Autowired
+    private PvUvDetailService pvUvDetailService;
 
     /**
      * 分页查找商品
@@ -119,6 +126,30 @@ public class GoodsController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 保存pv uv
+     * @param goodsId
+     * @param request
+     */
+    @RequestMapping(value = "/pv_uv", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxResult savePvUv(Long goodsId, HttpServletRequest request){
+        AjaxResult ajaxresult = new AjaxResult();
+        Map<String, Object> datas = new HashMap<>();
+
+        PvUvDetail pvUvDetail = new PvUvDetail();
+        pvUvDetail.setAddTime(new Date());
+        pvUvDetail.setIp(IpUtils.getIpAddr(request));
+        pvUvDetail.setGoods(goodsService.findById(goodsId));
+        pvUvDetailService.save(pvUvDetail);
+
+        datas.put("code", "1");
+
+        ajaxresult.setDatas(datas);
+        ajaxresult.setStatus(HttpStatus.SC_OK);
+        return ajaxresult;
     }
 
 }
