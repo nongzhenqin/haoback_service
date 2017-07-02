@@ -42,4 +42,10 @@ public class GoodsType extends BaseEntity<Long> {
     @Column(name = "REMARK", length = 25)
     private String remark;
 
+    /**
+     * 逻辑删除 false/0-未删除 true/1-删除
+     */
+    @Column(name = "IS_DELETED")
+    private Boolean deleted = Boolean.FALSE;
+
 }

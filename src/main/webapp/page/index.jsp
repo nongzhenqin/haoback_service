@@ -23,6 +23,8 @@
     <%--<script src="http://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>--%>
 
     <script src="static/jquery-3.2.1.min.js"></script>
+    <script src="static/scrollTop.js"></script>
+
 </head>
 
 <body>
@@ -129,7 +131,11 @@
 
     <div class="row">
         <div class="col-md-24" style="height: 60px;padding-top:20px;text-align:center;background-color:white;">
-            <%--优选--%>
+            我是有底线的~ © CopyRight 2017 优选
+            <div class="toTop" style="display: block;background: url('img/top.png'); height: 56px; width: 56px;" onclick=" $('body,html').animate({scrollTop:0},1000);">
+            </div>
+
+            <%--<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>--%>
         </div>
     </div>
 </div>
@@ -143,6 +149,16 @@
             window.open($(this).attr('url-data'), '_bank');
             // 保存pv
             $.post('./goods/pv_uv', {goodsId: $(this).attr('id-data')});
+        });
+
+        // 回到顶部按钮
+        $(window).scroll(function () {
+            if ($(window).scrollTop() > 500) {
+                $(".toTop").fadeIn(1000);
+            }
+            else {
+                $(".toTop").fadeOut(1000);
+            }
         });
     });
 </script>

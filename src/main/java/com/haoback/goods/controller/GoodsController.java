@@ -82,7 +82,7 @@ public class GoodsController {
         AjaxResult ajaxresult = new AjaxResult();
         Map<String, Object> datas = new HashMap<>();
 
-        List<GoodsType> goodsTypes = goodsTypeService.findAll();
+        List<GoodsType> goodsTypes = goodsTypeService.findList();
 
         datas.put("code", "1");
         datas.put("data", goodsTypes);

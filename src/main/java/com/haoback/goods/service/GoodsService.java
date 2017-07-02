@@ -60,7 +60,20 @@ public class GoodsService extends BaseService<Goods, Long> {
             Predicate deleted = cb.equal(root.get("deleted").as(Boolean.class), false);
             Predicate status = cb.equal(root.get("status").as(String.class), "1");
             if("hot".equals(goodsType)){
-                return cb.and(deleted, status);
+
+                Subquery<GoodsType> subquery = query.subquery(GoodsType.class);
+                Root<GoodsType> goodsTypeRoot = subquery.from(GoodsType.class);
+                subquery.select(goodsTypeRoot);
+
+                // exists条件
+                List<Predicate> existsPredicate = new ArrayList<>();
+                existsPredicate.add(cb.equal(root.get("goodsType"), goodsTypeRoot.get("id")));
+                existsPredicate.add(cb.equal(goodsTypeRoot.get("deleted"), false));
+                subquery.where(existsPredicate.toArray(new Predicate[]{}));
+
+                Predicate exists = cb.exists(subquery);
+
+                return cb.and(deleted, status, exists);
             }
 
             Subquery<GoodsType> subquery = query.subquery(GoodsType.class);

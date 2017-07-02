@@ -1,3 +1,20 @@
+/*@font-face {*/
+    /*font-family: 'iconfont';*/
+    /*src: url('//at.alicdn.com/t/font_1466006943_0368855.eot'); !* IE9*!*/
+    /*src: url('//at.alicdn.com/t/font_1466006943_0368855.eot?#iefix') format('embedded-opentype'), !* IE6-IE8 *!*/
+    /*url('//at.alicdn.com/t/font_1466006943_0368855.woff') format('woff'), !* chrome、firefox *!*/
+    /*url('//at.alicdn.com/t/font_1466006943_0368855.ttf') format('truetype'), !* chrome、firefox、opera、Safari, Android, iOS 4.2+*! url('//at.alicdn.com/t/font_1466006943_0368855.svg#iconfont') format('svg'); !* iOS 4.1- *!*/
+/*}*/
+
+/*.iconfont {*/
+    /*font-family: "iconfont" !important;*/
+    /*font-size: 16px;*/
+    /*font-style: normal;*/
+    /*-webkit-font-smoothing: antialiased;*/
+    /*-webkit-text-stroke-width: 0.2px;*/
+    /*-moz-osx-font-smoothing: grayscale;*/
+/*}*/
+
 body {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -6,10 +23,6 @@ body {
     font-family: "PingFang SC","\5FAE\8F6F\96C5\9ED1","Microsoft Yahei",Arial,Helvetica,sans-serif,"\5B8B\4F53";
     font-size: 14px;
     /*min-width: 1440px;*/
-}
-
-.container {
-
 }
 
 .head-row {
@@ -69,4 +82,24 @@ body {
 .product-img {
     width: 240px;
     height: 240px;
+}
+
+.toTop {
+    /*font-family: iconfont;*/
+    position: fixed;
+    right: 38px;
+    bottom: 2px;
+    line-height: 50px;
+    text-align: center;
+    border: 1px solid #CCCCCC;
+    border-radius: 50px;
+    color: #858585;
+    width: 50px;
+    font-size: 36px;
+    cursor: pointer;
+    background-color: #fff;
+}
+
+.toTop:hover, .toTop:focus {
+    color: rgb(234, 42, 96);
 }
