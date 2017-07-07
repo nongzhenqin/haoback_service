@@ -12,17 +12,11 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -93,40 +87,40 @@ public class GoodsController {
     }
 
     /**
-     * 获取图片
+     * 获取图片 弃用
      * @param fileId
      * @param request
      * @param response
      */
-    @RequestMapping(value = "/image/{fileId}", method = RequestMethod.GET)
-    public void findGoodsPic(@PathVariable(value = "fileId") String fileId, HttpServletRequest request, HttpServletResponse response){
-        String path = System.getProperty("user.dir");
-        if(path.lastIndexOf("/bin") > -1){
-            path = path.substring(0, path.lastIndexOf("/")) + "/images/";
-        }else{
-            path = path + "/images/";
-        }
-
-        File file = new File(path + fileId + ".jpg");
-
-        try {
-            FileInputStream fileInputStream = new FileInputStream(file);
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-            byte[] b = new byte[1024];
-            int n;
-            while((n = fileInputStream.read(b)) != -1){
-                byteArrayOutputStream.write(b, 0, n);
-            }
-
-            fileInputStream.close();
-            byteArrayOutputStream.close();
-
-            response.getOutputStream().write(byteArrayOutputStream.toByteArray());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    @RequestMapping(value = "/image/{fileId}", method = RequestMethod.GET)
+//    public void findGoodsPic(@PathVariable(value = "fileId") String fileId, HttpServletRequest request, HttpServletResponse response){
+//        String path = System.getProperty("user.dir");
+//        if(path.lastIndexOf("/bin") > -1){
+//            path = path.substring(0, path.lastIndexOf("/")) + "/images/";
+//        }else{
+//            path = path + "/images/";
+//        }
+//
+//        File file = new File(path + fileId + ".jpg");
+//
+//        try {
+//            FileInputStream fileInputStream = new FileInputStream(file);
+//            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//
+//            byte[] b = new byte[1024];
+//            int n;
+//            while((n = fileInputStream.read(b)) != -1){
+//                byteArrayOutputStream.write(b, 0, n);
+//            }
+//
+//            fileInputStream.close();
+//            byteArrayOutputStream.close();
+//
+//            response.getOutputStream().write(byteArrayOutputStream.toByteArray());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     /**
      * 保存pv uv
@@ -135,13 +129,15 @@ public class GoodsController {
      */
     @RequestMapping(value = "/pv_uv", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxResult savePvUv(Long goodsId, HttpServletRequest request){
+    public AjaxResult savePvUv(Long goodsId, String referer, String titileName, HttpServletRequest request){
         AjaxResult ajaxresult = new AjaxResult();
         Map<String, Object> datas = new HashMap<>();
 
         PvUvDetail pvUvDetail = new PvUvDetail();
         pvUvDetail.setAddTime(new Date());
         pvUvDetail.setIp(IpUtils.getIpAddr(request));
+        pvUvDetail.setReferer(referer);
+        pvUvDetail.setTitleName(titileName);
         pvUvDetail.setGoods(goodsService.findById(goodsId));
         pvUvDetailService.save(pvUvDetail);
 

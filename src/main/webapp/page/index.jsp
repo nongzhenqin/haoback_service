@@ -10,7 +10,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c"%>
 <html>
 <head>
-    <title>优选</title>
+    <title>优选-精挑细选优质商品</title>
+    <meta name="Keywords" content="优选,生活,9块9,热销推荐,特卖,优选折扣,优品">
+    <meta name="Description" content="优选-优惠券折扣，人工筛选，每天更新，折扣多多">
+
     <link href="img/favicon.ico" rel="shortcut icon" type="image/x-icon">
     <link href="img/favicon.ico" rel="icon" type="image/x-icon">
 
@@ -59,7 +62,7 @@
             <div class="col-md-4 col-style" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
                 <div class="row" style="position: relative;height: 100%;">
                     <div class="col-md-24">
-                        <img class="product-img" src="./goods/image/${goods.fileId}">
+                        <img class="product-img" src="./upload/${goods.fileId}.jpg">
                     </div>
                     <div class="col-md-24" style="padding-top:8px;">
                         <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
@@ -101,7 +104,7 @@
                 <div class="col-md-4 col-style" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
                     <div class="row" style="position: relative;height: 100%;">
                         <div class="col-md-24">
-                            <img class="product-img" src="./goods/image/${goods.fileId}">
+                            <img class="product-img" src="./upload/${goods.fileId}.jpg">
                         </div>
                         <div class="col-md-24" style="padding-top:8px;">
                             <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
@@ -134,7 +137,6 @@
             我是有底线的~ © CopyRight 2017 优选
             <div class="toTop" style="display: block;background: url('img/top.png'); height: 56px; width: 56px;" onclick=" $('body,html').animate({scrollTop:0},1000);">
             </div>
-
             <%--<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>--%>
         </div>
     </div>
@@ -143,13 +145,18 @@
 </html>
 
 <script type="text/javascript">
-    // 点击事件
     $(function(){
-        $('.col-style').on('click', function(){
-            window.open($(this).attr('url-data'), '_bank');
-            // 保存pv
-            $.post('./goods/pv_uv', {goodsId: $(this).attr('id-data')});
-        });
+        // 点击事件
+        if(!${isSpider}){
+            $('.col-style').on('click', function(){
+                window.open($(this).attr('url-data'), '_bank');
+                // 保存pv
+                $.post('./goods/pv_uv', {goodsId: $(this).attr('id-data'), referer: document.referrer.toLowerCase(), titileName: "商品"});
+            });
+        }
+
+        // 保存pv
+        $.post('./goods/pv_uv', {goodsId: 0, referer: document.referrer.toLowerCase(), titileName: "首页"});
 
         // 回到顶部按钮
         $(window).scroll(function () {

@@ -10,6 +10,7 @@ import com.haoback.goods.vo.GoodsVo;
 import com.haoback.sys.entity.SysUser;
 import com.haoback.sys.service.SysMenuService;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,6 +43,19 @@ public class IndexController {
     private GoodsTypeService goodsTypeService;
     @Autowired
     private GoodsService goodsService;
+    // 搜索引擎蜘蛛URL
+    private List<String> spider = new ArrayList<>();
+    {
+        spider.add("google.");
+        spider.add("baidu.");
+        spider.add("soso.");
+        spider.add("so.");
+        spider.add("360.");
+        spider.add("yahoo.");
+        spider.add("youdao.");
+        spider.add("sogou.");
+        spider.add("gougou.");
+    }
 
     /**
      * 登录页面跳转
@@ -96,6 +110,23 @@ public class IndexController {
         mav.addObject("goodsTypesHot", page.getContent());
 
         mav.addObject("goodsTypes", goodsTypesVo);
+
+        String referer = request.getHeader("Referer");
+        referer = referer == null ? "" : referer.toLowerCase();
+
+        Boolean isSpider = Boolean.FALSE;
+
+        if(StringUtils.isNotBlank(referer)){
+            for(String s : spider){
+                if(referer.indexOf(s) > -1){
+                    isSpider = Boolean.TRUE;
+                    break;
+                }
+            }
+        }
+
+        mav.addObject("isSpider", isSpider);
+
         return mav;
     }
 

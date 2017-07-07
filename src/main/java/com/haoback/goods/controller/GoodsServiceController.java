@@ -48,6 +48,7 @@ public class GoodsServiceController {
     public AjaxResult findByPage(Integer pageNo, Integer pageSize, String goodsType,
                                  String name, String beginDate, String endDate, String validind,
                                  HttpServletRequest request){
+
         AjaxResult ajaxresult = new AjaxResult();
         Map<String, Object> datas = new HashMap<>();
 
@@ -84,7 +85,9 @@ public class GoodsServiceController {
 
         SysUser sysUser = CommonUtils.getSysUser(request);
 
-        Map<String, Object> map = goodsService.saveGoods(goodsVo, sysUser);
+        String realPath = request.getSession().getServletContext().getRealPath("/");
+
+        Map<String, Object> map = goodsService.saveGoods(goodsVo, sysUser, realPath);
 
         datas.put("code", map.get("code"));// 1-成功 0-失败
 

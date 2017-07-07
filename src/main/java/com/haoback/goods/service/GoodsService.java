@@ -211,12 +211,12 @@ public class GoodsService extends BaseService<Goods, Long> {
      * 保存商品-管理平台调用
      * @return
      */
-    public Map<String, Object> saveGoods(GoodsVo goodsVo, SysUser operator){
+    public Map<String, Object> saveGoods(GoodsVo goodsVo, SysUser operator, String realPath){
         Map<String, Object> result = null;
         if(goodsVo.getId() == null){// 新增
-            result = this.addGoods(goodsVo, operator);
+            result = this.addGoods(goodsVo, operator, realPath);
         }else{
-            result = this.updateGoods(goodsVo, operator);
+            result = this.updateGoods(goodsVo, operator, realPath);
         }
 
         return result;
@@ -227,7 +227,7 @@ public class GoodsService extends BaseService<Goods, Long> {
      * @param goodsVo
      * @return
      */
-    private Map<String, Object> updateGoods(GoodsVo goodsVo, SysUser operator){
+    private Map<String, Object> updateGoods(GoodsVo goodsVo, SysUser operator, String realPath){
         Map<String, Object> result = new HashMap<>();
 
         Goods goods = this.findById(goodsVo.getId());
@@ -260,11 +260,14 @@ public class GoodsService extends BaseService<Goods, Long> {
             image = image.substring(image.indexOf(",")+1);
 
             // 获取图片保存路径 放在Tomcat根目录下的images中
-            String path = System.getProperty("user.dir");
-            path = path.substring(0, path.lastIndexOf(File.separator)) + File.separator + "images" + File.separator;
+//            String path = System.getProperty("user.dir");
+//            path = path.substring(0, path.lastIndexOf(File.separator)) + File.separator + "images" + File.separator;
+//            String filePath = path + fileId + ".jpg";
+
             String fileId = goodsRes.getFileId() == null ? UUID.randomUUID().toString() : goodsRes.getFileId();
-            String filePath = path + fileId + ".jpg";
-            ImageUtil.imageBase64Save(image, filePath, ImageUtil.quality);
+            String path = realPath + "upload" + File.separator + fileId + ".jpg";
+
+            ImageUtil.imageBase64Save(image, path, ImageUtil.quality);
         }
 
         result.put("code", "1");
@@ -277,7 +280,7 @@ public class GoodsService extends BaseService<Goods, Long> {
      * @param goodsVo
      * @return
      */
-    private Map<String, Object> addGoods(GoodsVo goodsVo, SysUser operator){
+    private Map<String, Object> addGoods(GoodsVo goodsVo, SysUser operator, String realPath){
         Map<String, Object> result = new HashMap<>();
 
         Goods goods = new Goods();
@@ -297,11 +300,14 @@ public class GoodsService extends BaseService<Goods, Long> {
         image = image.substring(image.indexOf(",")+1);
 
         // 获取图片保存路径 放在Tomcat根目录下的images中
-        String path = System.getProperty("user.dir");
-        path = path.substring(0, path.lastIndexOf(File.separator)) + File.separator + "images" + File.separator;
+//        String path = System.getProperty("user.dir");
+//        path = path.substring(0, path.lastIndexOf(File.separator)) + File.separator + "images" + File.separator;
+//        String filePath = path + fileId + ".jpg";
+
         String fileId = UUID.randomUUID().toString();
-        String filePath = path + fileId + ".jpg";
-        ImageUtil.imageBase64Save(image, filePath, ImageUtil.quality);
+        String path = realPath + "upload" + File.separator + fileId + ".jpg";
+
+        ImageUtil.imageBase64Save(image, path, ImageUtil.quality);
 
         GoodsRes goodsRes = new GoodsRes();
         goodsRes.setGoods(goods);

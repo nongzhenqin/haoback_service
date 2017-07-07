@@ -63,4 +63,10 @@ public class PvUvDetail extends BaseEntity<Long> {
      */
     @Column(name = "USER_CODE", length=30)
     private String userCode;
+
+    /**
+     * 请求来源，为空表示用户直接从浏览器访问，百度蜘蛛访问会包含baidu.
+     */
+    @Column(name = "REFERER", length=500)
+    private String referer;
 }
