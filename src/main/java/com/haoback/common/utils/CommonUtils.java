@@ -8,11 +8,9 @@ import com.gargoylesoftware.htmlunit.html.DomNodeList;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.haoback.sys.entity.SysUser;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.context.SecurityContextImpl;
-import sun.misc.BASE64Decoder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -83,7 +81,7 @@ public class CommonUtils {
      * @param url
      * @return
      */
-    public static Map<String, String> getGoodsItemId(String url){
+    public static Map<String, String> getGoodsItemIdOrTmallUrl(String url){
         Map<String, String> result = new HashMap<>();
 
         WebClient wc = new WebClient();
@@ -117,20 +115,26 @@ public class CommonUtils {
 
                 for(HtmlElement elm : script) {
                     String textContent = elm.getTextContent();
-                    if (textContent.contains("var g_config = {")) {
-                        String[] split = textContent.split(",");
-                        for(String s : split){
-                            if(s.contains("itemId")){
-                                String itemId = s.split(":")[1].trim().replaceAll("'", "");
-                                result.put("itemId", itemId);
-                                break;
+                    String attribute = elm.getAttribute("src");
+                    if(attribute != null && attribute.contains("tmallBuySupport") && !result.containsKey("src")){// 天猫
+                        String src = elm.getAttribute("src");
+                        result.put("src", src);
+                    }else{// 淘宝
+                        if (textContent.contains("var g_config = {")) {
+                            String[] split = textContent.split(",");
+                            for(String s : split){
+                                if(s.contains("itemId")){
+                                    String itemId = s.split(":")[1].trim().replaceAll("'", "");
+                                    result.put("itemId", itemId);
+                                    break;
+                                }
                             }
-                        }
-                        for(String s : split){
-                            if(s.contains("online")){
-                                String online = s.split(":")[1].trim();
-                                result.put("online", online);
-                                break;
+                            for(String s : split){
+                                if(s.contains("online")){
+                                    String online = s.split(":")[1].trim();
+                                    result.put("online", online);
+                                    break;
+                                }
                             }
                         }
                     }

@@ -66,7 +66,7 @@
                     </div>
                     <div class="col-md-24" style="padding-top:8px;">
                         <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
-                        <span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">月销&nbsp;${goods.salesNum}</span>
+                        <span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">销量&nbsp;${goods.salesNum}</span>
                     </div>
                     <div class="col-md-24" style="padding-top:8px;">
                         <span style="font-size: 12px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.name}</span>
@@ -108,7 +108,7 @@
                         </div>
                         <div class="col-md-24" style="padding-top:8px;">
                             <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
-                            <span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">月销&nbsp;${goods.salesNum}</span>
+                            <span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">销量&nbsp;${goods.salesNum}</span>
                         </div>
                         <div class="col-md-24" style="padding-top:8px;">
                             <span style="font-size: 12px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.name}</span>

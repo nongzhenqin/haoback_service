@@ -88,7 +88,7 @@ public class GoodsService extends BaseService<Goods, Long> {
 
             Predicate exists = cb.exists(subquery);
 
-            return cb.and(deleted, exists);
+            return cb.and(deleted, status, exists);
         };
 
         Page<Goods> page = goodsRepository.findAll(specification, pageable);
