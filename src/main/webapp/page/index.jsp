@@ -68,17 +68,17 @@
                         <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
                         <span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">销量&nbsp;${goods.salesNum}</span>
                     </div>
-                    <div class="col-md-24" style="padding-top:8px;">
+                    <div class="col-md-24" style="padding-top: 8px;text-align: left;">
                         <span style="font-size: 12px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.name}</span>
                     </div>
                     <c:if test="${goods.info != null && goods.info.length() > 0}">
-                        <div class="col-md-24" style="padding-top:8px;">
+                        <div class="col-md-24" style="padding-top:8px;text-align: left;">
                             <span style="color: #888;font-size: 10px;">${goods.info}</span>
                         </div>
                     </c:if>
                     <c:if test="${goods.isTmall == true}">
                         <div class="col-md-24" style="position: absolute;bottom: 0;">
-                            <img src="img/tmall.png" style="height: 16px;width: 16px;float: right;">
+                            <img src="img/tmall.png" style="height: 16px;width: 16px;float: right;margin-right: 8px;margin-bottom: 8px;">
                         </div>
                     </c:if>
                 </div>
@@ -110,17 +110,17 @@
                             <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
                             <span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">销量&nbsp;${goods.salesNum}</span>
                         </div>
-                        <div class="col-md-24" style="padding-top:8px;">
+                        <div class="col-md-24" style="padding-top: 8px;text-align: left;">
                             <span style="font-size: 12px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.name}</span>
                         </div>
                         <c:if test="${goods.info != null && goods.info.length() > 0}">
-                            <div class="col-md-24" style="padding-top:8px;">
+                            <div class="col-md-24" style="padding-top:8px;text-align: left;">
                                 <span style="color: #888;font-size: 10px;">${goods.info}</span>
                             </div>
                         </c:if>
                         <c:if test="${goods.isTmall == true}">
                             <div class="col-md-24" style="position: absolute;bottom: 0;">
-                                <img src="img/tmall.png" style="height: 16px;width: 16px;float: right;">
+                                <img src="img/tmall.png" style="height: 16px;width: 16px;float: right;margin-right: 8px;margin-bottom: 8px;">
                             </div>
                         </c:if>
                     </div>

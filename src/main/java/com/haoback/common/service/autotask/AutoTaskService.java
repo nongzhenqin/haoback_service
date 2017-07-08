@@ -33,7 +33,7 @@ public class AutoTaskService {
     /**
      * 自动捉取淘宝商品最新价格
      */
-    @Scheduled(cron="0 26 11 * * ?")// 每天凌晨3点执行
+    @Scheduled(cron="0 15 21 * * ?")// 每天凌晨3点执行
     public void autoGetTaoBaoInfo(){
         List<Goods> goodsList = goodsService.findAll();
         String targetUrl = "https://mdskip.taobao.com/core/initItemDetail.htm?isUseInventoryCenter=false&sellerPreview=false&service3C=true&isPurchaseMallPage=false&cachedTimestamp=1499326709981&addressLevel=2&queryMemberRight=true&isForbidBuyItem=false&isAreaSell=false&isApparel=false&tmallBuySupport=true&household=false&offlineShop=false&isSecKill=false&isRegionLevel=false&showShopProm=false&tryBeforeBuy=false&cartEnable=true&itemId=542679911886&callback=setMdskip&timestamp=1499352070262&isg=null&isg2=ApycK3z8KfE-r90tYQxuSCbIbbyOvUFaWUeSm3admgdzwTxLniUQzxJxVx7D&ref=https%3A%2F%2Fs.click.taobao.com%2Ft_js%3Ftu%3Dhttps%253A%252F%252Fs.click.taobao.com%252Ft%253Fe%253Dm%25253D2%252526s%25253DPqUtWiWY62gcQipKwQzePOeEDrYVVa64K7Vc7tFgwiHjf2vlNIV67sdnvqqQ72iF2yqscP0DbOI4TDOFLMq84x0HboYUFcE7WLvr7c%25252ByinCyB1uQURnJOQNUfesiEEBWFeJIblRvDFAhLvzk%25252B4PKMFplD%25252FwDQ0UaIYULNg46oBA%25253D%2526pvid%253D12_218.17.254.194_488_1497856124560%2526ref%253Dhttp%25253A%25252F%25252Flocalhost%25253A8090%25252Fhaoback_service%25252Findex.html%2526et%253DFwoyxiNZPvKb%25252BLa50vGTi9ow%25252F%25252FiZa9eU";
@@ -44,56 +44,14 @@ public class AutoTaskService {
                 httpClient = new SSLClient();
 
                 Map<String, String> goodsMap = CommonUtils.getGoodsItemIdOrTmallUrl(url);
+                String getUrl = "";
+                boolean isTmall = false;
 
                 // 天猫
                 if(goodsMap.containsKey("src")){
-                    String getUrl = "https:" + goodsMap.get("src").replaceAll("&amp;", "&");
+                    getUrl = "https:" + goodsMap.get("src").replaceAll("&amp;", "&");
 
-                    HttpGet get = new HttpGet(getUrl);
-                    get.setHeader("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36");
-                    get.setHeader("referer", url);
-                    RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(10000).setConnectTimeout(10000).build();//设置请求和传输超时时间
-                    get.setConfig(requestConfig);
-
-                    HttpResponse execute = httpClient.execute(get);
-                    String s = EntityUtils.toString(execute.getEntity(), "utf-8");
-                    System.out.println(s);
-
-                    s = s.substring(s.indexOf("{"), s.lastIndexOf("}")+1);
-
-                    JSONObject jsonObject = JSONObject.parseObject(s);
-
-                    JSONObject priceInfo = jsonObject.getJSONObject("defaultModel").getJSONObject("itemPriceResultDO").getJSONObject("priceInfo");
-
-                    double price = Double.MAX_VALUE;
-
-                    for(Map.Entry<String, Object> set : priceInfo.entrySet()){
-                        JSONObject skuJSONObject = JSONObject.parseObject(set.getValue().toString());
-                        JSONArray promotionList = skuJSONObject.getJSONArray("promotionList");
-                        if(promotionList == null || promotionList.size() == 0) {
-                            double priceTemp = skuJSONObject.getDoubleValue("price");
-                            if(priceTemp < price){
-                                price = priceTemp;
-                            }
-                            continue;
-                        }
-                        for(int i=0, len=promotionList.size(); i<len; i++){
-                            JSONObject promotion = promotionList.getJSONObject(i);
-                            double priceTemp = promotion.getDoubleValue("price");
-                            if(priceTemp < price){
-                                price = priceTemp;
-                            }
-                        }
-                    }
-
-                    Integer sellCount = jsonObject.getJSONObject("defaultModel").getJSONObject("sellCountDO").getInteger("sellCount");
-
-                    System.out.println("price="+price+"&sellCount="+sellCount);
-                    goods.setPrice(new BigDecimal(Double.toString(price)).setScale(2, RoundingMode.HALF_UP));// 价格
-                    goods.setSalesNum(sellCount);
-                    goods.setIsTmall(true);
-                    goodsService.update(goods);
-
+                    isTmall = true;
                 }else{// 淘宝
                     Map<String, String> urlParamsMap = CommonUtils.getUrlParams(targetUrl);
 
@@ -109,60 +67,62 @@ public class AutoTaskService {
                     urlParamsMap.put("timestamp", Long.toString(currentTimeMillis));
                     urlParamsMap.put("itemId", goodsMap.get("itemId"));
                     urlParamsMap.put("ref", "");
-                    String getUrl = "https://mdskip.taobao.com/core/initItemDetail.htm?" + CommonUtils.getUrlParamsByMap(urlParamsMap);
+                    getUrl = "https://mdskip.taobao.com/core/initItemDetail.htm?" + CommonUtils.getUrlParamsByMap(urlParamsMap);
 
-                    HttpGet get = new HttpGet(getUrl);
-                    get.setHeader("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36");
-                    get.setHeader("referer", url);
-                    RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(10000).setConnectTimeout(10000).build();//设置请求和传输超时时间
-                    get.setConfig(requestConfig);
+                    isTmall = false;
+                }
 
-                    HttpResponse execute = httpClient.execute(get);
-                    String s = EntityUtils.toString(execute.getEntity(), "utf-8");
-                    System.out.println(s);
+                HttpGet get = new HttpGet(getUrl);
+                get.setHeader("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36");
+                get.setHeader("referer", url);
+                RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(10000).setConnectTimeout(10000).build();//设置请求和传输超时时间
+                get.setConfig(requestConfig);
 
-                    s = s.substring(s.indexOf("{"), s.lastIndexOf("}")+1);
+                HttpResponse execute = httpClient.execute(get);
+                String s = EntityUtils.toString(execute.getEntity(), "utf-8");
+                System.out.println(s);
 
-                    JSONObject jsonObject = JSONObject.parseObject(s);
+                s = s.substring(s.indexOf("{"), s.lastIndexOf("}")+1);
 
-                    JSONObject priceInfo = jsonObject.getJSONObject("defaultModel").getJSONObject("itemPriceResultDO").getJSONObject("priceInfo");
+                JSONObject jsonObject = JSONObject.parseObject(s);
 
-                    double price = Double.MAX_VALUE;
+                JSONObject priceInfo = jsonObject.getJSONObject("defaultModel").getJSONObject("itemPriceResultDO").getJSONObject("priceInfo");
 
-                    for(Map.Entry<String, Object> set : priceInfo.entrySet()){
-                        JSONObject skuJSONObject = JSONObject.parseObject(set.getValue().toString());
-                        JSONArray promotionList = skuJSONObject.getJSONArray("promotionList");
-                        if(promotionList == null || promotionList.size() == 0) {
-                            double priceTemp = skuJSONObject.getDoubleValue("price");
-                            if(priceTemp < price){
-                                price = priceTemp;
-                            }
-                            continue;
+                double price = Double.MAX_VALUE;
+
+                for(Map.Entry<String, Object> set : priceInfo.entrySet()){
+                    JSONObject skuJSONObject = JSONObject.parseObject(set.getValue().toString());
+                    JSONArray promotionList = skuJSONObject.getJSONArray("promotionList");
+                    if(promotionList == null || promotionList.size() == 0) {
+                        double priceTemp = skuJSONObject.getDoubleValue("price");
+                        if(priceTemp < price){
+                            price = priceTemp;
                         }
-                        for(int i=0, len=promotionList.size(); i<len; i++){
-                            JSONObject promotion = promotionList.getJSONObject(i);
-                            double priceTemp = promotion.getDoubleValue("price");
-                            if(priceTemp < price){
-                                price = priceTemp;
-                            }
+                        continue;
+                    }
+                    for(int i=0, len=promotionList.size(); i<len; i++){
+                        JSONObject promotion = promotionList.getJSONObject(i);
+                        double priceTemp = promotion.getDoubleValue("price");
+                        if(priceTemp < price){
+                            price = priceTemp;
                         }
                     }
-
-                    Integer sellCount = jsonObject.getJSONObject("defaultModel").getJSONObject("sellCountDO").getInteger("sellCount");
-
-                    System.out.println("price="+price+"&sellCount="+sellCount);
-                    goods.setPrice(new BigDecimal(Double.toString(price)).setScale(2, RoundingMode.HALF_UP));// 价格
-                    goods.setSalesNum(sellCount);
-                    goods.setIsTmall(false);
-                    goodsService.update(goods);
                 }
+
+                Integer sellCount = jsonObject.getJSONObject("defaultModel").getJSONObject("sellCountDO").getInteger("sellCount");
+
+                System.out.println("price="+price+"&sellCount="+sellCount);
+                goods.setPrice(new BigDecimal(Double.toString(price)).setScale(2, RoundingMode.HALF_UP));// 价格
+                goods.setSalesNum(sellCount);
+                goods.setIsTmall(isTmall);
+                goodsService.update(goods);
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
             try {
-                Thread.sleep(1500);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
