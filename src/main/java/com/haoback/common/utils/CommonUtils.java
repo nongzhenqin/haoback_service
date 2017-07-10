@@ -147,4 +147,23 @@ public class CommonUtils {
         return result;
     }
 
+    /**
+     * 判断请求是否来自移动端
+     * @param request
+     * @return
+     */
+    public static boolean isMobile(HttpServletRequest request){
+        String requestHeader = request.getHeader("user-agent");
+        String[] phones = {"android", "iphone", "windows phone"};
+        if(StringUtils.isBlank(requestHeader)) return false;
+        requestHeader = requestHeader.toLowerCase();
+        for(String p : phones){
+            if(requestHeader.contains(p)){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }

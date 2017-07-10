@@ -74,9 +74,21 @@ public class IndexController {
         return "login.jsp";
     }
 
+    /**
+     * 主页入口
+     * @param request
+     * @return
+     */
     @RequestMapping(value="/index.html",method=RequestMethod.GET)
     public ModelAndView success(HttpServletRequest request){
-        ModelAndView mav = new ModelAndView("page/index.jsp");
+        boolean mobile = CommonUtils.isMobile(request);
+
+        ModelAndView mav = null;
+        if(mobile){
+            mav = new ModelAndView("page/index_phone.jsp");
+        }else{
+            mav = new ModelAndView("page/index.jsp");
+        }
 
         // 查询商品分类
         List<GoodsType> goodsTypes = goodsTypeService.findAll();
