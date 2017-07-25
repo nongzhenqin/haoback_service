@@ -33,7 +33,7 @@ public class AutoTaskService {
     /**
      * 自动捉取淘宝商品最新价格
      */
-    @Scheduled(cron="0 15 21 * * ?")// 每天凌晨3点执行
+    @Scheduled(cron="0 0 3 * * ?")// 每天凌晨3点执行
     public void autoGetTaoBaoInfo(){
         List<Goods> goodsList = goodsService.findAll();
         String targetUrl = "https://mdskip.taobao.com/core/initItemDetail.htm?isUseInventoryCenter=false&sellerPreview=false&service3C=true&isPurchaseMallPage=false&cachedTimestamp=1499326709981&addressLevel=2&queryMemberRight=true&isForbidBuyItem=false&isAreaSell=false&isApparel=false&tmallBuySupport=true&household=false&offlineShop=false&isSecKill=false&isRegionLevel=false&showShopProm=false&tryBeforeBuy=false&cartEnable=true&itemId=542679911886&callback=setMdskip&timestamp=1499352070262&isg=null&isg2=ApycK3z8KfE-r90tYQxuSCbIbbyOvUFaWUeSm3admgdzwTxLniUQzxJxVx7D&ref=https%3A%2F%2Fs.click.taobao.com%2Ft_js%3Ftu%3Dhttps%253A%252F%252Fs.click.taobao.com%252Ft%253Fe%253Dm%25253D2%252526s%25253DPqUtWiWY62gcQipKwQzePOeEDrYVVa64K7Vc7tFgwiHjf2vlNIV67sdnvqqQ72iF2yqscP0DbOI4TDOFLMq84x0HboYUFcE7WLvr7c%25252ByinCyB1uQURnJOQNUfesiEEBWFeJIblRvDFAhLvzk%25252B4PKMFplD%25252FwDQ0UaIYULNg46oBA%25253D%2526pvid%253D12_218.17.254.194_488_1497856124560%2526ref%253Dhttp%25253A%25252F%25252Flocalhost%25253A8090%25252Fhaoback_service%25252Findex.html%2526et%253DFwoyxiNZPvKb%25252BLa50vGTi9ow%25252F%25252FiZa9eU";

@@ -1,6 +1,7 @@
 package com.haoback.goods.controller;
 
 import com.haoback.common.entity.AjaxResult;
+import com.haoback.common.service.autotask.AutoTaskService;
 import com.haoback.common.utils.CommonUtils;
 import com.haoback.goods.service.GoodsService;
 import com.haoback.goods.vo.GoodsVo;
@@ -31,6 +32,8 @@ public class GoodsServiceController {
 
     @Autowired
     private GoodsService goodsService;
+    @Autowired
+    private AutoTaskService autoTaskService;
 
     /**
      * 分页查找商品
@@ -129,6 +132,25 @@ public class GoodsServiceController {
         SysUser sysUser = CommonUtils.getSysUser(request);
 
         goodsService.deleteLogic(goodsId, sysUser);
+
+        datas.put("code", "1");
+        ajaxresult.setDatas(datas);
+        ajaxresult.setStatus(HttpStatus.SC_OK);
+        return ajaxresult;
+    }
+
+    /**
+     * 手动触发更新商品信息
+     * @return
+     */
+    @RequestMapping(value = "/updateGoodsInfo", method = RequestMethod.POST)
+    @ResponseBody
+    @PreAuthorize("hasPermission('com.haoback.goods.controller.GoodsServiceController', 'update')")
+    public AjaxResult updateGoodsInfo(){
+        AjaxResult ajaxresult = new AjaxResult();
+        Map<String, Object> datas = new HashMap<>();
+
+        autoTaskService.autoGetTaoBaoInfo();
 
         datas.put("code", "1");
         ajaxresult.setDatas(datas);
