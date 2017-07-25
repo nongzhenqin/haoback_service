@@ -2,13 +2,10 @@ package com.haoback.goods.controller;
 
 import com.haoback.common.entity.AjaxResult;
 import com.haoback.common.utils.CommonUtils;
-import com.haoback.goods.entity.Goods;
-import com.haoback.goods.service.GoodsResService;
 import com.haoback.goods.service.GoodsService;
 import com.haoback.goods.vo.GoodsVo;
 import com.haoback.sys.entity.SysUser;
 import org.apache.commons.httpclient.HttpStatus;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;

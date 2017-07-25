@@ -1,4 +1,4 @@
-<%--
+<%@ page import="java.util.UUID" %><%--
   Created by IntelliJ IDEA.
   User: nong
   Date: 2017/7/9
@@ -19,20 +19,45 @@
     <link href="img/favicon.ico" rel="shortcut icon" type="image/x-icon">
     <link href="img/favicon.ico" rel="icon" type="image/x-icon">
     <link rel="stylesheet" href="static/frozen/css/frozen.css">
+    <link rel="stylesheet" href="css/index.css?t=<%=UUID.randomUUID().toString()%>">
 </head>
 
 <body ontouchstart>
 <div class="ui-row-flex ui-whitespace">
-    <c:forEach var="type" items="${goodsTypes}">
-        <div class="ui-col ui-col">
-            <a class="a-type" href="#${type.code}">${type.name}</a>
-        </div>
-    </c:forEach>
+    <%--<c:forEach var="type" items="${goodsTypes}">--%>
+        <%--<div class="ui-col ui-col">--%>
+            <%--<a class="a-type" href="#${type.code}">${type.name}</a>--%>
+        <%--</div>--%>
+    <%--</c:forEach>--%>
 </div>
 <section class="ui-container">
     <section id="layout">
+        <ul class="ui-row">
+            <li class="ui-col ui-col-100">
+                <h4 class="h4-title">热销推荐</h4>
+            </li>
+            <c:forEach var="goods" items="${goodsTypesHot}" varStatus="status">
+                <li class="ui-col ui-col-50" style="text-align: left;">
+                    <img class="product-img" style="width: 100%; height: inherit;" src="./upload/${goods.fileId}.jpg">
+                    <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
+                    <span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">销量&nbsp;${goods.salesNum}</span>
+                    <span style="font-size: 12px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.name}</span>
+                    <c:if test="${goods.info != null && goods.info.length() > 0}">
+                        <span style="color: #888;font-size: 10px;">${goods.info}</span>
+                    </c:if>
+                    <c:if test="${goods.isTmall == true}">
+                        <img src="img/tmall.png" style="height: 16px;width: 16px;float: right;margin-right: 8px;margin-bottom: 8px;">
+                    </c:if>
+                </li>
+            </c:forEach>
+        </ul>
+
+        <c:forEach var="type" items="${goodsTypes}">
             <ul class="ui-row">
-                <c:forEach var="goods" items="${goodsTypesHot}" varStatus="status">
+                <li class="ui-col ui-col-100">
+                    <h4 class="h4-title">${type.name}</h4>
+                </li>
+                <c:forEach var="goods" items="${type.goodsList}" varStatus="status">
                     <li class="ui-col ui-col-50" style="text-align: left;">
                         <img class="product-img" style="width: 100%; height: inherit;" src="./upload/${goods.fileId}.jpg">
                         <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
@@ -47,6 +72,7 @@
                     </li>
                 </c:forEach>
             </ul>
+        </c:forEach>
     </section>
 
 

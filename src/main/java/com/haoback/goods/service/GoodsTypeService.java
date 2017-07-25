@@ -24,4 +24,16 @@ public class GoodsTypeService extends BaseService<GoodsType, Long> {
     public List<GoodsType> findList(){
         return goodsTypeRepository.findAll();
     }
+
+    /**
+     * 逻辑删除类目
+     * @param id
+     */
+    public void logicDelete(Long id){
+        if(id == null) return;
+
+        GoodsType goodsType = this.findById(id);
+        goodsType.setDeleted(true);
+        this.update(goodsType);
+    }
 }

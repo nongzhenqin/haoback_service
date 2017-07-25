@@ -57,6 +57,12 @@ body {
     color: #333;
 }
 
+.h4-title {
+    float: left;
+    font-size: 18px;
+    color: #333;
+}
+
 .col-style {
     height: 350px;
     transition:all .2s linear 0s;
