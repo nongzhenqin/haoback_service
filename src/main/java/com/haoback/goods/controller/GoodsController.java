@@ -129,7 +129,7 @@ public class GoodsController {
      */
     @RequestMapping(value = "/pv_uv", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxResult savePvUv(Long goodsId, String referer, String titileName, HttpServletRequest request){
+    public AjaxResult savePvUv(Long goodsId, String referer, String titileName, String flag, HttpServletRequest request){
         AjaxResult ajaxresult = new AjaxResult();
         Map<String, Object> datas = new HashMap<>();
 
@@ -138,6 +138,7 @@ public class GoodsController {
         pvUvDetail.setIp(IpUtils.getIpAddr(request));
         pvUvDetail.setReferer(referer);
         pvUvDetail.setTitleName(titileName);
+        pvUvDetail.setFlag(flag);
         pvUvDetail.setGoods(goodsService.findById(goodsId));
         pvUvDetailService.save(pvUvDetail);
 

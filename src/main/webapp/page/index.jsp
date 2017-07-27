@@ -21,6 +21,7 @@
     <%--<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">--%>
     <link rel="stylesheet" href="static/bootstrap-3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/index.css?t=<%=UUID.randomUUID().toString()%>">
+    <link rel="stylesheet" href="static/frozen/css/frozen.css">
 
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
     <%--<script src="http://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>--%>
@@ -69,11 +70,11 @@
                         <span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">销量&nbsp;${goods.salesNum}</span>
                     </div>
                     <div class="col-md-24" style="padding-top: 8px;text-align: left;">
-                        <span style="font-size: 12px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.name}</span>
+                        <span class="ui-nowrap-multi ui-whitespace" style="font-size: 12px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.name}</span>
                     </div>
                     <c:if test="${goods.info != null && goods.info.length() > 0}">
                         <div class="col-md-24" style="padding-top:8px;text-align: left;">
-                            <span style="color: #888;font-size: 10px;">${goods.info}</span>
+                            <span class="ui-nowrap ui-whitespace" style="color: #888;font-size: 10px;float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.info}</span>
                         </div>
                     </c:if>
                     <c:if test="${goods.isTmall == true}">
@@ -111,11 +112,11 @@
                             <span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">销量&nbsp;${goods.salesNum}</span>
                         </div>
                         <div class="col-md-24" style="padding-top: 8px;text-align: left;">
-                            <span style="font-size: 12px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.name}</span>
+                            <span class="ui-nowrap-multi ui-whitespace" style="font-size: 12px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.name}</span>
                         </div>
                         <c:if test="${goods.info != null && goods.info.length() > 0}">
                             <div class="col-md-24" style="padding-top:8px;text-align: left;">
-                                <span style="color: #888;font-size: 10px;">${goods.info}</span>
+                                <span class="ui-nowrap ui-whitespace" style="color: #888;font-size: 10px;float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.info}</span>
                             </div>
                         </c:if>
                         <c:if test="${goods.isTmall == true}">
@@ -151,12 +152,12 @@
             $('.col-style').on('click', function(){
                 window.open($(this).attr('url-data'), '_bank');
                 // 保存pv
-                $.post('./goods/pv_uv', {goodsId: $(this).attr('id-data'), referer: document.referrer.toLowerCase(), titileName: "商品"});
+                $.post('./goods/pv_uv', {goodsId: $(this).attr('id-data'), referer: document.referrer.toLowerCase(), titileName: "商品", flag: "pc"});
             });
         }
 
         // 保存pv
-        $.post('./goods/pv_uv', {goodsId: 0, referer: document.referrer.toLowerCase(), titileName: "首页"});
+        $.post('./goods/pv_uv', {goodsId: 0, referer: document.referrer.toLowerCase(), titileName: "首页", flag: "pc"});
 
         // 回到顶部按钮
         $(window).scroll(function () {

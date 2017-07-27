@@ -64,7 +64,7 @@ body {
 }
 
 .col-style {
-    height: 350px;
+    height: 380px;
     transition:all .2s linear 0s;
     background-color: white;
     /*border: 1px solid #EFEFEF;*/
@@ -107,4 +107,60 @@ body {
 
 .toTop:hover, .toTop:focus {
     color: rgb(234, 42, 96);
+}
+
+
+/*for mobile*/
+body{
+    -webkit-user-select:initial;
+    background-color: #fff;
+}
+
+body>a{display: none;}
+
+.demo-block .ui-header,
+.demo-block .ui-footer{
+    position: absolute;
+}
+
+.demo-block > .ui-list,.demo-block >.ui-form,.demo-block >.ui-tooltips{margin-bottom: 20px;}
+.content h3{
+    padding: 0 15px;
+    line-height: 44px;
+    font-size: 15px;
+}
+.border-list{
+    background-color: #fff;
+}
+.border-list li{
+    width: 100px;
+    margin: 10px auto;
+    -webkit-box-pack: center;
+    text-align: center;
+}
+
+.ui-scroller li {margin-bottom:10px;}
+
+.icon-lists li{
+    float:left;
+    height: 100px;
+    width: 103px;
+    text-align: center;
+
+}
+.icon-lists li i{
+    font-size: 32px;
+    line-height: 44px;
+}
+.icon-lists .ui-icon,.icon-lists [class^="ui-icon-"]{
+    margin: 10px 0;
+    color: #000;
+}
+
+.ui-col{
+    padding: 5px;
+    /*background: #777;*/
+    text-align: center;
+    box-sizing: border-box;
+    border: 0px solid #ddd;
 }

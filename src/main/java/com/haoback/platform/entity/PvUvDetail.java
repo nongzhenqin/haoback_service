@@ -69,4 +69,10 @@ public class PvUvDetail extends BaseEntity<Long> {
      */
     @Column(name = "REFERER", length=500)
     private String referer;
+
+    /**
+     * PC端或者移动端
+     */
+    @Column(name = "FLAG", length=500)
+    private String flag;
 }

@@ -20,6 +20,8 @@
     <link href="img/favicon.ico" rel="icon" type="image/x-icon">
     <link rel="stylesheet" href="static/frozen/css/frozen.css">
     <link rel="stylesheet" href="css/index.css?t=<%=UUID.randomUUID().toString()%>">
+
+    <script src="static/jquery-3.2.1.min.js"></script>
 </head>
 
 <body ontouchstart>
@@ -37,13 +39,13 @@
                 <h4 class="h4-title">热销推荐</h4>
             </li>
             <c:forEach var="goods" items="${goodsTypesHot}" varStatus="status">
-                <li class="ui-col ui-col-50" style="text-align: left;height: 310px;background-color: rgb(255,255,255);">
+                <li class="ui-col ui-col-50 click" style="text-align: left;height: 310px;background-color: rgb(255,255,255);" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
                     <img class="product-img" style="width: 100%; height: auto;" src="./upload/${goods.fileId}.jpg">
                     <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
                     <span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">销量&nbsp;${goods.salesNum}</span>
                     <span class="ui-nowrap-multi ui-whitespace" style="font-size: 14px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.name}</span>
                     <c:if test="${goods.info != null && goods.info.length() > 0}">
-                        <span class="ui-nowrap ui-whitespace" style="color: #888;font-size: 12px;float: left;padding-top: 5px;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;"">${goods.info}</span>
+                        <span class="ui-nowrap ui-whitespace" style="color: #888;font-size: 12px;float: left;padding-top: 5px;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.info}</span>
                     </c:if>
                     <c:if test="${goods.isTmall == true}">
                         <img src="img/tmall.png" style="height: 16px;width: 16px;float: right;padding-top: 8px;margin-right: 8px;margin-bottom: 8px;">
@@ -58,13 +60,13 @@
                     <h4 class="h4-title">${type.name}</h4>
                 </li>
                 <c:forEach var="goods" items="${type.goodsList}" varStatus="status">
-                    <li class="ui-col ui-col-50" style="text-align: left;height: 310px;background-color: rgb(255,255,255);">
+                    <li class="ui-col ui-col-50 click" style="text-align: left;height: 310px;background-color: rgb(255,255,255);" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
                         <img class="product-img" style="width: 100%; height: auto;" src="./upload/${goods.fileId}.jpg">
                         <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
                         <span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">销量&nbsp;${goods.salesNum}</span>
                         <span class="ui-nowrap-multi ui-whitespace" style="font-size: 14px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.name}</span>
                         <c:if test="${goods.info != null && goods.info.length() > 0}">
-                            <span class="ui-nowrap ui-whitespace" style="color: #888;font-size: 12px;float: left;padding-top: 5px;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;"">${goods.info}</span>
+                            <span class="ui-nowrap ui-whitespace" style="color: #888;font-size: 12px;float: left;padding-top: 5px;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.info}</span>
                         </c:if>
                         <c:if test="${goods.isTmall == true}">
                             <img src="img/tmall.png" style="height: 16px;width: 16px;float: right;padding-top: 8px;margin-right: 8px;margin-bottom: 8px;">
@@ -80,101 +82,18 @@
 </body>
 </html>
 
-<style>
-    body{
-        -webkit-user-select:initial;
-        background-color: #fff;
-    }
-    body>a{display: none;}
-    .demo-desc{
-        padding: 10px;
-        font-size: 16px;
-        color: #7CAE23;
-    }
-    .demo-block{
-        position: relative;
-    }
-    .demo-block .ui-header,
-    .demo-block .ui-footer{
-        position: absolute;
-    }
-    .ui-tab-nav{
-        top: 45px;
-    }
-    .ui-tab-content{
-        margin-top: 45px;
-    }
-    .demo-block > .ui-list,.demo-block >.ui-form,.demo-block >.ui-tooltips{margin-bottom: 20px;}
-    .content h3{
-        padding: 0 15px;
-        line-height: 44px;
-        font-size: 15px;
-    }
-    .border-list{
-        background-color: #fff;
-    }
-    .border-list li{
-        width: 100px;
-        margin: 10px auto;
-        -webkit-box-pack: center;
-        text-align: center;
-    }
-    .ui-btn-group-bottom{bottom: 56px;}
-    .ui-table{
-        line-height: 40px;
-        text-align: center;
-        background-color: #fff;
-    }
-    .ui-scroller {width:auto;height:300px;margin:20px;padding:10px;overflow:hidden;}
-    .ui-scroller li {margin-bottom:10px;}
-    .ui-notice{
-        top: 0;
-        z-index: -1;
-        height: 400px;
-    }
-    .icon-lists li{
-        float:left;
-        height: 100px;
-        width: 103px;
-        text-align: center;
+<script type="text/javascript">
+    $(function(){
+        // 点击事件
+        if(!${isSpider}){
+            $('.click').on('click', function(){
+                window.open($(this).attr('url-data'), '_bank');
+                // 保存pv
+                $.post('./goods/pv_uv', {goodsId: $(this).attr('id-data'), referer: document.referrer.toLowerCase(), titileName: "商品", flag: "mobile"});
+            });
+        }
 
-    }
-    .icon-lists li i{
-        font-size: 32px;
-        line-height: 44px;
-    }
-    .icon-lists .ui-icon,.icon-lists [class^="ui-icon-"]{
-        margin: 10px 0;
-        color: #000;
-    }
-    .code,.fontclass{
-        font-size: 12px;
-    }
-    .ui-col{
-        padding: 5px;
-        /*background: #777;*/
-        text-align: center;
-        box-sizing: border-box;
-        border: 0px solid #ddd;
-    }
-    .ui-flex{
-        border: 1px solid #ddd;
-        min-height: 80px;
-        margin-bottom: 10px;
-    }
-    .ui-flex-ver{
-        border: 1px solid #ddd;
-        min-height: 80px;
-        margin-bottom: 10px;
-    }
-    .ui-row-flex-ver{
-        border: 1px solid #ddd;
-        min-height: 100px;
-    }
-    .test-img {
-        width: 50px;
-        height: 50px;
-        background: #777;
-    }
-
-</style>
+        // 保存pv
+        $.post('./goods/pv_uv', {goodsId: 0, referer: document.referrer.toLowerCase(), titileName: "首页", flag: "mobile"});
+    });
+</script>
