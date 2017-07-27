@@ -22,7 +22,11 @@ body {
     background-color: rgb(245,245,245);
     font-family: "PingFang SC","\5FAE\8F6F\96C5\9ED1","Microsoft Yahei",Arial,Helvetica,sans-serif,"\5B8B\4F53";
     font-size: 14px;
-    /*min-width: 1440px;*/
+}
+
+.top-div {
+    min-width: 1440px;
+    max-width: 1440px;
 }
 
 .head-row {
