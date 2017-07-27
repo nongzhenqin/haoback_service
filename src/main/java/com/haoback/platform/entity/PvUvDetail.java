@@ -73,6 +73,6 @@ public class PvUvDetail extends BaseEntity<Long> {
     /**
      * PC端或者移动端
      */
-    @Column(name = "FLAG", length=500)
+    @Column(name = "FLAG", length=10)
     private String flag;
 }
