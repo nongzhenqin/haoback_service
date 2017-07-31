@@ -32,8 +32,46 @@
 </head>
 
 <body>
-<div class="row head-row" style="text-align:center;min-width: 1440px;">
-    <div class="row top-div" style="margin: 0 auto;">
+<div class="row head-top">
+    <div class="col-md-2"></div>
+    <div class="col-md-10">你好，欢迎来到优选</div>
+    <div class="col-md-10" style="text-align: right;padding-right: 0px;">
+        <a id="set-home">设为首页</a>
+        <span style="color: #d3d3d3;">&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+        <a id="add-favorite">收藏本站</a>
+    </div>
+    <div class="col-md-2"></div>
+</div>
+
+<div class="row search-row">
+    <div class="col-md-2"></div>
+    <div class="col-md-3"></div>
+    <div class="col-md-8">
+        <input type="text" class="header-search-input" id="header-search-input" placeholder="输入关键字搜索全网优惠">
+        <input type="submit" class="header-search-btn" id="header-search-btn" value="">
+        <div class="search-key">
+            热门搜索：
+            <a>包包</a>
+            <a>女装</a>
+            <a>化妆品</a>
+        </div>
+    </div>
+    <div class="col-md-9" style="float: right;">
+        <div class="header-feature">
+            <i class="i1"></i>全网好货
+        </div>
+        <div class="header-feature">
+            <i class="i2"></i>人工推荐
+        </div>
+        <div class="header-feature">
+            <i class="i3"></i>每日实时更新
+        </div>
+    </div>
+    <div class="col-md-2"></div>
+</div>
+
+<div class="row head-row">
+    <div class="row top-div" style="margin: 0 auto;background-color: #3a3838">
         <div class="col-md-2"></div>
         <div class="col-md-20">
             <ul class="nav navbar-nav" style="margin-left: -15px;">
@@ -51,6 +89,7 @@
     <div class="row">
         <div class="col-md-2"></div>
         <div class="col-md-5">
+            <br>
             <h2 class="h2-title">热销推荐</h2>
         </div>
     </div>
@@ -97,6 +136,7 @@
         <div class="row">
             <div class="col-md-2"></div>
             <div class="col-md-5">
+                <br>
                 <h2 class="h2-title" id="${type.code}">${type.name}</h2>
             </div>
         </div>
@@ -179,6 +219,43 @@
             }
             else {
                 $(".toTop").fadeOut(1000);
+            }
+        });
+
+        // 设为首页
+        $('#set-home').on('click', function(){
+            var _this = $(this);
+            var url = 'http://localhost:8090/haoback_service';
+            try{
+                _this.style.behavior='url(#default#homepage)';
+                _this.setHomePage(url);
+            }catch(e){
+                if(window.netscape){
+                    try{
+                        netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+                    }catch(e){
+                        alert("抱歉，此操作被浏览器拒绝！\n\n请在浏览器地址栏输入“about:config”并回车然后将[signed.applets.codebase_principal_support]设置为'true'");
+                    }
+                }else{
+                    alert("抱歉，您所使用的浏览器无法完成此操作。\n\n您需要手动将【"+url+"】设置为首页。");
+                }
+            }
+        });
+
+        // 收藏本站
+        $('#add-favorite').on('click', function(){
+            var title = '优选-精挑细选优质商品';
+            var url = window.location.href;
+            try {
+                window.external.addFavorite(url, title);
+            }
+            catch (e) {
+                try {
+                    window.sidebar.addPanel(title, url, "");
+                }
+                catch (e) {
+                    alert("抱歉，您所使用的浏览器无法完成此操作。\n\n加入收藏失败，请使用Ctrl+D进行添加");
+                }
             }
         });
     });

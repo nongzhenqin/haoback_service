@@ -29,9 +29,31 @@ body {
     max-width: 1440px;
 }
 
+.head-top {
+    height: 30px;
+    line-height: 30px;
+    background-color: #f3f3f3;
+    color: #666;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.head-top a {
+    color: #666;
+}
+
+.head-top a:hover {
+    color: #ff4958;
+    outline: 0;
+    text-decoration: none;
+    cursor: pointer;
+}
+
 .head-row {
     background: #fafafc;
     height: 50px;
+    text-align: center;
+    min-width: 1440px;
 }
 
 .head-row ul {
@@ -42,17 +64,24 @@ body {
 .head-row ul li {
     foloat: left;
     display: inline;
-    /*list-style-type: none;*/
+}
+
+.search-row {
+    height: 122px;
+    background-color: white;
+    padding: 32px 0;
 }
 
 .a-type {
-    color: #666;
+    /*color: #666;*/
+    color: white;
 }
 
 .a-type:hover {
-    color: #00c3f5;
+    color: white;
     outline: 0;
     text-decoration: none;
+    background-color: #ff4958 !important;
 }
 
 .h2-title {
@@ -113,6 +142,67 @@ body {
     color: rgb(234, 42, 96);
 }
 
+.header-search-input {
+    height: 30px;
+    line-height: 30px;
+    border: 1px solid #ff4958;
+    width: 462px;
+    text-indent: 10px;
+    font-size: 12px;
+}
+
+.header-search-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 90px;
+    height: 30px;
+    line-height: 30px;
+    background: url(http://s.pc.qq.com/guanjia/gjalpha/file/3d/52/3d52fc736b9fdddb3230333e36d1eb4b.png) center no-repeat #ff4958;
+    color: #fff;
+    cursor: pointer;
+    border: 0;
+    margin-right: 13px;
+}
+
+.header-feature {
+    float: left;
+    margin-left: 30px;
+    width: 110px;
+    color: #999;
+    line-height: 30px;
+    font-size: 12px;
+}
+
+.header-feature .i1 {
+    background-position: -103px 0;
+}
+.header-feature .i2 {
+    background-position: -144px 0;
+}
+.header-feature .i3 {
+    background-position: -185px 0;
+}
+
+.header-feature i {
+    background: url(http://s.pc.qq.com/guanjia/gjalpha/file/e2/d9/e2d9b25d4a5bdeb45c54b29969c638b5.png);
+    width: 30px;
+    height: 30px;
+    display: block;
+    float: left;
+    margin-right: 3px;
+}
+
+.search-key {
+    font-size: 12px;
+    color: #333;
+    padding-top: 3px;
+}
+
+.search-key a {
+    color: #333;
+    cursor: pointer;
+}
 
 /*for mobile*/
 body{
