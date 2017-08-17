@@ -22,6 +22,7 @@ body {
     background-color: rgb(245,245,245);
     font-family: "PingFang SC","\5FAE\8F6F\96C5\9ED1","Microsoft Yahei",Arial,Helvetica,sans-serif,"\5B8B\4F53";
     font-size: 14px;
+    min-width: 1440px;
 }
 
 .top-div {
@@ -36,6 +37,7 @@ body {
     color: #666;
     font-size: 12px;
     font-weight: 900;
+    min-width: 1440px;
 }
 
 .head-top a {
@@ -70,6 +72,7 @@ body {
     height: 122px;
     background-color: white;
     padding: 32px 0;
+    min-width: 1440px;
 }
 
 .a-type {
@@ -202,6 +205,16 @@ body {
 .search-key a {
     color: #333;
     cursor: pointer;
+}
+
+.active {
+    border: 0px;
+}
+
+.active a {
+    background-color: #ff4958 !important;
+    color: white !important;
+    border: 0px !important;
 }
 
 /*for mobile*/

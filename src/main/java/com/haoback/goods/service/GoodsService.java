@@ -44,6 +44,7 @@ public class GoodsService extends BaseService<Goods, Long> {
         Integer pageNo = (Integer) params.get("pageNo");
         Integer pageSize = (Integer) params.get("pageSize");
         String goodsType = (String) params.get("goodsType");
+        String key = (String) params.get("key");
 
         Sort sort = null;
 
@@ -57,8 +58,13 @@ public class GoodsService extends BaseService<Goods, Long> {
         Pageable pageable = new PageRequest(pageNo, pageSize, sort);
         // 查询条件
         Specification<Goods> specification = (Root<Goods> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> {
+            List<Predicate> condition = new ArrayList<>();
             Predicate deleted = cb.equal(root.get("deleted").as(Boolean.class), false);
             Predicate status = cb.equal(root.get("status").as(String.class), "1");
+
+            condition.add(deleted);
+            condition.add(status);
+
             if("hot".equals(goodsType)){
 
                 Subquery<GoodsType> subquery = query.subquery(GoodsType.class);
@@ -72,23 +78,44 @@ public class GoodsService extends BaseService<Goods, Long> {
                 subquery.where(existsPredicate.toArray(new Predicate[]{}));
 
                 Predicate exists = cb.exists(subquery);
+                condition.add(exists);
 
-                return cb.and(deleted, status, exists);
+                return cb.and(condition.toArray(new Predicate[]{}));
             }
 
-            Subquery<GoodsType> subquery = query.subquery(GoodsType.class);
-            Root<GoodsType> goodsTypeRoot = subquery.from(GoodsType.class);
-            subquery.select(goodsTypeRoot);
-
             // exists条件
-            List<Predicate> existsPredicate = new ArrayList<>();
-            existsPredicate.add(cb.equal(root.get("goodsType"), goodsTypeRoot.get("id")));
-            existsPredicate.add(cb.equal(goodsTypeRoot.get("code"), goodsType));
-            subquery.where(existsPredicate.toArray(new Predicate[]{}));
+            if(StringUtils.isNotBlank(goodsType)){
+                Subquery<GoodsType> subquery = query.subquery(GoodsType.class);
+                Root<GoodsType> goodsTypeRoot = subquery.from(GoodsType.class);
+                subquery.select(goodsTypeRoot);
+                List<Predicate> existsPredicate = new ArrayList<>();
+                existsPredicate.add(cb.equal(root.get("goodsType"), goodsTypeRoot.get("id")));
+                existsPredicate.add(cb.equal(goodsTypeRoot.get("code"), goodsType));
+                subquery.where(existsPredicate.toArray(new Predicate[]{}));
 
-            Predicate exists = cb.exists(subquery);
+                Predicate exists = cb.exists(subquery);
+                condition.add(exists);
+            }
 
-            return cb.and(deleted, status, exists);
+            // 关键字搜索
+            if(StringUtils.isNotBlank(key)){
+                Predicate keyPredicate = cb.like(root.get("name").as(String.class), "%"+key+"%");
+                condition.add(keyPredicate);
+
+                // 过滤未开放的类型
+                Subquery<GoodsType> subquery = query.subquery(GoodsType.class);
+                Root<GoodsType> goodsTypeRoot = subquery.from(GoodsType.class);
+                subquery.select(goodsTypeRoot);
+                List<Predicate> existsPredicate = new ArrayList<>();
+                existsPredicate.add(cb.equal(root.get("goodsType"), goodsTypeRoot.get("id")));
+                existsPredicate.add(cb.equal(goodsTypeRoot.get("deleted"), false));
+                subquery.where(existsPredicate.toArray(new Predicate[]{}));
+
+                Predicate exists = cb.exists(subquery);
+                condition.add(exists);
+            }
+
+            return cb.and(condition.toArray(new Predicate[]{}));
         };
 
         Page<Goods> page = goodsRepository.findAll(specification, pageable);

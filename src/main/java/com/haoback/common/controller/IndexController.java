@@ -76,11 +76,12 @@ public class IndexController {
 
     /**
      * 主页入口
+     * @param key 搜索条件
      * @param request
      * @return
      */
     @RequestMapping(value="/index.html",method=RequestMethod.GET)
-    public ModelAndView success(HttpServletRequest request){
+    public ModelAndView success(String key, Integer pageNo, HttpServletRequest request){
         boolean mobile = CommonUtils.isMobile(request);
 
         ModelAndView mav = null;
@@ -90,44 +91,65 @@ public class IndexController {
             mav = new ModelAndView("page/index.jsp");
         }
 
+        // 标记是否搜索页面
+        boolean isSearch = StringUtils.isNotBlank(key) ? true : false;
+        mav.addObject("search", isSearch);
+
         // 查询商品分类
         List<GoodsType> goodsTypes = goodsTypeService.findAll();
-        List<GoodsTypeVo> goodsTypesVo = new ArrayList<>();
-        GoodsTypeVo goodsTypeVo = null;
-        for(GoodsType goodsType : goodsTypes){
-            goodsTypeVo = new GoodsTypeVo();
-            BeanUtils.copyProperties(goodsType, goodsTypeVo);
-
+        // 搜索页面
+        if(isSearch){
+            mav.addObject("goodsTypes", goodsTypes);
+            mav.addObject("key", key);
             // 查找商品
             Map<String, Object> params = new HashMap<>();
-            params.put("pageNo", 0);
-            params.put("pageSize", 10);
-            params.put("goodsType", goodsType.getCode());
+            params.put("pageNo", pageNo - 1);
+            params.put("pageSize", 25);
+            params.put("key", key);
             Page<GoodsVo> page = goodsService.findByPageWeb(params);
             List<GoodsVo> content = page.getContent();
+            mav.addObject("goodsList", content);
+            mav.addObject("goodsListTotal", page.getTotalElements());
+            mav.addObject("goodsListTotalPage", page.getTotalPages());
+            mav.addObject("goodsListPageNo", pageNo);
+        }else{// 首页
+            List<GoodsTypeVo> goodsTypesVo = new ArrayList<>();
+            GoodsTypeVo goodsTypeVo = null;
+            for(GoodsType goodsType : goodsTypes){
+                goodsTypeVo = new GoodsTypeVo();
+                BeanUtils.copyProperties(goodsType, goodsTypeVo);
 
-            // 商品列表
-            goodsTypeVo.setGoodsList(content);
+                // 查找商品
+                Map<String, Object> params = new HashMap<>();
+                params.put("pageNo", 0);
+                params.put("pageSize", 10);
+                params.put("goodsType", goodsType.getCode());
+                Page<GoodsVo> page = goodsService.findByPageWeb(params);
+                List<GoodsVo> content = page.getContent();
 
-            goodsTypesVo.add(goodsTypeVo);
+                // 商品列表
+                goodsTypeVo.setGoodsList(content);
+
+                goodsTypesVo.add(goodsTypeVo);
+            }
+
+            // 查找热门推荐商品
+            Map<String, Object> params = new HashMap<>();
+            params.put("pageNo", 0);
+            params.put("pageSize", 5);
+            params.put("goodsType", "hot");
+            Page<GoodsVo> page = goodsService.findByPageWeb(params);
+
+            mav.addObject("goodsTypesHot", page.getContent());
+            mav.addObject("goodsTypes", goodsTypesVo);
+            mav.addObject("goodsListTotalPage", 0);
+            mav.addObject("goodsListPageNo", 0);
         }
 
-        // 查找热门推荐商品
-        Map<String, Object> params = new HashMap<>();
-        params.put("pageNo", 0);
-        params.put("pageSize", 5);
-        params.put("goodsType", "hot");
-        Page<GoodsVo> page = goodsService.findByPageWeb(params);
-
-        mav.addObject("goodsTypesHot", page.getContent());
-
-        mav.addObject("goodsTypes", goodsTypesVo);
-
+        // 判断是否搜索引擎访问
         String referer = request.getHeader("Referer");
         referer = referer == null ? "" : referer.toLowerCase();
-
         Boolean isSpider = Boolean.FALSE;
-
         if(StringUtils.isNotBlank(referer)){
             for(String s : spider){
                 if(referer.indexOf(s) > -1){
@@ -136,7 +158,6 @@ public class IndexController {
                 }
             }
         }
-
         mav.addObject("isSpider", isSpider);
 
         return mav;

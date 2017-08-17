@@ -47,7 +47,7 @@ public class GoodsController {
      */
     @RequestMapping(value = "/page", method = RequestMethod.GET)
     @ResponseBody
-    public AjaxResult findByPage(Integer pageNo, Integer pageSize, String goodsType, HttpServletRequest request){
+    public AjaxResult findByPage(Integer pageNo, Integer pageSize, String goodsType, String key, HttpServletRequest request){
         AjaxResult ajaxresult = new AjaxResult();
         Map<String, Object> datas = new HashMap<>();
 

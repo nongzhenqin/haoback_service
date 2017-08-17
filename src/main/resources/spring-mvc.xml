@@ -18,7 +18,7 @@
 		AnnotationMethodHandlerAdapter 两个bean，来完成测试，取的时候要知道是<mvc:annotation-driven />这一句注册的这两个bean。 -->
 	<mvc:annotation-driven></mvc:annotation-driven>
 	
-	<!-- 静态文件不拦截 -->
+	<!-- 静态文件映射 -->
 	<mvc:resources location="/css/" mapping="/css/**"></mvc:resources>
     <mvc:resources location="/page/" mapping="/page/**.html"></mvc:resources>
 	<mvc:resources location="/img/" mapping="/img/**"></mvc:resources>
