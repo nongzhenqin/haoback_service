@@ -2,7 +2,9 @@ package com.haoback.common.controller;
 
 import com.haoback.common.entity.AjaxResult;
 import com.haoback.common.utils.CommonUtils;
+import com.haoback.goods.entity.GoodsCarousel;
 import com.haoback.goods.entity.GoodsType;
+import com.haoback.goods.service.GoodsCarouselService;
 import com.haoback.goods.service.GoodsService;
 import com.haoback.goods.service.GoodsTypeService;
 import com.haoback.goods.vo.GoodsTypeVo;
@@ -43,6 +45,9 @@ public class IndexController {
     private GoodsTypeService goodsTypeService;
     @Autowired
     private GoodsService goodsService;
+    @Autowired
+    private GoodsCarouselService goodsCarouselService;
+
     // 搜索引擎蜘蛛URL
     private List<String> spider = new ArrayList<>();
     {
@@ -132,6 +137,10 @@ public class IndexController {
 
                 goodsTypesVo.add(goodsTypeVo);
             }
+
+            // 有效轮播图
+            List<GoodsCarousel> goodsCarouselList = goodsCarouselService.findValidGoodsCarousel();
+            mav.addObject("goodsCarouselList", goodsCarouselList);
 
             // 查找热门推荐商品
             Map<String, Object> params = new HashMap<>();

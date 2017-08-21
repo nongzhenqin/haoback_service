@@ -104,6 +104,25 @@ public abstract class BaseService<M extends BaseEntity, ID extends Serializable>
 	public List<M> findAll(Sort sort){
 		return baseRepository.findAll(sort);
 	}
+
+	/**
+	 * 根据条件查找
+	 * @param specification
+	 * @return
+	 */
+	public List<M> findAll(Specification<M> specification){
+		return baseRepository.findAll(specification);
+	}
+
+	/**
+	 * 根据条件查找并排序
+	 * @param specification
+	 * @param sort 可为null
+	 * @return
+	 */
+	public List<M> findAll(Specification<M> specification, Sort sort){
+		return baseRepository.findAll(specification, sort);
+	}
 	
 	/**
 	 * 分页
