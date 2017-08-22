@@ -166,4 +166,27 @@ public class CommonUtils {
         return false;
     }
 
+    /**
+     * 将sql或者hql中的from关键字转换为大写
+     * @param ql
+     * @return
+     */
+    public static String upperCaseSqlFrom(String ql){
+        if(ql.contains("from")){
+            String[] froms = ql.split("from");
+            StringBuilder b = new StringBuilder();
+            for(int i=0,len=froms.length; i<len; i++){
+                if(i == len-1){
+                    b.append(froms[i]);
+                }else{
+                    b.append(froms[i]).append("FROM");
+                }
+            }
+
+            return b.toString();
+        }
+
+        return ql;
+    }
+
 }

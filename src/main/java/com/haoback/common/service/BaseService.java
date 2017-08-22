@@ -5,12 +5,18 @@ import java.util.List;
 
 import com.haoback.common.entity.BaseEntity;
 import com.haoback.common.repository.BaseRepository;
+import com.haoback.common.utils.CommonUtils;
+import com.haoback.goods.entity.Goods;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 /**
  * 抽象service层基类 提供一些简便方法
@@ -25,7 +31,9 @@ public abstract class BaseService<M extends BaseEntity, ID extends Serializable>
 	
 	@Autowired
 	private BaseRepository<M, ID> baseRepository;
-	
+	@Autowired
+	private EntityManager entityManager;
+
 	/**
 	 * 通过ID查找
 	 * @param id
@@ -131,5 +139,40 @@ public abstract class BaseService<M extends BaseEntity, ID extends Serializable>
 	 */
 	public Page<M> findByPage(Specification<M> specification, Pageable pageable){
 		return baseRepository.findAll(specification, pageable);
+	}
+
+	/**
+	 * 通过SQL分页查询
+	 * @param hql
+	 * @param params
+	 * @param pageable
+	 * @return
+	 */
+	public Page<M> findByPage(String hql, List<Object> params, Pageable pageable){
+		hql = CommonUtils.upperCaseSqlFrom(hql);
+		Query queryCount = entityManager.createQuery("SELECT COUNT(1) " + hql.substring(hql.indexOf("FROM")));
+		if(CollectionUtils.isNotEmpty(params)){
+			for(int i=0,len=params.size(); i<len; i++){
+				queryCount.setParameter(i, params.get(i));
+			}
+		}
+
+		// 总记录数
+		Integer total = Integer.valueOf(queryCount.getSingleResult().toString());
+
+
+		Query query = entityManager.createQuery(hql);
+		if(CollectionUtils.isNotEmpty(params)){
+			for(int i=0,len=params.size(); i<len; i++){
+				query.setParameter(i, params.get(i));
+			}
+		}
+
+		query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+		query.setMaxResults(pageable.getPageSize());
+
+		List list = query.getResultList();
+
+		return new PageImpl<M>(list, pageable, total);
 	}
 }

@@ -53,9 +53,11 @@
         <input type="submit" class="header-search-btn" id="header-search-btn" value="">
         <div class="search-key">
             热门搜索：
-            <a>包包</a>
-            <a>女装</a>
-            <a>化妆品</a>
+            <a class="search-a">包包</a>
+            <a class="search-a">女装</a>
+            <a class="search-a">零食</a>
+            <a class="search-a">化妆品</a>
+            <a class="search-a">9块9</a>
         </div>
     </div>
     <div class="col-md-9" style="float: right;">
@@ -367,7 +369,7 @@
 
         // 搜索
         $('#header-search-btn').on('click', function(){
-            search(1);
+            search(null, 1);
         });
 
         // 搜索回车
@@ -382,15 +384,20 @@
             totalPage: ${goodsListTotalPage},
             currPage: ${goodsListPageNo},
             backFn:function(p){
-                search(p);
+                search(null, p);
             }
+        });
+
+        // 热门关键字搜索
+        $('.search-a').on('click', function(){
+            search($(this).text(), 1);
         });
 
     });
 
     // 搜索方法
-    function search(pageNo){
-        var key = $('#header-search-input').val();
+    function search(key, pageNo){
+        var key = key || $('#header-search-input').val();
         var url = window.location.href.split('?')[0].split('#')[0];
         window.location.href = !!key ? url + '?key=' + key + '&pageNo=' + pageNo: url;
     }

@@ -1,6 +1,7 @@
 package com.haoback.goods.service;
 
 import com.haoback.common.service.BaseService;
+import com.haoback.common.utils.CommonUtils;
 import com.haoback.common.utils.ImageUtil;
 import com.haoback.goods.entity.Goods;
 import com.haoback.goods.entity.GoodsRes;
@@ -8,6 +9,7 @@ import com.haoback.goods.entity.GoodsType;
 import com.haoback.goods.repository.GoodsRepository;
 import com.haoback.goods.vo.GoodsVo;
 import com.haoback.sys.entity.SysUser;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,8 @@ import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.criteria.*;
 import java.io.File;
 import java.text.ParseException;
@@ -46,79 +50,37 @@ public class GoodsService extends BaseService<Goods, Long> {
         String goodsType = (String) params.get("goodsType");
         String key = (String) params.get("key");
 
-        Sort sort = null;
+        Pageable pageable = new PageRequest(pageNo, pageSize);
 
-        if("hot".equals(goodsType)){
-            sort = new Sort(Sort.Direction.DESC, "salesNum");
+        StringBuilder hql = new StringBuilder();
+        List<Object> paramters = new ArrayList<>();
 
-        }else{
-            sort = new Sort(Sort.Direction.DESC, "sort");
+        hql.append("select t FROM Goods t where t.deleted = false and t.status = '1' ");
+        if(StringUtils.isNotBlank(goodsType)){
+            if("hot".equals(goodsType)){
+                hql.append("and exists (select 1 from GoodsType g where t.goodsType = g.id and g.deleted = 0) ");
+            }else{
+                hql.append("and exists (select 1 from GoodsType g where t.goodsType = g.id and g.code = ? and g.deleted = 0) ");
+                paramters.add(goodsType);
+            }
         }
 
-        Pageable pageable = new PageRequest(pageNo, pageSize, sort);
-        // 查询条件
-        Specification<Goods> specification = (Root<Goods> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> {
-            List<Predicate> condition = new ArrayList<>();
-            Predicate deleted = cb.equal(root.get("deleted").as(Boolean.class), false);
-            Predicate status = cb.equal(root.get("status").as(String.class), "1");
+        // 关键字搜索
+        if(StringUtils.isNotBlank(key)){
+            hql.append("and (t.name like ? or exists (select 1 from GoodsType g where t.goodsType = g.id and g.name like ?) ) ");
+            paramters.add("%"+key+"%");
+            paramters.add("%"+key+"%");
 
-            condition.add(deleted);
-            condition.add(status);
+            hql.append("and exists (select 1 from GoodsType g where t.goodsType = g.id and g.deleted = 0) ");
+        }
 
-            if("hot".equals(goodsType)){
+        if("hot".equals(goodsType)){
+            hql.append("order by t.salesNum desc ");
+        }else{
+            hql.append("order by t.sort desc ");
+        }
 
-                Subquery<GoodsType> subquery = query.subquery(GoodsType.class);
-                Root<GoodsType> goodsTypeRoot = subquery.from(GoodsType.class);
-                subquery.select(goodsTypeRoot);
-
-                // exists条件
-                List<Predicate> existsPredicate = new ArrayList<>();
-                existsPredicate.add(cb.equal(root.get("goodsType"), goodsTypeRoot.get("id")));
-                existsPredicate.add(cb.equal(goodsTypeRoot.get("deleted"), false));
-                subquery.where(existsPredicate.toArray(new Predicate[]{}));
-
-                Predicate exists = cb.exists(subquery);
-                condition.add(exists);
-
-                return cb.and(condition.toArray(new Predicate[]{}));
-            }
-
-            // exists条件
-            if(StringUtils.isNotBlank(goodsType)){
-                Subquery<GoodsType> subquery = query.subquery(GoodsType.class);
-                Root<GoodsType> goodsTypeRoot = subquery.from(GoodsType.class);
-                subquery.select(goodsTypeRoot);
-                List<Predicate> existsPredicate = new ArrayList<>();
-                existsPredicate.add(cb.equal(root.get("goodsType"), goodsTypeRoot.get("id")));
-                existsPredicate.add(cb.equal(goodsTypeRoot.get("code"), goodsType));
-                subquery.where(existsPredicate.toArray(new Predicate[]{}));
-
-                Predicate exists = cb.exists(subquery);
-                condition.add(exists);
-            }
-
-            // 关键字搜索
-            if(StringUtils.isNotBlank(key)){
-                Predicate keyPredicate = cb.like(root.get("name").as(String.class), "%"+key+"%");
-                condition.add(keyPredicate);
-
-                // 过滤未开放的类型
-                Subquery<GoodsType> subquery = query.subquery(GoodsType.class);
-                Root<GoodsType> goodsTypeRoot = subquery.from(GoodsType.class);
-                subquery.select(goodsTypeRoot);
-                List<Predicate> existsPredicate = new ArrayList<>();
-                existsPredicate.add(cb.equal(root.get("goodsType"), goodsTypeRoot.get("id")));
-                existsPredicate.add(cb.equal(goodsTypeRoot.get("deleted"), false));
-                subquery.where(existsPredicate.toArray(new Predicate[]{}));
-
-                Predicate exists = cb.exists(subquery);
-                condition.add(exists);
-            }
-
-            return cb.and(condition.toArray(new Predicate[]{}));
-        };
-
-        Page<Goods> page = goodsRepository.findAll(specification, pageable);
+        Page<Goods> page = this.findByPage(hql.toString(), paramters, pageable);
 
         List<Goods> content = page.getContent();
         List<GoodsVo> result = new ArrayList<>();
