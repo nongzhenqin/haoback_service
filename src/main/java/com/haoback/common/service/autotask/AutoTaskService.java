@@ -6,6 +6,7 @@ import com.haoback.common.utils.CommonUtils;
 import com.haoback.common.utils.SSLClient;
 import com.haoback.goods.entity.Goods;
 import com.haoback.goods.service.GoodsService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
@@ -67,14 +68,15 @@ public class AutoTaskService {
                     urlParamsMap.put("timestamp", Long.toString(currentTimeMillis));
                     urlParamsMap.put("itemId", goodsMap.get("itemId"));
                     urlParamsMap.put("ref", "");
-                    getUrl = "https://mdskip.taobao.com/core/initItemDetail.htm?" + CommonUtils.getUrlParamsByMap(urlParamsMap);
+//                    getUrl = "https://mdskip.taobao.com/core/initItemDetail.htm?" + CommonUtils.getUrlParamsByMap(urlParamsMap);
+                    getUrl = "https://detailskip.taobao.com/service/getData/1/p1/item/detail/sib.htm?itemId="+goodsMap.get("itemId")+"&sellerId="+goodsMap.get("sellerId")+"&modules=dynStock,qrcode,viewer,price,duty,xmpPromotion,delivery,upp,activity,fqg,zjys,couponActivity,soldQuantity,originalPrice,tradeContract&callback=onSibRequestSuccess";
 
                     isTmall = false;
                 }
 
                 HttpGet get = new HttpGet(getUrl);
                 get.setHeader("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36");
-                get.setHeader("referer", url);
+                get.setHeader("referer", "https://item.taobao.com/item.htm?spm=a230r.1.14.145.76bf523fne7p5&id="+goodsMap.get("itemId")+"&ns=1&abbucket=18");
                 RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(10000).setConnectTimeout(10000).build();//设置请求和传输超时时间
                 get.setConfig(requestConfig);
 
@@ -82,40 +84,59 @@ public class AutoTaskService {
                 String s = EntityUtils.toString(execute.getEntity(), "utf-8");
                 System.out.println(s);
 
+                // 商品过期，无信息返回
+                if(StringUtils.isBlank(s) || !s.contains("{")){
+//                    goods.setStatus("0");// 下架
+//                    goodsService.update(goods);
+                    System.out.println("商品ID="+goods.getId()+"无法拉取最新价格");
+                    continue;
+                }
+
                 s = s.substring(s.indexOf("{"), s.lastIndexOf("}")+1);
 
                 JSONObject jsonObject = JSONObject.parseObject(s);
 
-                JSONObject priceInfo = jsonObject.getJSONObject("defaultModel").getJSONObject("itemPriceResultDO").getJSONObject("priceInfo");
+                if(goodsMap.containsKey("src")) {// 天猫
+                    JSONObject priceInfo = jsonObject.getJSONObject("defaultModel").getJSONObject("itemPriceResultDO").getJSONObject("priceInfo");
 
-                double price = Double.MAX_VALUE;
+                    double price = Double.MAX_VALUE;
 
-                for(Map.Entry<String, Object> set : priceInfo.entrySet()){
-                    JSONObject skuJSONObject = JSONObject.parseObject(set.getValue().toString());
-                    JSONArray promotionList = skuJSONObject.getJSONArray("promotionList");
-                    if(promotionList == null || promotionList.size() == 0) {
-                        double priceTemp = skuJSONObject.getDoubleValue("price");
-                        if(priceTemp < price){
-                            price = priceTemp;
+                    for (Map.Entry<String, Object> set : priceInfo.entrySet()) {
+                        JSONObject skuJSONObject = JSONObject.parseObject(set.getValue().toString());
+                        JSONArray promotionList = skuJSONObject.getJSONArray("promotionList");
+                        if (promotionList == null || promotionList.size() == 0) {
+                            double priceTemp = skuJSONObject.getDoubleValue("price");
+                            if (priceTemp < price) {
+                                price = priceTemp;
+                            }
+                            continue;
                         }
-                        continue;
-                    }
-                    for(int i=0, len=promotionList.size(); i<len; i++){
-                        JSONObject promotion = promotionList.getJSONObject(i);
-                        double priceTemp = promotion.getDoubleValue("price");
-                        if(priceTemp < price){
-                            price = priceTemp;
+                        for (int i = 0, len = promotionList.size(); i < len; i++) {
+                            JSONObject promotion = promotionList.getJSONObject(i);
+                            double priceTemp = promotion.getDoubleValue("price");
+                            if (priceTemp < price) {
+                                price = priceTemp;
+                            }
                         }
                     }
+
+                    Integer sellCount = jsonObject.getJSONObject("defaultModel").getJSONObject("sellCountDO").getInteger("sellCount");
+
+                    System.out.println("price=" + price + "&sellCount=" + sellCount);
+                    goods.setPrice(new BigDecimal(Double.toString(price)).setScale(2, RoundingMode.HALF_UP));// 价格
+                    goods.setSalesNum(sellCount);
+                    goods.setIsTmall(isTmall);
+                    goodsService.update(goods);
+                }else{// 淘宝
+                    JSONObject data = jsonObject.getJSONObject("data");
+                    String price = data.getString("price").split("-")[0].trim();
+                    Integer sellCount = data.getJSONObject("soldQuantity").getInteger("confirmGoodsCount");
+                    System.out.println("price="+price+"&sellCount="+sellCount);
+                    goods.setPrice(new BigDecimal(price).setScale(2, RoundingMode.HALF_UP));// 价格
+                    goods.setSalesNum(sellCount);
+                    goods.setIsTmall(isTmall);
+                    goodsService.update(goods);
                 }
-
-                Integer sellCount = jsonObject.getJSONObject("defaultModel").getJSONObject("sellCountDO").getInteger("sellCount");
-
-                System.out.println("price="+price+"&sellCount="+sellCount);
-                goods.setPrice(new BigDecimal(Double.toString(price)).setScale(2, RoundingMode.HALF_UP));// 价格
-                goods.setSalesNum(sellCount);
-                goods.setIsTmall(isTmall);
-                goodsService.update(goods);
 
             } catch (Exception e) {
                 e.printStackTrace();

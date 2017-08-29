@@ -1,7 +1,6 @@
 package com.haoback.goods.service;
 
 import com.haoback.common.service.BaseService;
-import com.haoback.common.utils.CommonUtils;
 import com.haoback.common.utils.ImageUtil;
 import com.haoback.goods.entity.Goods;
 import com.haoback.goods.entity.GoodsRes;
@@ -9,16 +8,16 @@ import com.haoback.goods.entity.GoodsType;
 import com.haoback.goods.repository.GoodsRepository;
 import com.haoback.goods.vo.GoodsVo;
 import com.haoback.sys.entity.SysUser;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.persistence.criteria.*;
 import java.io.File;
 import java.text.ParseException;

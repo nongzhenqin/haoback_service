@@ -1,12 +1,8 @@
 package com.haoback.common.service;
 
-import java.io.Serializable;
-import java.util.List;
-
 import com.haoback.common.entity.BaseEntity;
 import com.haoback.common.repository.BaseRepository;
 import com.haoback.common.utils.CommonUtils;
-import com.haoback.goods.entity.Goods;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,6 +13,8 @@ import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * 抽象service层基类 提供一些简便方法
@@ -159,7 +157,6 @@ public abstract class BaseService<M extends BaseEntity, ID extends Serializable>
 
 		// 总记录数
 		Integer total = Integer.valueOf(queryCount.getSingleResult().toString());
-
 
 		Query query = entityManager.createQuery(hql);
 		if(CollectionUtils.isNotEmpty(params)){

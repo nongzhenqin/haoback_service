@@ -136,6 +136,13 @@ public class CommonUtils {
                                     break;
                                 }
                             }
+                            for(String s : split){
+                                if(s.contains("sellerId")){
+                                    String online = s.split(":")[1].trim().replaceAll("'", "");
+                                    result.put("sellerId", online);
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
