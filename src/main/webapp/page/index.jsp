@@ -103,7 +103,7 @@
         <div class="carousel-inner" role="listbox">
             <c:forEach var="goodsCarousel" items="${goodsCarouselList}" varStatus="status">
                 <div class="item<c:if test="${status.index == 0}"> active</c:if>">
-                    <img src="./upload/${goodsCarousel.fileId}.jpg" onclick="window.open('${goodsCarousel.urlLinkCoupon != null && goodsCarousel.urlLinkCoupon.length() > 0 ? goodsCarousel.urlLinkCoupon : goodsCarousel.urlLink}', '_bank')" style="width: 100%;height: 400px;" alt="优质生活，每日更新">
+                    <img class="product-pvuv" src="./upload/${goodsCarousel.fileId}.jpg" id-data="${goodsCarousel.id}" is-lunbo="1" onclick="window.open('${goodsCarousel.urlLinkCoupon != null && goodsCarousel.urlLinkCoupon.length() > 0 ? goodsCarousel.urlLinkCoupon : goodsCarousel.urlLink}', '_bank')" style="width: 100%;height: 400px;" alt="优质生活，每日更新">
                     <div class="carousel-caption"></div>
                 </div>
             </c:forEach>
@@ -150,7 +150,7 @@
                 <c:if test="${status.index != 0 && status.index % 5 == 0}">
                     <div class="col-md-2"></div>
                 </c:if>
-                <div class="col-md-4 col-style" id-data="${goods.id}"
+                <div class="col-md-4 col-style product-pvuv" id-data="${goods.id}"
                      url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
                     <div class="row" style="position: relative;height: 100%;">
                         <div class="col-md-24">
@@ -197,7 +197,7 @@
                     <c:if test="${status.index != 0 && status.index % 5 == 0}">
                         <div class="col-md-2"></div>
                     </c:if>
-                    <div class="col-md-4 col-style" id-data="${goods.id}"
+                    <div class="col-md-4 col-style product-pvuv" id-data="${goods.id}"
                          url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
                         <div class="row" style="position: relative;height: 100%;">
                             <div class="col-md-24">
@@ -242,7 +242,7 @@
                 <c:if test="${status.index != 0 && status.index % 5 == 0}">
                     <div class="col-md-2"></div>
                 </c:if>
-                <div class="col-md-4 col-style" id-data="${goods.id}"
+                <div class="col-md-4 col-style product-pvuv" id-data="${goods.id}"
                      url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
                     <div class="row" style="position: relative;height: 100%;">
                         <div class="col-md-24">
@@ -305,13 +305,17 @@
     $(function () {
         // 点击事件
         if (!${isSpider}) {
-            $('.col-style').on('click', function () {
+            $('.product-pvuv').on('click', function () {
                 window.open($(this).attr('url-data'), '_bank');
+                var titileName = "商品";
+                if($(this).attr('is-lunbo') == '1'){
+                    titileName = "轮播图";
+                }
                 // 保存pv
                 $.post('./goods/pv_uv', {
                     goodsId: $(this).attr('id-data'),
                     referer: document.referrer.toLowerCase(),
-                    titileName: "商品",
+                    titileName: titileName,
                     flag: "pc"
                 });
             });

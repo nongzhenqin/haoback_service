@@ -73,7 +73,7 @@
         <%--<li><span style="background-image:url(./upload/22fa46cb-bef4-44f2-82d3-39984fadaa1b.jpg)"></span></li>--%>
         <%--<li><span style="background-image:url(./upload/34fd55b4-7c99-4260-a23b-919fc44c76e6.jpg)"></span></li>--%>
         <c:forEach var="goodsCarousel" items="${goodsCarouselList}" varStatus="status">
-            <li><img style="width: 100%;height: 100%;" src="./upload/${goodsCarousel.fileId}.jpg" onclick="window.open('${goodsCarousel.urlLinkCoupon != null && goodsCarousel.urlLinkCoupon.length() > 0 ? goodsCarousel.urlLinkCoupon : goodsCarousel.urlLink}', '_bank')" alt="优质生活，每日更新" /></li>
+            <li><img class="product-pvuv" is-lunbo="1" style="width: 100%;height: 100%;" src="./upload/${goodsCarousel.fileId}.jpg" onclick="window.open('${goodsCarousel.urlLinkCoupon != null && goodsCarousel.urlLinkCoupon.length() > 0 ? goodsCarousel.urlLinkCoupon : goodsCarousel.urlLink}', '_bank')" alt="优质生活，每日更新" /></li>
         </c:forEach>
     </ul>
 </div>
@@ -85,7 +85,7 @@
                 <h4 class="h4-title">热销推荐</h4>
             </li>
             <c:forEach var="goods" items="${goodsTypesHot}" varStatus="status">
-                <li class="ui-col ui-col-50 click" style="text-align: left;height: 310px;background-color: rgb(255,255,255);" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
+                <li class="ui-col ui-col-50 product-pvuv" style="text-align: left;height: 310px;background-color: rgb(255,255,255);" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
                     <img class="product-img" style="width: 100%; height: auto;" src="./upload/${goods.fileId}.jpg">
                     <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
                     <span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">销量&nbsp;${goods.salesNum}</span>
@@ -106,7 +106,7 @@
                     <h4 class="h4-title">${type.name}</h4>
                 </li>
                 <c:forEach var="goods" items="${type.goodsList}" varStatus="status">
-                    <li class="ui-col ui-col-50 click" style="text-align: left;height: 310px;background-color: rgb(255,255,255);" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
+                    <li class="ui-col ui-col-50 product-pvuv" style="text-align: left;height: 310px;background-color: rgb(255,255,255);" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
                         <img class="product-img" style="width: 100%; height: auto;" src="./upload/${goods.fileId}.jpg">
                         <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
                         <span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">销量&nbsp;${goods.salesNum}</span>
@@ -134,7 +134,7 @@
                 <%--<h4 class="h4-title">${type.name}</h4>--%>
             <%--</li>--%>
             <c:forEach var="goods" items="${goodsList}" varStatus="status">
-                <li class="ui-col ui-col-50 click" style="text-align: left;height: 310px;background-color: rgb(255,255,255);" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
+                <li class="ui-col ui-col-50 product-pvuv" style="text-align: left;height: 310px;background-color: rgb(255,255,255);" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
                     <img class="product-img" style="width: 100%; height: auto;" src="./upload/${goods.fileId}.jpg">
                     <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
                     <span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">销量&nbsp;${goods.salesNum}</span>
@@ -162,10 +162,14 @@
     $(function(){
         // 点击事件
         if(!${isSpider}){
-            $('.click').on('click', function(){
+            $('.product-pvuv').on('click', function(){
                 window.open($(this).attr('url-data'), '_bank');
+                var titileName = "商品";
+                if($(this).attr('is-lunbo') == '1'){
+                    titileName = "轮播图";
+                }
                 // 保存pv
-                $.post('./goods/pv_uv', {goodsId: $(this).attr('id-data'), referer: document.referrer.toLowerCase(), titileName: "商品", flag: "mobile"});
+                $.post('./goods/pv_uv', {goodsId: $(this).attr('id-data'), referer: document.referrer.toLowerCase(), titileName: titileName, flag: "mobile"});
             });
         }
 
