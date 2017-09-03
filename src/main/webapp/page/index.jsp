@@ -47,7 +47,11 @@
 
 <div class="row search-row">
     <div class="col-md-2"></div>
-    <div class="col-md-3"></div>
+    <div class="col-md-3">
+        <a href="./">
+            <img style="width: 175px;height: 75px;margin-top: -20px;margin-left: -10px;" src="img/logo.png">
+        </a>
+    </div>
     <div class="col-md-8">
         <input type="text" class="header-search-input" id="header-search-input" placeholder="输入关键字搜索全网优惠" <c:if test="${search == true}">value="${key}"</c:if>>
         <input type="submit" class="header-search-btn" id="header-search-btn" value="">
