@@ -4,8 +4,13 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.haoback.common.utils.CommonUtils;
 import com.haoback.common.utils.SSLClient;
+import com.haoback.common.utils.email.MailUtil;
 import com.haoback.goods.entity.Goods;
 import com.haoback.goods.service.GoodsService;
+import com.haoback.mail.entity.MailConfig;
+import com.haoback.mail.entity.MailInfo;
+import com.haoback.mail.service.MailConfigService;
+import com.haoback.mail.service.MailInfoService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -13,11 +18,15 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +39,10 @@ public class AutoTaskService {
 
     @Autowired
     private GoodsService goodsService;
+    @Autowired
+    private MailInfoService mailInfoService;
+    @Autowired
+    private MailConfigService mailConfigService;
 
     /**
      * 自动捉取淘宝商品最新价格
@@ -146,6 +159,33 @@ public class AutoTaskService {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 自动发营销邮件
+     */
+    @Scheduled(cron="0 0 7 * * ?")// 每天早上7点执行
+    public void autoSendADByMail(){
+
+        Pageable pageableMailInfo = new PageRequest(0, 100);
+
+        Page<MailInfo> mailInfos = mailInfoService.find(pageableMailInfo);
+        MailConfig mailConfig = mailConfigService.findOne();
+
+        List<MailInfo> mailInfoList = mailInfos.getContent();
+
+        com.haoback.common.utils.email.MailInfo mailInfo = new com.haoback.common.utils.email.MailInfo();
+        mailInfo.setSubject(mailConfig.getSubject());
+        mailInfo.setContent(mailConfig.getContent());
+
+        for(MailInfo m : mailInfoList){
+            mailInfo.setToAddress(Arrays.asList(m.getEmail()));
+            boolean result = MailUtil.sendEmail(mailInfo, mailConfig);
+            if(result){
+                m.setIsSend(true);// 发送成功后设置已发送标志
+                mailInfoService.update(m);
             }
         }
     }

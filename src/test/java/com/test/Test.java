@@ -9,6 +9,7 @@ import com.haoback.common.utils.CommonUtils;
 import com.haoback.common.utils.SSLClient;
 import com.haoback.common.utils.email.MailInfo;
 import com.haoback.common.utils.email.MailUtil;
+import com.haoback.mail.entity.MailConfig;
 import com.haoback.sys.entity.SysUser;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.lang3.StringUtils;
@@ -250,7 +251,10 @@ public class Test {
         mailInfo.setSubject("测试主题");
         mailInfo.setContent("内容：<h1>test,测试</h1>");
 
-        MailUtil.sendEmail(mailInfo);
+        MailConfig mailConfig = new MailConfig();
+
+
+        MailUtil.sendEmail(mailInfo, mailConfig);
     }
 
 }

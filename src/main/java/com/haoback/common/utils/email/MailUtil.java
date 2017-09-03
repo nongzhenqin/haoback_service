@@ -1,5 +1,6 @@
 package com.haoback.common.utils.email;
 
+import com.haoback.mail.entity.MailConfig;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.mail.EmailAttachment;
 import org.apache.commons.mail.EmailException;
@@ -12,29 +13,26 @@ import java.util.List;
  */
 public class MailUtil {
 
-    //邮箱
-    private static String mailServerHost = "smtp.qq.com";
-    private static String mailSenderAddress = "694159256@qq.com";
-    private static String mailSenderNick = "我会挑优选生活";
-    private static String mailSenderUsername = "694159256@qq.com";
-    private static String mailSenderPassword = "lmnbnowltrpmbcec";
-
     /**
      * 发送 邮件方法 (Html格式，支持附件)
-     *
-     * @return void
+     * @param mailInfo 收件人信息
+     * @param mailConfig 发件人信息配置
      */
-    public static void sendEmail(MailInfo mailInfo) {
+    public static boolean sendEmail(MailInfo mailInfo, MailConfig mailConfig) {
 
         try {
             HtmlEmail email = new HtmlEmail();
             // 配置信息
-            email.setHostName(mailServerHost);
-            email.setFrom(mailSenderAddress,mailSenderNick);
-            email.setAuthentication(mailSenderUsername,mailSenderPassword);
+            email.setHostName(mailConfig.getHost());
+            email.setFrom(mailConfig.getAddress(), mailConfig.getNick());
+            email.setAuthentication(mailConfig.getUserName(), mailConfig.getPassword());
             email.setCharset("UTF-8");
             email.setSubject(mailInfo.getSubject());
             email.setHtmlMsg(mailInfo.getContent());
+            if(mailConfig.getIsSsl()){
+                email.setSSLOnConnect(mailConfig.getIsSsl());
+                email.setSslSmtpPort(mailConfig.getPort());
+            }
 
             // 添加附件
             List<EmailAttachment> attachments = mailInfo.getAttachments();
@@ -65,10 +63,14 @@ public class MailUtil {
                     email.addBcc(ccAddress.get(i));
                 }
             }
+
             email.send();
+
             System.out.println("邮件发送成功！");
+            return true;
         } catch (EmailException e) {
             e.printStackTrace();
+            return false;
         }
 
     }
