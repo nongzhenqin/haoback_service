@@ -10,7 +10,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
-    <title>优选-精挑细选优质商品</title>
+    <title>沃惠挑-精挑细选优质商品</title>
     <meta name="Keywords" content="优选,生活,9块9,热销推荐,特卖,优选折扣,优品">
     <meta name="Description" content="优选-优惠券折扣，人工筛选，每天更新，折扣多多">
 
@@ -36,7 +36,7 @@
 <body>
 <div class="row head-top">
     <div class="col-md-2"></div>
-    <div class="col-md-10">你好，欢迎来到优选</div>
+    <div class="col-md-10">你好，欢迎来到沃惠挑</div>
     <div class="col-md-10" style="text-align: right;padding-right: 0px;">
         <a id="set-home">设为首页</a>
         <span style="color: #d3d3d3;">&nbsp;&nbsp;|&nbsp;&nbsp;</span>
@@ -296,7 +296,7 @@
 
 <div class="row" style="width: 100%;<c:if test="${search == true}">margin-top: 25px;</c:if>">
     <div class="col-md-24" style="height: 60px;padding-top:20px;text-align:center;background-color:white;">
-        我是有底线的~ © CopyRight 2017 优选
+        我是有底线的~ © CopyRight 2017 沃惠挑
         <div class="toTop" style="display: block;background: url('img/top.png'); height: 56px; width: 56px;"
              onclick=" $('body,html').animate({scrollTop:0},1000);">
         </div>
