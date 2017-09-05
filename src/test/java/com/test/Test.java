@@ -254,7 +254,7 @@ public class Test {
         MailConfig mailConfig = new MailConfig();
 
 
-        MailUtil.sendEmail(mailInfo, mailConfig);
+//        MailUtil.sendEmail(mailInfo, mailConfig);
     }
 
 }

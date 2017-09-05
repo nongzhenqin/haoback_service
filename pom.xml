@@ -26,11 +26,11 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.2</version>
                 <configuration>
-                    <warName>haoback</warName>
+                    <warName>wohuitiao_service</warName>
                 </configuration>
             </plugin>
         </plugins>
-        <finalName>haoback</finalName>
+        <finalName>wohuitiao_service</finalName>
     </build>
 
     <properties>

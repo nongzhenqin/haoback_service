@@ -341,7 +341,7 @@
         // 设为首页
         $('#set-home').on('click', function(){
             var _this = $(this);
-            var url = 'http://localhost:8090/haoback_service';
+            var url = 'http://www.wohuitiao.com';
             try{
                 _this.style.behavior='url(#default#homepage)';
                 _this.setHomePage(url);
