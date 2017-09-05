@@ -341,7 +341,7 @@
         // 设为首页
         $('#set-home').on('click', function(){
             var _this = $(this);
-            var url = 'http://www.wohuitiao.com';
+            var url = 'http://wohuitiao.com';
             try{
                 _this.style.behavior='url(#default#homepage)';
                 _this.setHomePage(url);
