@@ -11,8 +11,8 @@
 <html>
 <head>
     <title>沃惠挑-精挑细选优质商品</title>
-    <meta name="Keywords" content="优选,生活,9块9,热销推荐,特卖,优选折扣,优品">
-    <meta name="Description" content="优选-优惠券折扣，人工筛选，每天更新，折扣多多">
+    <meta name="Keywords" content="沃惠挑,优选,生活,9块9,热销推荐,特卖,优选折扣,优品">
+    <meta name="Description" content="沃惠挑,优选-优惠券折扣，人工筛选，每天更新，折扣多多">
 
     <link href="img/favicon.ico" rel="shortcut icon" type="image/x-icon">
     <link href="img/favicon.ico" rel="icon" type="image/x-icon">
