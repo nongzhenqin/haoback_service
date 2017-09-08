@@ -61,6 +61,11 @@ public class AutoTaskService {
                 String getUrl = "";
                 boolean isTmall = false;
 
+                // 请求页面失败，无法解析出商品ID
+                if(!goodsMap.containsKey("src") && !goodsMap.containsKey("itemId")){
+                    continue;
+                }
+
                 // 天猫
                 if(goodsMap.containsKey("src")){
                     getUrl = "https:" + goodsMap.get("src").replaceAll("&amp;", "&");

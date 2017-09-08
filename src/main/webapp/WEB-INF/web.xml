@@ -34,11 +34,11 @@
 	</listener>
 
 	<!--spring security控制同时登录数-->
-	<listener>
-		<listener-class>
-			org.springframework.security.web.session.HttpSessionEventPublisher
-		</listener-class>
-	</listener>
+	<!--<listener>-->
+		<!--<listener-class>-->
+			<!--org.springframework.security.web.session.HttpSessionEventPublisher-->
+		<!--</listener-class>-->
+	<!--</listener>-->
 
     <!-- spring security 过滤器链 -->
     <filter>
@@ -94,6 +94,6 @@
 	</welcome-file-list>
 	<!-- 配置session超时时间，单位分钟 -->
 	<session-config>
-		<session-timeout>30</session-timeout>
+		<session-timeout>120</session-timeout>
 	</session-config>
 </web-app>

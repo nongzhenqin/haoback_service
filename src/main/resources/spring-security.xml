@@ -76,9 +76,9 @@
 		<http-basic />
 
 		<!--会话管理，设置最多登录异常，error-if-maximum-exceeded = false为第二次登录就会使前一个登录失效-->
-		<session-management invalid-session-strategy-ref="invalidSessionHandler">
-			<concurrency-control max-sessions="1" error-if-maximum-exceeded="false" expired-url="/login" />
-		</session-management>
+		<!--<session-management invalid-session-strategy-ref="invalidSessionHandler">-->
+			<!--<concurrency-control max-sessions="1" error-if-maximum-exceeded="false" expired-url="/login" />-->
+		<!--</session-management>-->
 
 		<!-- 添加自定义的过滤器 放在FILTER_SECURITY_INTERCEPTOR之前有效 -->
 		<!--<custom-filter ref="customFilterSecurityInterceptor" before="FILTER_SECURITY_INTERCEPTOR" />-->
