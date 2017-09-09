@@ -49,6 +49,7 @@ public class GoodsCarouselService extends BaseService<GoodsCarousel, Long> {
             goodsCarousel1.setDeleted(goodsCarouselVo.getDeleted());
             goodsCarousel1.setUrlLink(goodsCarouselVo.getUrlLink());
             goodsCarousel1.setUrlLinkCoupon(goodsCarouselVo.getUrlLinkCoupon());
+            goodsCarousel1.setTaoCommand(goodsCarouselVo.getTaoCommand());
 
             // 当图片更改后是base64字符串，必然包含英文逗号，否则是url
             if(StringUtils.isNotBlank(goodsCarouselVo.getImage()) && goodsCarouselVo.getImage().contains(",")){

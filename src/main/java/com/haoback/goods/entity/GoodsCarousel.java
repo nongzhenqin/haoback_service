@@ -42,6 +42,12 @@ public class GoodsCarousel extends BaseEntity<Long> {
     private String urlLinkCoupon;
 
     /**
+     * 淘口令
+     */
+    @Column(name = "TAO_COMMAND", length=100)
+    private String taoCommand;
+
+    /**
      * 逻辑删除 false/0-未删除 true/1-删除
      */
     @Column(name = "IS_DELETED")

@@ -24,9 +24,26 @@
     <%--<script src="static/jquery-2.2.4.min.js"></script>--%>
     <script src="static/frozen/lib/zepto.min.js"></script>
     <script src="static/frozen/js/frozen.js"></script>
+    <script src="static/clipboard/clipboard.min.js"></script>
 </head>
 
 <body ontouchstart>
+<%--微信复制到剪贴板后的提示框--%>
+<div class="ui-dialog">
+    <div class="ui-dialog-cnt">
+        <header class="ui-dialog-hd ui-border-b">
+            <h3>提示</h3>
+            <i class="ui-dialog-close" data-role="button"></i>
+        </header>
+        <div class="ui-dialog-bd">
+            <div>淘口令已复制到剪贴板，请打开淘宝APP查看</div>
+        </div>
+        <%--<div class="ui-dialog-ft">--%>
+            <%--<button type="button" data-role="button">关闭</button>--%>
+        <%--</div>--%>
+    </div>
+</div>
+
 <div class="ui-row-flex ui-whitespace">
     <%--<c:forEach var="type" items="${goodsTypes}">--%>
         <%--<div class="ui-col ui-col">--%>
@@ -35,6 +52,7 @@
     <%--</c:forEach>--%>
 </div>
 
+<%--搜索框--%>
 <div class="jd-header-home-wrapper">
     <div class="jd-search-container on-blur" id="index_search_head">
         <div class="jd-search-box-cover" style="opacity: 0;" id="search_cover"></div>
@@ -73,7 +91,7 @@
         <%--<li><span style="background-image:url(./upload/22fa46cb-bef4-44f2-82d3-39984fadaa1b.jpg)"></span></li>--%>
         <%--<li><span style="background-image:url(./upload/34fd55b4-7c99-4260-a23b-919fc44c76e6.jpg)"></span></li>--%>
         <c:forEach var="goodsCarousel" items="${goodsCarouselList}" varStatus="status">
-            <li><img class="product-pvuv" is-lunbo="1" style="width: 100%;height: 100%;" src="./upload/${goodsCarousel.fileId}.jpg" onclick="window.open('${goodsCarousel.urlLinkCoupon != null && goodsCarousel.urlLinkCoupon.length() > 0 ? goodsCarousel.urlLinkCoupon : goodsCarousel.urlLink}', '_bank')" alt="优质生活，每日更新" /></li>
+            <li><img class="product-pvuv" data-clipboard-text="${goodsCarousel.taoCommand}" is-lunbo="1" style="width: 100%;height: 100%;" src="./upload/${goodsCarousel.fileId}.jpg" id-data="${goodsCarousel.id}" url-data="${goodsCarousel.urlLinkCoupon != null && goodsCarousel.urlLinkCoupon.length() > 0 ? goodsCarousel.urlLinkCoupon : goodsCarousel.urlLink}" alt="优质生活，每日更新" /></li>
         </c:forEach>
     </ul>
 </div>
@@ -85,16 +103,18 @@
                 <h4 class="h4-title">热销推荐</h4>
             </li>
             <c:forEach var="goods" items="${goodsTypesHot}" varStatus="status">
-                <li class="ui-col ui-col-50 product-pvuv" style="text-align: left;height: 310px;background-color: rgb(255,255,255);" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
+                <li class="ui-col ui-col-50 product-pvuv" data-clipboard-text="${goods.taoCommand}" style="text-align: left;height: 290px;background-color: rgb(255,255,255);" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
                     <img class="product-img" style="width: 100%; height: auto;" src="./upload/${goods.fileId}.jpg">
                     <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
                     <span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">销量&nbsp;${goods.salesNum}</span>
-                    <span class="ui-nowrap-multi ui-whitespace" style="font-size: 14px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.name}</span>
+                    <span class="ui-nowrap-multi ui-whitespace" style="font-size: 14px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">
+                        <c:if test="${goods.isTmall == true}">
+                            <img src="img/tmall.png" style="height: 13px;width: 13px;">
+                        </c:if>
+                            ${goods.name}
+                    </span>
                     <c:if test="${goods.info != null && goods.info.length() > 0}">
                         <span class="ui-nowrap ui-whitespace" style="color: #888;font-size: 12px;float: left;padding-top: 5px;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.info}</span>
-                    </c:if>
-                    <c:if test="${goods.isTmall == true}">
-                        <img src="img/tmall.png" style="height: 16px;width: 16px;float: right;padding-top: 8px;margin-right: 8px;margin-bottom: 8px;">
                     </c:if>
                 </li>
             </c:forEach>
@@ -106,16 +126,18 @@
                     <h4 class="h4-title">${type.name}</h4>
                 </li>
                 <c:forEach var="goods" items="${type.goodsList}" varStatus="status">
-                    <li class="ui-col ui-col-50 product-pvuv" style="text-align: left;height: 310px;background-color: rgb(255,255,255);" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
+                    <li class="ui-col ui-col-50 product-pvuv" data-clipboard-text="${goods.taoCommand}" style="text-align: left;height: 310px;background-color: rgb(255,255,255);" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
                         <img class="product-img" style="width: 100%; height: auto;" src="./upload/${goods.fileId}.jpg">
                         <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
                         <span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">销量&nbsp;${goods.salesNum}</span>
-                        <span class="ui-nowrap-multi ui-whitespace" style="font-size: 14px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.name}</span>
+                        <span class="ui-nowrap-multi ui-whitespace" style="font-size: 14px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">
+                            <c:if test="${goods.isTmall == true}">
+                                <img src="img/tmall.png" style="height: 13px;width: 13px;">
+                            </c:if>
+                                ${goods.name}
+                        </span>
                         <c:if test="${goods.info != null && goods.info.length() > 0}">
                             <span class="ui-nowrap ui-whitespace" style="color: #888;font-size: 12px;float: left;padding-top: 5px;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.info}</span>
-                        </c:if>
-                        <c:if test="${goods.isTmall == true}">
-                            <img src="img/tmall.png" style="height: 16px;width: 16px;float: right;padding-top: 8px;margin-right: 8px;margin-bottom: 8px;">
                         </c:if>
                     </li>
                 </c:forEach>
@@ -134,16 +156,18 @@
                 <%--<h4 class="h4-title">${type.name}</h4>--%>
             <%--</li>--%>
             <c:forEach var="goods" items="${goodsList}" varStatus="status">
-                <li class="ui-col ui-col-50 product-pvuv" style="text-align: left;height: 310px;background-color: rgb(255,255,255);" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
+                <li class="ui-col ui-col-50 product-pvuv" data-clipboard-text="${goods.taoCommand}" style="text-align: left;height: 310px;background-color: rgb(255,255,255);" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
                     <img class="product-img" style="width: 100%; height: auto;" src="./upload/${goods.fileId}.jpg">
                     <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
                     <span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">销量&nbsp;${goods.salesNum}</span>
-                    <span class="ui-nowrap-multi ui-whitespace" style="font-size: 14px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.name}</span>
+                    <span class="ui-nowrap-multi ui-whitespace" style="font-size: 14px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">
+                        <c:if test="${goods.isTmall == true}">
+                            <img src="img/tmall.png" style="height: 13px;width: 13px;">
+                        </c:if>
+                            ${goods.name}
+                    </span>
                     <c:if test="${goods.info != null && goods.info.length() > 0}">
                         <span class="ui-nowrap ui-whitespace" style="color: #888;font-size: 12px;float: left;padding-top: 5px;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.info}</span>
-                    </c:if>
-                    <c:if test="${goods.isTmall == true}">
-                        <img src="img/tmall.png" style="height: 16px;width: 16px;float: right;padding-top: 8px;margin-right: 8px;margin-bottom: 8px;">
                     </c:if>
                 </li>
             </c:forEach>
@@ -160,9 +184,29 @@
 
 <script type="text/javascript">
     $(function(){
+        // 是微信浏览器打开则直接复制淘口令到剪贴板
+        var isWx = isWeiXin();
+        if(isWx){
+            var clipboard = new Clipboard('.product-pvuv');
+            clipboard.on('success',function(e){
+                    e.clearSelection();
+//                    console.info('Action:',e.action);
+//                    console.info('Text:',e.text);
+//                    console.info('Trigger:',e.trigger);
+                    $(".ui-dialog").dialog("show");
+
+                    var titileName = "商品";
+                    if($(e.trigger).attr('is-lunbo') == '1'){
+                        titileName = "轮播图";
+                    }
+                    // 保存pv
+                    $.post('./goods/pv_uv', {goodsId: $(e.trigger).attr('id-data'), referer: document.referrer.toLowerCase(), titileName: titileName, flag: "mobile"});
+                });
+        }
+
         // 点击事件
         if(!${isSpider}){
-            $('.product-pvuv').on('click', function(){
+            !isWx && $('.product-pvuv').on('click', function(){
                 window.open($(this).attr('url-data'), '_bank');
                 var titileName = "商品";
                 if($(this).attr('is-lunbo') == '1'){
@@ -196,10 +240,20 @@
         var url = window.location.href.split('?')[0].split('#')[0];
         window.location.href = !!key ? url + '?key=' + key + '&pageNo=' + pageNo: url;
     }
+
+    function isWeiXin() {
+        var ua = window.navigator.userAgent.toLowerCase();
+        if (ua.match(/MicroMessenger/i) == 'micromessenger') {
+            return true;
+        } else {
+            return false;
+        }
+    }
 </script>
 
 <c:if test="${search == false}">
 <script type="text/javascript">
+//    轮播图
     (function (){
         var slider = new fz.Scroll('.ui-slider', {
             role: 'slider',
@@ -216,5 +270,20 @@
             console.log(cruPage)
         });
     })();
+
+//var clipboardDemos=new Clipboard('[data-clipboard-demo]');
+//clipboardDemos.on('success',
+//    function(e){
+//        e.clearSelection();
+//        console.info('Action:',e.action);
+//        console.info('Text:',e.text);
+//        console.info('Trigger:',e.trigger);
+//        showTooltip(e.trigger,'Copied!');
+//});
+//clipboardDemos.on('error',function(e){
+//    console.error('Action:',e.action);
+//    console.error('Trigger:',e.trigger);
+//    showTooltip(e.trigger,fallbackMessage(e.action));
+//});
 </script>
 </c:if>

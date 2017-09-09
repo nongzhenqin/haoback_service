@@ -12,6 +12,7 @@ public class GoodsCarouselVo {
     private String fileId;
     private String urlLink;
     private String urlLinkCoupon;
+    private String taoCommand;
     private Boolean deleted;
     private String image;
 }

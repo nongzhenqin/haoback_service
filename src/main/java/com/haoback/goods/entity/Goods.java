@@ -96,6 +96,18 @@ public class Goods extends BaseEntity<Long> {
     private String urlLinkCoupon;
 
     /**
+     * 优惠券金额
+     */
+    @Column(name = "COUPON_AMOUNT", precision = 19, scale = 2)
+    private BigDecimal couponAmount;
+
+    /**
+     * 淘口令
+     */
+    @Column(name = "TAO_COMMAND", length=100)
+    private String taoCommand;
+
+    /**
      * 是否天猫商家 true-是 false-否
      */
     @Column(name = "IS_TMALL")

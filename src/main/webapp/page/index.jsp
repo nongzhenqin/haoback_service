@@ -8,6 +8,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <html>
 <head>
     <title>沃惠挑-精挑细选优质商品</title>
@@ -154,9 +155,9 @@
                 <c:if test="${status.index != 0 && status.index % 5 == 0}">
                     <div class="col-md-2"></div>
                 </c:if>
-                <div class="col-md-4 col-style product-pvuv" id-data="${goods.id}"
-                     url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
-                    <div class="row" style="position: relative;height: 100%;">
+                <div class="col-md-4 col-style">
+                    <div class="row product-pvuv" style="cursor:pointer;position: relative;height: 100%;" id-data="${goods.id}"
+                         url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
                         <div class="col-md-24">
                             <img class="product-img" src="./upload/${goods.fileId}.jpg">
                         </div>
@@ -166,7 +167,12 @@
                         </div>
                         <div class="col-md-24" style="padding-top: 8px;text-align: left;">
                             <span class="ui-nowrap-multi ui-whitespace"
-                                  style="font-size: 12px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.name}</span>
+                                  style="font-size: 12px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">
+                                <c:if test="${goods.isTmall == true}">
+                                    <img style="width: 13px;height: 13px;" src="img/tmall.png">
+                                </c:if>
+                                    ${goods.name}
+                            </span>
                         </div>
                         <c:if test="${goods.info != null && goods.info.length() > 0}">
                             <div class="col-md-24" style="padding-top:8px;text-align: left;">
@@ -174,20 +180,22 @@
                                       style="color: #888;font-size: 10px;float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.info}</span>
                             </div>
                         </c:if>
-                        <c:if test="${goods.isTmall == true}">
-                            <div class="col-md-24" style="position: absolute;bottom: 0;">
-                                <img src="img/tmall.png"
-                                     style="height: 16px;width: 16px;float: right;margin-right: 8px;margin-bottom: 8px;">
-                            </div>
-                        </c:if>
                     </div>
+                    <a class="a-coupon" <c:if test="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0}">href="${goods.urlLinkCoupon}" target="_blank" </c:if>>
+                        <c:if test="${goods.couponAmount != null}">
+                            立即领取<span style="font-weight: bold;"><fmt:formatNumber type="number" value="${goods.couponAmount } " maxFractionDigits="0"/></span>元劵
+                        </c:if>
+                        <c:if test="${goods.couponAmount == null}">
+                            无劵
+                        </c:if>
+                    </a>
                 </div>
             </c:forEach>
             <div class="col-md-2"></div>
         </div>
 
         <c:forEach var="type" items="${goodsTypes}">
-            <div class="row">
+            <div class="row" style="margin-top: 55px;">
                 <div class="col-md-2"></div>
                 <div class="col-md-5">
                     <br>
@@ -201,9 +209,9 @@
                     <c:if test="${status.index != 0 && status.index % 5 == 0}">
                         <div class="col-md-2"></div>
                     </c:if>
-                    <div class="col-md-4 col-style product-pvuv" id-data="${goods.id}"
-                         url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
-                        <div class="row" style="position: relative;height: 100%;">
+                    <div class="col-md-4 col-style" style="<c:if test="${status.index > 4}">margin-top: 60px;</c:if>">
+                        <div class="row product-pvuv" style="cursor:pointer;position: relative;height: 100%;" id-data="${goods.id}"
+                             url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
                             <div class="col-md-24">
                                 <img class="product-img" src="./upload/${goods.fileId}.jpg">
                             </div>
@@ -213,7 +221,12 @@
                             </div>
                             <div class="col-md-24" style="padding-top: 8px;text-align: left;">
                                 <span class="ui-nowrap-multi ui-whitespace"
-                                      style="font-size: 12px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.name}</span>
+                                      style="font-size: 12px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">
+                                    <c:if test="${goods.isTmall == true}">
+                                        <img style="width: 13px;height: 13px;" src="img/tmall.png">
+                                    </c:if>
+                                        ${goods.name}
+                                </span>
                             </div>
                             <c:if test="${goods.info != null && goods.info.length() > 0}">
                                 <div class="col-md-24" style="padding-top:8px;text-align: left;">
@@ -221,13 +234,15 @@
                                           style="color: #888;font-size: 10px;float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.info}</span>
                                 </div>
                             </c:if>
-                            <c:if test="${goods.isTmall == true}">
-                                <div class="col-md-24" style="position: absolute;bottom: 0;">
-                                    <img src="img/tmall.png"
-                                         style="height: 16px;width: 16px;float: right;margin-right: 8px;margin-bottom: 8px;">
-                                </div>
-                            </c:if>
                         </div>
+                        <a class="a-coupon" <c:if test="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0}">href="${goods.urlLinkCoupon}" target="_blank" </c:if>>
+                            <c:if test="${goods.couponAmount != null}">
+                                立即领取<span style="font-weight: bold;"><fmt:formatNumber type="number" value="${goods.couponAmount } " maxFractionDigits="0"/></span>元劵
+                            </c:if>
+                            <c:if test="${goods.couponAmount == null}">
+                                无劵
+                            </c:if>
+                        </a>
                     </div>
                 </c:forEach>
                 <div class="col-md-2"></div>
@@ -246,9 +261,9 @@
                 <c:if test="${status.index != 0 && status.index % 5 == 0}">
                     <div class="col-md-2"></div>
                 </c:if>
-                <div class="col-md-4 col-style product-pvuv" id-data="${goods.id}"
-                     url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
-                    <div class="row" style="position: relative;height: 100%;">
+                <div class="col-md-4 col-style" style="<c:if test="${status.index > 4}">margin-top: 60px;</c:if>">
+                    <div class="row product-pvuv" style="cursor:pointer;position: relative;height: 100%;" id-data="${goods.id}"
+                         url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
                         <div class="col-md-24">
                             <img class="product-img" src="./upload/${goods.fileId}.jpg">
                         </div>
@@ -258,7 +273,12 @@
                         </div>
                         <div class="col-md-24" style="padding-top: 8px;text-align: left;">
                                 <span class="ui-nowrap-multi ui-whitespace"
-                                      style="font-size: 12px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.name}</span>
+                                      style="font-size: 12px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">
+                                    <c:if test="${goods.isTmall == true}">
+                                        <img style="width: 13px;height: 13px;" src="img/tmall.png">
+                                    </c:if>
+                                        ${goods.name}
+                                </span>
                         </div>
                         <c:if test="${goods.info != null && goods.info.length() > 0}">
                             <div class="col-md-24" style="padding-top:8px;text-align: left;">
@@ -266,13 +286,15 @@
                                           style="color: #888;font-size: 10px;float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">${goods.info}</span>
                             </div>
                         </c:if>
-                        <c:if test="${goods.isTmall == true}">
-                            <div class="col-md-24" style="position: absolute;bottom: 0;">
-                                <img src="img/tmall.png"
-                                     style="height: 16px;width: 16px;float: right;margin-right: 8px;margin-bottom: 8px;">
-                            </div>
-                        </c:if>
                     </div>
+                    <a class="a-coupon" <c:if test="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0}">href="${goods.urlLinkCoupon}" target="_blank" </c:if>>
+                        <c:if test="${goods.couponAmount != null}">
+                            立即领取<span style="font-weight: bold;"><fmt:formatNumber type="number" value="${goods.couponAmount } " maxFractionDigits="0"/></span>元劵
+                        </c:if>
+                        <c:if test="${goods.couponAmount == null}">
+                            无劵
+                        </c:if>
+                    </a>
                 </div>
             </c:forEach>
             <div class="col-md-2"></div>
@@ -288,13 +310,13 @@
 </c:if>
 
 <c:if test="${goodsListTotal > 10}">
-    <div class="pagec" style="text-align: center;">
+    <div class="pagec" style="text-align: center;margin-top: 60px;">
         <ul class="pagination" id="page-ul"></ul>
     </div>
 
 </c:if>
 
-<div class="row" style="width: 100%;<c:if test="${search == true}">margin-top: 25px;</c:if>">
+<div class="row" style="width: 100%;<c:if test="${search == true}">margin-top: 60px;</c:if><c:if test="${search == false}">margin-top: 30px;</c:if>">
     <div class="col-md-24" style="height: 60px;padding-top:20px;text-align:center;background-color:white;">
         我是有底线的~ © CopyRight 2017 沃惠挑
         <div class="toTop" style="display: block;background: url('img/top.png'); height: 56px; width: 56px;"

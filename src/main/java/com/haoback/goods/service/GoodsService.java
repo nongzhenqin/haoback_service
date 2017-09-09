@@ -113,6 +113,7 @@ public class GoodsService extends BaseService<Goods, Long> {
         String beginDate = (String) params.get("beginDate");
         String endDate = (String) params.get("endDate");
         String validind = (String) params.get("validind");
+        String status = (String) params.get("status");
 
         Pageable pageable = new PageRequest(pageNo, pageSize);
 
@@ -175,6 +176,11 @@ public class GoodsService extends BaseService<Goods, Long> {
                 where.add(validindPre);
             }
 
+            if("0".equals(validind) && StringUtils.isNotBlank(status)){
+                Predicate statusPre = cb.equal(root.get("status").as(String.class), status);
+                where.add(statusPre);
+            }
+
             return cb.and(where.toArray(new Predicate[]{}));
         };
 
@@ -229,6 +235,8 @@ public class GoodsService extends BaseService<Goods, Long> {
         goods.setSort(goodsVo.getSort());
         goods.setUrlLink(goodsVo.getUrlLink());
         goods.setUrlLinkCoupon(goodsVo.getUrlLinkCoupon());
+        goods.setCouponAmount(goodsVo.getCouponAmount());
+        goods.setTaoCommand(goodsVo.getTaoCommand());
         goods.setIsTmall(goodsVo.getIsTmall());
         goods.setDeleted(goodsVo.getDeleted());
         goods.setUpdateTime(new Date());

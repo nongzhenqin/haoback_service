@@ -47,7 +47,7 @@ public class GoodsServiceController {
     @ResponseBody
     public AjaxResult findByPage(Integer pageNo, Integer pageSize, String goodsType,
                                  String name, String beginDate, String endDate, String validind,
-                                 HttpServletRequest request){
+                                 String status, HttpServletRequest request){
 
         AjaxResult ajaxresult = new AjaxResult();
         Map<String, Object> datas = new HashMap<>();
@@ -60,6 +60,7 @@ public class GoodsServiceController {
         params.put("beginDate", beginDate);
         params.put("endDate", endDate);
         params.put("validind", validind);
+        params.put("status", status);
 
         Page<GoodsVo> page = goodsService.findByPageService(params);
 

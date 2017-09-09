@@ -36,5 +36,7 @@ public class GoodsVo implements Serializable {
     private Boolean deleted;
     private String urlLink;
     private String urlLinkCoupon;
+    private BigDecimal couponAmount;
+    private String taoCommand;
     private Boolean isTmall;
 }
