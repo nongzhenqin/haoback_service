@@ -16,15 +16,15 @@
     <meta name="Keywords" content="沃惠挑,优选,生活,9块9,热销推荐,特卖,优选折扣,优品">
     <meta name="Description" content="沃惠挑,优选-优惠券折扣，人工筛选，每天更新，折扣多多">
 
-    <link href="img/favicon.ico" rel="shortcut icon" type="image/x-icon">
-    <link href="img/favicon.ico" rel="icon" type="image/x-icon">
-    <link rel="stylesheet" href="static/frozen/css/frozen.css">
-    <link rel="stylesheet" href="css/index_phone.css?t=<%=UUID.randomUUID().toString()%>">
+    <link href="${ctx}img/favicon.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="${ctx}img/favicon.ico" rel="icon" type="image/x-icon">
+    <link rel="stylesheet" href="${ctx}static/frozen/css/frozen.css">
+    <link rel="stylesheet" href="${ctx}css/index_phone.css?t=<%=UUID.randomUUID().toString()%>">
 
     <%--<script src="static/jquery-2.2.4.min.js"></script>--%>
-    <script src="static/frozen/lib/zepto.min.js"></script>
-    <script src="static/frozen/js/frozen.js"></script>
-    <script src="static/clipboard/clipboard.min.js"></script>
+    <script src="${ctx}static/frozen/lib/zepto.min.js"></script>
+    <script src="${ctx}static/frozen/js/frozen.js"></script>
+    <script src="${ctx}static/clipboard/clipboard.min.js"></script>
 </head>
 
 <body ontouchstart>
@@ -91,7 +91,7 @@
         <%--<li><span style="background-image:url(./upload/22fa46cb-bef4-44f2-82d3-39984fadaa1b.jpg)"></span></li>--%>
         <%--<li><span style="background-image:url(./upload/34fd55b4-7c99-4260-a23b-919fc44c76e6.jpg)"></span></li>--%>
         <c:forEach var="goodsCarousel" items="${goodsCarouselList}" varStatus="status">
-            <li><img class="product-pvuv" data-clipboard-text="${goodsCarousel.taoCommand}" is-lunbo="1" style="width: 100%;height: 100%;" src="./upload/${goodsCarousel.fileId}.jpg" id-data="${goodsCarousel.id}" url-data="${goodsCarousel.urlLinkCoupon != null && goodsCarousel.urlLinkCoupon.length() > 0 ? goodsCarousel.urlLinkCoupon : goodsCarousel.urlLink}" alt="优质生活，每日更新" /></li>
+            <li><img class="product-pvuv" data-clipboard-text="${goodsCarousel.taoCommand}" is-lunbo="1" style="width: 100%;height: 100%;" src="${ctx}/upload/${goodsCarousel.fileId}.jpg" id-data="${goodsCarousel.id}" url-data="${goodsCarousel.urlLinkCoupon != null && goodsCarousel.urlLinkCoupon.length() > 0 ? goodsCarousel.urlLinkCoupon : goodsCarousel.urlLink}" alt="优质生活，每日更新" /></li>
         </c:forEach>
     </ul>
 </div>
@@ -104,12 +104,12 @@
             </li>
             <c:forEach var="goods" items="${goodsTypesHot}" varStatus="status">
                 <li class="ui-col ui-col-50 product-pvuv" data-clipboard-text="${goods.taoCommand}" style="text-align: left;height: 290px;background-color: rgb(255,255,255);" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
-                    <img class="product-img" style="width: 100%; height: auto;" src="./upload/${goods.fileId}.jpg">
+                    <img class="product-img" style="width: 100%; height: auto;" src="${ctx}/upload/${goods.fileId}.jpg">
                     <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
                     <span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">销量&nbsp;${goods.salesNum}</span>
                     <span class="ui-nowrap-multi ui-whitespace" style="font-size: 14px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">
                         <c:if test="${goods.isTmall == true}">
-                            <img src="img/tmall.png" style="height: 13px;width: 13px;">
+                            <img src="${ctx}img/tmall.png" style="height: 13px;width: 13px;">
                         </c:if>
                             ${goods.name}
                     </span>
@@ -127,12 +127,12 @@
                 </li>
                 <c:forEach var="goods" items="${type.goodsList}" varStatus="status">
                     <li class="ui-col ui-col-50 product-pvuv" data-clipboard-text="${goods.taoCommand}" style="text-align: left;height: 310px;background-color: rgb(255,255,255);" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
-                        <img class="product-img" style="width: 100%; height: auto;" src="./upload/${goods.fileId}.jpg">
+                        <img class="product-img" style="width: 100%; height: auto;" src="${ctx}/upload/${goods.fileId}.jpg">
                         <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
                         <span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">销量&nbsp;${goods.salesNum}</span>
                         <span class="ui-nowrap-multi ui-whitespace" style="font-size: 14px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">
                             <c:if test="${goods.isTmall == true}">
-                                <img src="img/tmall.png" style="height: 13px;width: 13px;">
+                                <img src="${ctx}img/tmall.png" style="height: 13px;width: 13px;">
                             </c:if>
                                 ${goods.name}
                         </span>
@@ -157,12 +157,12 @@
             <%--</li>--%>
             <c:forEach var="goods" items="${goodsList}" varStatus="status">
                 <li class="ui-col ui-col-50 product-pvuv" data-clipboard-text="${goods.taoCommand}" style="text-align: left;height: 310px;background-color: rgb(255,255,255);" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
-                    <img class="product-img" style="width: 100%; height: auto;" src="./upload/${goods.fileId}.jpg">
+                    <img class="product-img" style="width: 100%; height: auto;" src="${ctx}/upload/${goods.fileId}.jpg">
                     <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
                     <span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">销量&nbsp;${goods.salesNum}</span>
                     <span class="ui-nowrap-multi ui-whitespace" style="font-size: 14px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">
                         <c:if test="${goods.isTmall == true}">
-                            <img src="img/tmall.png" style="height: 13px;width: 13px;">
+                            <img src="${ctx}img/tmall.png" style="height: 13px;width: 13px;">
                         </c:if>
                             ${goods.name}
                     </span>

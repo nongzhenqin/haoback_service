@@ -15,6 +15,7 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextImpl;
@@ -38,6 +39,9 @@ import java.util.Map;
  */
 @Controller
 public class IndexController {
+
+    @Value("${window.ctx}")
+    private String ctx;
 
     @Autowired
     private SysMenuService sysMenuService;
@@ -168,6 +172,7 @@ public class IndexController {
             }
         }
         mav.addObject("isSpider", isSpider);
+        mav.addObject("ctx", ctx);
 
         return mav;
     }

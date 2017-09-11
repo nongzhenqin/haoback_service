@@ -17,6 +17,8 @@
 		后面，我们处理响应ajax请求时，就使用到了对json的支持。后面，对action写JUnit单元测试时，要从spring IOC容器中取DefaultAnnotationHandlerMapping与
 		AnnotationMethodHandlerAdapter 两个bean，来完成测试，取的时候要知道是<mvc:annotation-driven />这一句注册的这两个bean。 -->
 	<mvc:annotation-driven></mvc:annotation-driven>
+
+	<context:property-placeholder location="classpath:resources.properties" />
 	
 	<!-- 静态文件映射 -->
 	<mvc:resources location="/css/" mapping="/css/**"></mvc:resources>

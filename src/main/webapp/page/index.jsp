@@ -15,22 +15,22 @@
     <meta name="Keywords" content="沃惠挑,优选,生活,9块9,热销推荐,特卖,优选折扣,优品">
     <meta name="Description" content="沃惠挑,优选-优惠券折扣，人工筛选，每天更新，折扣多多">
 
-    <link href="img/favicon.ico" rel="shortcut icon" type="image/x-icon">
-    <link href="img/favicon.ico" rel="icon" type="image/x-icon">
+    <link href="${ctx}img/favicon.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="${ctx}img/favicon.ico" rel="icon" type="image/x-icon">
 
     <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
     <%--<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">--%>
-    <link rel="stylesheet" href="static/bootstrap-3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/index.css?t=<%=UUID.randomUUID().toString()%>">
-    <link rel="stylesheet" href="static/frozen/css/frozen.css">
+    <link rel="stylesheet" href="${ctx}static/bootstrap-3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="${ctx}css/index.css?t=<%=UUID.randomUUID().toString()%>">
+    <link rel="stylesheet" href="${ctx}static/frozen/css/frozen.css">
 
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
     <%--<script src="http://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>--%>
 
-    <script src="static/jquery-3.2.1.min.js"></script>
-    <script src="static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
-    <script src="static/scrollTop.js"></script>
-    <script src="static/page.js?t=<%=UUID.randomUUID().toString()%>"></script>
+    <script src="${ctx}static/jquery-3.2.1.min.js"></script>
+    <script src="${ctx}static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="${ctx}static/scrollTop.js"></script>
+    <script src="${ctx}static/page.js"></script>
 
 </head>
 
@@ -50,7 +50,7 @@
     <div class="col-md-2"></div>
     <div class="col-md-3">
         <a href="./">
-            <img style="width: 175px;height: 75px;margin-top: -20px;margin-left: -10px;" src="img/logo.png">
+            <img style="width: 175px;height: 75px;margin-top: -20px;margin-left: -10px;" src="${ctx}img/logo.png">
         </a>
     </div>
     <div class="col-md-8">
@@ -108,7 +108,7 @@
         <div class="carousel-inner" role="listbox">
             <c:forEach var="goodsCarousel" items="${goodsCarouselList}" varStatus="status">
                 <div class="item<c:if test="${status.index == 0}"> active</c:if>">
-                    <img class="product-pvuv" src="./upload/${goodsCarousel.fileId}.jpg" id-data="${goodsCarousel.id}" is-lunbo="1" onclick="window.open('${goodsCarousel.urlLinkCoupon != null && goodsCarousel.urlLinkCoupon.length() > 0 ? goodsCarousel.urlLinkCoupon : goodsCarousel.urlLink}', '_bank')" style="width: 100%;height: 400px;" alt="优质生活，每日更新">
+                    <img class="product-pvuv" src="${ctx}upload/${goodsCarousel.fileId}.jpg" id-data="${goodsCarousel.id}" is-lunbo="1" onclick="window.open('${goodsCarousel.urlLinkCoupon != null && goodsCarousel.urlLinkCoupon.length() > 0 ? goodsCarousel.urlLinkCoupon : goodsCarousel.urlLink}', '_bank')" style="width: 100%;height: 400px;" alt="优质生活，每日更新">
                     <div class="carousel-caption"></div>
                 </div>
             </c:forEach>
@@ -159,7 +159,7 @@
                     <div class="row product-pvuv" style="cursor:pointer;position: relative;height: 100%;" id-data="${goods.id}"
                          url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
                         <div class="col-md-24">
-                            <img class="product-img" src="./upload/${goods.fileId}.jpg">
+                            <img class="product-img" src="${ctx}/upload/${goods.fileId}.jpg">
                         </div>
                         <div class="col-md-24" style="padding-top:8px;">
                             <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
@@ -169,7 +169,7 @@
                             <span class="ui-nowrap-multi ui-whitespace"
                                   style="font-size: 12px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">
                                 <c:if test="${goods.isTmall == true}">
-                                    <img style="width: 13px;height: 13px;" src="img/tmall.png">
+                                    <img style="width: 13px;height: 13px;" src="${ctx}img/tmall.png">
                                 </c:if>
                                     ${goods.name}
                             </span>
@@ -213,7 +213,7 @@
                         <div class="row product-pvuv" style="cursor:pointer;position: relative;height: 100%;" id-data="${goods.id}"
                              url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
                             <div class="col-md-24">
-                                <img class="product-img" src="./upload/${goods.fileId}.jpg">
+                                <img class="product-img" src="${ctx}/upload/${goods.fileId}.jpg">
                             </div>
                             <div class="col-md-24" style="padding-top:8px;">
                                 <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
@@ -223,7 +223,7 @@
                                 <span class="ui-nowrap-multi ui-whitespace"
                                       style="font-size: 12px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">
                                     <c:if test="${goods.isTmall == true}">
-                                        <img style="width: 13px;height: 13px;" src="img/tmall.png">
+                                        <img style="width: 13px;height: 13px;" src="${ctx}img/tmall.png">
                                     </c:if>
                                         ${goods.name}
                                 </span>
@@ -265,7 +265,7 @@
                     <div class="row product-pvuv" style="cursor:pointer;position: relative;height: 100%;" id-data="${goods.id}"
                          url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
                         <div class="col-md-24">
-                            <img class="product-img" src="./upload/${goods.fileId}.jpg">
+                            <img class="product-img" src="${ctx}/upload/${goods.fileId}.jpg">
                         </div>
                         <div class="col-md-24" style="padding-top:8px;">
                             <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
@@ -275,7 +275,7 @@
                                 <span class="ui-nowrap-multi ui-whitespace"
                                       style="font-size: 12px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">
                                     <c:if test="${goods.isTmall == true}">
-                                        <img style="width: 13px;height: 13px;" src="img/tmall.png">
+                                        <img style="width: 13px;height: 13px;" src="${ctx}img/tmall.png">
                                     </c:if>
                                         ${goods.name}
                                 </span>
