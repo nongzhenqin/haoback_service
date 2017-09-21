@@ -174,11 +174,11 @@ public class IndexController {
             }
         }
         mav.addObject("isSpider", isSpider);
-        if(request.getRequestURL().indexOf("//www.") > -1){
-            mav.addObject("ctx", ctxWWW);
-        }else{
-            mav.addObject("ctx", ctx);
-        }
+
+//        String requestURL = request.getRequestURL().toString();
+//        if(!requestURL.contains("localhost") && !requestURL.contains("127.0.0.1") && requestURL.indexOf("//www.") > -1){
+//            mav.addObject("ctx", ctxWWW);
+//        }
 
         return mav;
     }

@@ -91,7 +91,7 @@
         <%--<li><span style="background-image:url(./upload/22fa46cb-bef4-44f2-82d3-39984fadaa1b.jpg)"></span></li>--%>
         <%--<li><span style="background-image:url(./upload/34fd55b4-7c99-4260-a23b-919fc44c76e6.jpg)"></span></li>--%>
         <c:forEach var="goodsCarousel" items="${goodsCarouselList}" varStatus="status">
-            <li><img class="product-pvuv" data-clipboard-text="${goodsCarousel.taoCommand}" is-lunbo="1" style="width: 100%;height: 100%;" src="${ctx}/upload/${goodsCarousel.fileId}.jpg" id-data="${goodsCarousel.id}" url-data="${goodsCarousel.urlLinkCoupon != null && goodsCarousel.urlLinkCoupon.length() > 0 ? goodsCarousel.urlLinkCoupon : goodsCarousel.urlLink}" alt="优质生活，每日更新" /></li>
+            <li><img class="product-pvuv" data-clipboard-text="${goodsCarousel.taoCommand}" is-lunbo="1" style="width: 100%;height: 100%;" src="${ctx}upload/${goodsCarousel.fileId}.jpg" id-data="${goodsCarousel.id}" url-data="${goodsCarousel.urlLinkCoupon != null && goodsCarousel.urlLinkCoupon.length() > 0 ? goodsCarousel.urlLinkCoupon : goodsCarousel.urlLink}" alt="优质生活，每日更新" /></li>
         </c:forEach>
     </ul>
 </div>
@@ -103,8 +103,8 @@
                 <h4 class="h4-title">热销推荐</h4>
             </li>
             <c:forEach var="goods" items="${goodsTypesHot}" varStatus="status">
-                <li class="ui-col ui-col-50 product-pvuv" data-clipboard-text="${goods.taoCommand}" style="text-align: left;height: 290px;background-color: rgb(255,255,255);" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
-                    <img class="product-img" style="width: 100%; height: auto;" src="${ctx}/upload/${goods.fileId}.jpg">
+                <li class="ui-col ui-col-50 product-pvuv" onclick="void(0)" data-clipboard-text="${goods.taoCommand}" style="text-align: left;height: 290px;background-color: rgb(255,255,255);" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
+                    <img class="product-img" style="width: 100%; height: auto;" src="${ctx}upload/${goods.fileId}.jpg">
                     <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
                     <span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">销量&nbsp;${goods.salesNum}</span>
                     <span class="ui-nowrap-multi ui-whitespace" style="font-size: 14px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">
@@ -126,8 +126,8 @@
                     <h4 class="h4-title">${type.name}</h4>
                 </li>
                 <c:forEach var="goods" items="${type.goodsList}" varStatus="status">
-                    <li class="ui-col ui-col-50 product-pvuv" data-clipboard-text="${goods.taoCommand}" style="text-align: left;height: 310px;background-color: rgb(255,255,255);" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
-                        <img class="product-img" style="width: 100%; height: auto;" src="${ctx}/upload/${goods.fileId}.jpg">
+                    <li class="ui-col ui-col-50 product-pvuv" onclick="void(0)" data-clipboard-text="${goods.taoCommand}" style="text-align: left;height: 310px;background-color: rgb(255,255,255);" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
+                        <img class="product-img" style="width: 100%; height: auto;" src="${ctx}upload/${goods.fileId}.jpg">
                         <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
                         <span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">销量&nbsp;${goods.salesNum}</span>
                         <span class="ui-nowrap-multi ui-whitespace" style="font-size: 14px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">
@@ -156,8 +156,8 @@
                 <%--<h4 class="h4-title">${type.name}</h4>--%>
             <%--</li>--%>
             <c:forEach var="goods" items="${goodsList}" varStatus="status">
-                <li class="ui-col ui-col-50 product-pvuv" data-clipboard-text="${goods.taoCommand}" style="text-align: left;height: 310px;background-color: rgb(255,255,255);" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
-                    <img class="product-img" style="width: 100%; height: auto;" src="${ctx}/upload/${goods.fileId}.jpg">
+                <li class="ui-col ui-col-50 product-pvuv" onclick="void(0)" data-clipboard-text="${goods.taoCommand}" style="text-align: left;height: 310px;background-color: rgb(255,255,255);" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
+                    <img class="product-img" style="width: 100%; height: auto;" src="${ctx}upload/${goods.fileId}.jpg">
                     <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
                     <span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">销量&nbsp;${goods.salesNum}</span>
                     <span class="ui-nowrap-multi ui-whitespace" style="font-size: 14px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">
@@ -189,7 +189,7 @@
         if(isWx){
             var clipboard = new Clipboard('.product-pvuv');
             clipboard.on('success',function(e){
-                    e.clearSelection();
+//                    e.clearSelection();
 //                    console.info('Action:',e.action);
 //                    console.info('Text:',e.text);
 //                    console.info('Trigger:',e.trigger);
@@ -202,6 +202,9 @@
                     // 保存pv
                     $.post('./goods/pv_uv', {goodsId: $(e.trigger).attr('id-data'), referer: document.referrer.toLowerCase(), titileName: titileName, flag: "mobile"});
                 });
+            clipboard.on('error', function(e){
+                alert(e);
+            });
         }
 
         // 点击事件
@@ -263,11 +266,11 @@
         });
 
         slider.on('beforeScrollStart', function(fromIndex, toIndex) {
-            console.log(fromIndex,toIndex)
+//            console.log(fromIndex,toIndex)
         });
 
         slider.on('scrollEnd', function(cruPage) {
-            console.log(cruPage)
+//            console.log(cruPage)
         });
     })();
 

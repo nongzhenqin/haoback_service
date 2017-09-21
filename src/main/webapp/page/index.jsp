@@ -159,7 +159,7 @@
                     <div class="row product-pvuv" style="cursor:pointer;position: relative;height: 100%;" id-data="${goods.id}"
                          url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
                         <div class="col-md-24">
-                            <img class="product-img" src="${ctx}/upload/${goods.fileId}.jpg">
+                            <img class="product-img" src="${ctx}upload/${goods.fileId}.jpg">
                         </div>
                         <div class="col-md-24" style="padding-top:8px;">
                             <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
@@ -213,7 +213,7 @@
                         <div class="row product-pvuv" style="cursor:pointer;position: relative;height: 100%;" id-data="${goods.id}"
                              url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
                             <div class="col-md-24">
-                                <img class="product-img" src="${ctx}/upload/${goods.fileId}.jpg">
+                                <img class="product-img" src="${ctx}upload/${goods.fileId}.jpg">
                             </div>
                             <div class="col-md-24" style="padding-top:8px;">
                                 <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
@@ -265,7 +265,7 @@
                     <div class="row product-pvuv" style="cursor:pointer;position: relative;height: 100%;" id-data="${goods.id}"
                          url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
                         <div class="col-md-24">
-                            <img class="product-img" src="${ctx}/upload/${goods.fileId}.jpg">
+                            <img class="product-img" src="${ctx}upload/${goods.fileId}.jpg">
                         </div>
                         <div class="col-md-24" style="padding-top:8px;">
                             <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
