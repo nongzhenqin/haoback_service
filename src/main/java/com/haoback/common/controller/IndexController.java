@@ -42,6 +42,8 @@ public class IndexController {
 
     @Value("${window.ctx}")
     private String ctx;
+    @Value("${window.ctx.www}")
+    private String ctxWWW;
 
     @Autowired
     private SysMenuService sysMenuService;
@@ -55,8 +57,8 @@ public class IndexController {
     // 搜索引擎蜘蛛URL
     private List<String> spider = new ArrayList<>();
     {
-        spider.add("google.");
-        spider.add("baidu.");
+        spider.add("google.com/bot.html");
+        spider.add("baidu.com/search/spider.htm");
         spider.add("soso.");
         spider.add("so.");
         spider.add("360.");
@@ -172,7 +174,11 @@ public class IndexController {
             }
         }
         mav.addObject("isSpider", isSpider);
-        mav.addObject("ctx", ctx);
+        if(request.getRequestURL().indexOf("//www.") > -1){
+            mav.addObject("ctx", ctxWWW);
+        }else{
+            mav.addObject("ctx", ctx);
+        }
 
         return mav;
     }

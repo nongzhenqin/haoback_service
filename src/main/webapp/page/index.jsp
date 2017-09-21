@@ -15,22 +15,22 @@
     <meta name="Keywords" content="沃惠挑,优选,生活,9块9,热销推荐,特卖,优选折扣,优品">
     <meta name="Description" content="沃惠挑,优选-优惠券折扣，人工筛选，每天更新，折扣多多">
 
-    <link href="${ctx}img/favicon.ico" rel="shortcut icon" type="image/x-icon">
-    <link href="${ctx}img/favicon.ico" rel="icon" type="image/x-icon">
+    <link href="img/favicon.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="img/favicon.ico" rel="icon" type="image/x-icon">
 
     <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
     <%--<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">--%>
-    <link rel="stylesheet" href="${ctx}static/bootstrap-3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="${ctx}css/index.css?t=<%=UUID.randomUUID().toString()%>">
-    <link rel="stylesheet" href="${ctx}static/frozen/css/frozen.css">
+    <link rel="stylesheet" href="static/bootstrap-3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/index.css?t=<%=UUID.randomUUID().toString()%>">
+    <link rel="stylesheet" href="static/frozen/css/frozen.css">
 
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
     <%--<script src="http://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>--%>
 
-    <script src="${ctx}static/jquery-3.2.1.min.js"></script>
-    <script src="${ctx}static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
-    <script src="${ctx}static/scrollTop.js"></script>
-    <script src="${ctx}static/page.js"></script>
+    <script src="static/jquery-3.2.1.min.js"></script>
+    <script src="static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="static/scrollTop.js"></script>
+    <script src="static/page.js"></script>
 
 </head>
 

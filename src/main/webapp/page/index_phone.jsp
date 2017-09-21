@@ -16,15 +16,15 @@
     <meta name="Keywords" content="沃惠挑,优选,生活,9块9,热销推荐,特卖,优选折扣,优品">
     <meta name="Description" content="沃惠挑,优选-优惠券折扣，人工筛选，每天更新，折扣多多">
 
-    <link href="${ctx}img/favicon.ico" rel="shortcut icon" type="image/x-icon">
-    <link href="${ctx}img/favicon.ico" rel="icon" type="image/x-icon">
-    <link rel="stylesheet" href="${ctx}static/frozen/css/frozen.css">
-    <link rel="stylesheet" href="${ctx}css/index_phone.css?t=<%=UUID.randomUUID().toString()%>">
+    <link href="img/favicon.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="img/favicon.ico" rel="icon" type="image/x-icon">
+    <link rel="stylesheet" href="static/frozen/css/frozen.css">
+    <link rel="stylesheet" href="css/index_phone.css?t=<%=UUID.randomUUID().toString()%>">
 
     <%--<script src="static/jquery-2.2.4.min.js"></script>--%>
-    <script src="${ctx}static/frozen/lib/zepto.min.js"></script>
-    <script src="${ctx}static/frozen/js/frozen.js"></script>
-    <script src="${ctx}static/clipboard/clipboard.min.js"></script>
+    <script src="static/frozen/lib/zepto.min.js"></script>
+    <script src="static/frozen/js/frozen.js"></script>
+    <script src="static/clipboard/clipboard.min.js"></script>
 </head>
 
 <body ontouchstart>
