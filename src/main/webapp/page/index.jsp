@@ -96,33 +96,35 @@
         </div>
     </div>
     <%--轮播图--%>
-    <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-        <!-- Indicators -->
-        <ol class="carousel-indicators">
-            <c:forEach var="goodsCarousel" items="${goodsCarouselList}" varStatus="status">
-                <li data-target="#carousel-example-generic" data-slide-to="${status.index}" <c:if test="${status.index == 0}">class="active"</c:if>></li>
-            </c:forEach>
-        </ol>
+    <div class="row">
+        <div id="carousel-example-generic" class="carousel slide top-div" style="margin: 0 auto;" data-ride="carousel">
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+                <c:forEach var="goodsCarousel" items="${goodsCarouselList}" varStatus="status">
+                    <li data-target="#carousel-example-generic" data-slide-to="${status.index}" <c:if test="${status.index == 0}">class="active"</c:if>></li>
+                </c:forEach>
+            </ol>
 
-        <!-- Wrapper for slides -->
-        <div class="carousel-inner" role="listbox">
-            <c:forEach var="goodsCarousel" items="${goodsCarouselList}" varStatus="status">
-                <div class="item<c:if test="${status.index == 0}"> active</c:if>">
-                    <img class="product-pvuv" src="${ctx}upload/${goodsCarousel.fileId}.jpg" id-data="${goodsCarousel.id}" is-lunbo="1" onclick="window.open('${goodsCarousel.urlLinkCoupon != null && goodsCarousel.urlLinkCoupon.length() > 0 ? goodsCarousel.urlLinkCoupon : goodsCarousel.urlLink}', '_bank')" style="width: 100%;height: 400px;" alt="优质生活，每日更新">
-                    <div class="carousel-caption"></div>
-                </div>
-            </c:forEach>
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner" role="listbox">
+                <c:forEach var="goodsCarousel" items="${goodsCarouselList}" varStatus="status">
+                    <div class="item<c:if test="${status.index == 0}"> active</c:if>">
+                        <img class="product-pvuv" src="${ctx}upload/${goodsCarousel.fileId}.jpg" id-data="${goodsCarousel.id}" is-lunbo="1" onclick="window.open('${goodsCarousel.urlLinkCoupon != null && goodsCarousel.urlLinkCoupon.length() > 0 ? goodsCarousel.urlLinkCoupon : goodsCarousel.urlLink}', '_bank')" style="width: 100%;height: 400px;" alt="优质生活，每日更新">
+                        <div class="carousel-caption"></div>
+                    </div>
+                </c:forEach>
+            </div>
+
+            <!-- Controls -->
+            <a style="background-image: none;" class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a style="background-image: none;" class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
         </div>
-
-        <!-- Controls -->
-        <a style="background-image: none;" class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
-            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-        </a>
-        <a style="background-image: none;" class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
-            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-        </a>
     </div>
 </c:if>
 

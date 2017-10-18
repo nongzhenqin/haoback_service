@@ -188,10 +188,8 @@ public class AutoTaskService {
         for(MailInfo m : mailInfoList){
             mailInfo.setToAddress(Arrays.asList(m.getEmail()));
             boolean result = MailUtil.sendEmail(mailInfo, mailConfig);
-            if(result){
-                m.setIsSend(true);// 发送成功后设置已发送标志
-                mailInfoService.update(m);
-            }
+            m.setIsSend(true);// 发送成功后设置已发送标志，无论是否成功
+            mailInfoService.update(m);
         }
     }
 }
