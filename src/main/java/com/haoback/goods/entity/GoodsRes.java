@@ -33,6 +33,12 @@ public class GoodsRes extends BaseEntity<Long> {
     private String type;
 
     /**
+     * 淘宝商品主图url
+     */
+    @Column(name = "pic_url", length = 255)
+    private String picUrl;
+
+    /**
      * 图片文件名
      */
     @Column(name = "FILE_ID", length = 255)

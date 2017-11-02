@@ -502,5 +502,14 @@
             <artifactId>webmagic-extension</artifactId>
             <version>0.7.3</version>
         </dependency>
+
+        <!--淘宝联盟API SDK-->
+        <dependency>
+            <groupId>com</groupId>
+            <artifactId>taobao-sdk-java-auto_1508127863586-20171102</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/taobao-sdk-java-auto_1508127863586-20171102.jar</systemPath>
+        </dependency>
     </dependencies>
 </project>

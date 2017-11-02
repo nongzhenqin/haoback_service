@@ -22,6 +22,12 @@ public class Goods extends BaseEntity<Long> {
     private static final long serialVersionUID = 382622447525273329L;
 
     /**
+     * 淘宝商品ID
+     */
+    @Column(name = "goods_id", length=20)
+    private Long goodsId;
+
+    /**
      * 商品名称
      */
     @Column(name = "NAME", length=255)

@@ -6,6 +6,7 @@ import com.haoback.common.utils.CommonUtils;
 import com.haoback.goods.service.GoodsService;
 import com.haoback.goods.vo.GoodsVo;
 import com.haoback.sys.entity.SysUser;
+import com.taobao.api.ApiException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 商品服务端控制器
+ * 商品管理平台端控制器
  * Created by nong on 2017/6/15.
  */
 @Controller
@@ -154,6 +155,31 @@ public class GoodsServiceController {
         autoTaskService.autoGetTaoBaoInfo();
 
         datas.put("code", "1");
+        ajaxresult.setDatas(datas);
+        ajaxresult.setStatus(HttpStatus.SC_OK);
+        return ajaxresult;
+    }
+
+    /**
+     * 从淘宝联盟选品库拉取商品
+     * @return
+     */
+    @RequestMapping(value = "/getGoods", method = RequestMethod.POST)
+    @ResponseBody
+    @PreAuthorize("hasPermission('com.haoback.goods.controller.GoodsServiceController', 'update')")
+    public AjaxResult getGoodsFromTaobao(HttpServletRequest request){
+        AjaxResult ajaxresult = new AjaxResult();
+        Map<String, Object> datas = new HashMap<>();
+
+        SysUser sysUser = CommonUtils.getSysUser(request);
+        try {
+            datas = goodsService.saveGoodsFromTaobao(sysUser);
+        } catch (ApiException e) {
+            e.printStackTrace();
+            datas.put("code", "0");
+            datas.put("msg", e.getErrCode()+" | "+e.getErrMsg());
+        }
+
         ajaxresult.setDatas(datas);
         ajaxresult.setStatus(HttpStatus.SC_OK);
         return ajaxresult;

@@ -10,7 +10,7 @@
 	<!-- 引入属性文件 -->
 	<context:property-placeholder location="classpath:resources.properties" />
 	<context:property-placeholder location="classpath:log4j.properties" />
-	
+
 	<!-- 启用spring 注解 -->
 	<context:annotation-config></context:annotation-config>
 

@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 商品控制器
+ * 商品用户端控制器
  * Created by nong on 2017/6/5.
  */
 @Controller

@@ -15,6 +15,7 @@ import java.util.Date;
 @Setter
 public class GoodsVo implements Serializable {
     private Long id;
+    private Long goodsId;
     private String name;
     private String info;
     private String brand;
@@ -33,6 +34,7 @@ public class GoodsVo implements Serializable {
     private SysUser updateOperatorId;
     private String updateOperatorName;
     private String fileId;// 商品缩略图名称
+    private String picUrl;// 淘宝商品主图url
     private Boolean deleted;
     private String urlLink;
     private String urlLinkCoupon;

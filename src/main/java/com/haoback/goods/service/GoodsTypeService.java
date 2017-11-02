@@ -36,4 +36,13 @@ public class GoodsTypeService extends BaseService<GoodsType, Long> {
         goodsType.setDeleted(true);
         this.update(goodsType);
     }
+
+    /**
+     * 通过类目名称查找
+     * @param name
+     * @return
+     */
+    public GoodsType findByName(String name){
+        return goodsTypeRepository.findByName(name);
+    }
 }

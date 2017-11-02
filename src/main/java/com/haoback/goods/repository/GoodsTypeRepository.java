@@ -17,4 +17,12 @@ public interface GoodsTypeRepository extends BaseRepository<GoodsType, Long> {
      */
     @Query("select t from GoodsType t where t.deleted = false")
     List<GoodsType> findAll();
+
+    /**
+     * 通过类目名称查找
+     * @param name
+     * @return
+     */
+    @Query("select t from GoodsType t where t.name = ?1")
+    GoodsType findByName(String name);
 }

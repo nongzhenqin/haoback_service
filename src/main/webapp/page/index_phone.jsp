@@ -104,7 +104,7 @@
             </li>
             <c:forEach var="goods" items="${goodsTypesHot}" varStatus="status">
                 <li class="ui-col ui-col-50 product-pvuv" onclick="void(0)" data-clipboard-text="${goods.taoCommand}" style="text-align: left;height: 290px;background-color: rgb(255,255,255);" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
-                    <img class="product-img" style="width: 100%; height: auto;" src="${ctx}upload/${goods.fileId}.jpg">
+                    <img class="product-img" style="width: 100%; height: auto;" src="${goods.picUrl == null ? (ctx==null?'':ctx).concat('upload/').concat(goods.fileId).concat('.jpg') : goods.picUrl}">
                     <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
                     <span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">销量&nbsp;${goods.salesNum}</span>
                     <span class="ui-nowrap-multi ui-whitespace" style="font-size: 14px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">
@@ -127,7 +127,7 @@
                 </li>
                 <c:forEach var="goods" items="${type.goodsList}" varStatus="status">
                     <li class="ui-col ui-col-50 product-pvuv" onclick="void(0)" data-clipboard-text="${goods.taoCommand}" style="text-align: left;height: 310px;background-color: rgb(255,255,255);" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
-                        <img class="product-img" style="width: 100%; height: auto;" src="${ctx}upload/${goods.fileId}.jpg">
+                        <img class="product-img" style="width: 100%; height: auto;" src="${goods.picUrl == null ? (ctx==null?'':ctx).concat('upload/').concat(goods.fileId).concat('.jpg') : goods.picUrl}">
                         <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
                         <span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">销量&nbsp;${goods.salesNum}</span>
                         <span class="ui-nowrap-multi ui-whitespace" style="font-size: 14px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">
@@ -157,7 +157,7 @@
             <%--</li>--%>
             <c:forEach var="goods" items="${goodsList}" varStatus="status">
                 <li class="ui-col ui-col-50 product-pvuv" onclick="void(0)" data-clipboard-text="${goods.taoCommand}" style="text-align: left;height: 310px;background-color: rgb(255,255,255);" id-data="${goods.id}" url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
-                    <img class="product-img" style="width: 100%; height: auto;" src="${ctx}upload/${goods.fileId}.jpg">
+                    <img class="product-img" style="width: 100%; height: auto;" src="${goods.picUrl == null ? (ctx==null?'':ctx).concat('upload/').concat(goods.fileId).concat('.jpg') : goods.picUrl}">
                     <strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥${goods.price}</strong>
                     <span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">销量&nbsp;${goods.salesNum}</span>
                     <span class="ui-nowrap-multi ui-whitespace" style="font-size: 14px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,'Hiragino Sans GB', 宋体,sans-serif;">

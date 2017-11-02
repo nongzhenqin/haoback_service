@@ -171,7 +171,7 @@ public class AutoTaskService {
     /**
      * 自动发营销邮件
      */
-    @Scheduled(cron="0 0 7 * * ?")// 每天早上7点执行
+//    @Scheduled(cron="0 0 7 * * ?")// 每天早上7点执行
     public void autoSendADByMail(){
 
         Pageable pageableMailInfo = new PageRequest(0, 100);

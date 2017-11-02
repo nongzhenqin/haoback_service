@@ -1,5 +1,7 @@
 package com.haoback.goods.service;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.haoback.common.service.BaseService;
 import com.haoback.common.utils.ImageUtil;
 import com.haoback.goods.entity.Goods;
@@ -8,9 +10,20 @@ import com.haoback.goods.entity.GoodsType;
 import com.haoback.goods.repository.GoodsRepository;
 import com.haoback.goods.vo.GoodsVo;
 import com.haoback.sys.entity.SysUser;
+import com.taobao.api.ApiException;
+import com.taobao.api.DefaultTaobaoClient;
+import com.taobao.api.TaobaoClient;
+import com.taobao.api.request.TbkTpwdCreateRequest;
+import com.taobao.api.request.TbkUatmFavoritesGetRequest;
+import com.taobao.api.request.TbkUatmFavoritesItemGetRequest;
+import com.taobao.api.response.TbkTpwdCreateResponse;
+import com.taobao.api.response.TbkUatmFavoritesGetResponse;
+import com.taobao.api.response.TbkUatmFavoritesItemGetResponse;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +33,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.*;
 import java.io.File;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -29,6 +43,15 @@ import java.util.*;
  */
 @Service
 public class GoodsService extends BaseService<Goods, Long> {
+
+    @Value("${taobao.sdk.api.serverUrl}")
+    private String serverUrl;// 淘宝API URL
+    @Value("${taobao.sdk.api.appKey}")
+    private String appKey;// 淘宝API appKey
+    @Value("${taobao.sdk.api.appSecret}")
+    private String appSecret;// 淘宝API appSecret
+    @Value("${taobao.sdk.api.adzoneId}")
+    private Long adzoneId;// 推广位id，需要在淘宝联盟后台创建
 
     @Autowired
     private GoodsRepository goodsRepository;
@@ -76,7 +99,7 @@ public class GoodsService extends BaseService<Goods, Long> {
         if("hot".equals(goodsType)){
             hql.append("order by t.salesNum desc ");
         }else{
-            hql.append("order by t.sort desc ");
+            hql.append("order by t.sort,t.addTime desc ");
         }
 
         Page<Goods> page = this.findByPage(hql.toString(), paramters, pageable);
@@ -89,8 +112,9 @@ public class GoodsService extends BaseService<Goods, Long> {
             BeanUtils.copyProperties(goods, goodsVo);
             goodsVo.setId(goods.getId());
 
-            String fileId = goodsResService.findFileId(goods.getId());
-            goodsVo.setFileId(fileId);
+            GoodsRes thumbnailGoodsRes = goodsResService.findThumbnailGoodsRes(goods.getId());
+            goodsVo.setFileId(thumbnailGoodsRes.getFileId());
+            goodsVo.setPicUrl(thumbnailGoodsRes.getPicUrl());
 
             result.add(goodsVo);
         }
@@ -348,5 +372,262 @@ public class GoodsService extends BaseService<Goods, Long> {
         goods.setUpdateOperator(sysUser);
         goods.setUpdateOperatorName(sysUser.getName());
         this.save(goods);
+    }
+
+    /**
+     * 从淘宝联盟选品库拉取商品
+     */
+    public Map<String, Object> saveGoodsFromTaobao(SysUser operator) throws ApiException {
+        // 获取选品库列表
+        Map<String, Object> resultMap = new HashMap<>();
+
+        TaobaoClient client = new DefaultTaobaoClient(serverUrl, appKey, appSecret);
+        TbkUatmFavoritesGetRequest req = new TbkUatmFavoritesGetRequest();
+        req.setPageNo(1L);
+        req.setPageSize(100L);
+        req.setFields("favorites_title,favorites_id,type");
+        req.setType(-1L);
+        TbkUatmFavoritesGetResponse rsp = client.execute(req);
+
+        JSONObject selectGroup = JSONObject.parseObject(rsp.getBody());
+        if(selectGroup == null || selectGroup.size() == 0){
+            resultMap.put("code", "0");
+            resultMap.put("msg", "获取选品库列表为空！");
+            return resultMap;
+        }
+
+        // 异常
+        if(selectGroup.containsKey("error_response")){
+            resultMap.put("code", "0");
+            resultMap.put("msg", selectGroup.getString("error_response"));
+            return resultMap;
+        }
+
+        JSONObject favoritesGetResponse = selectGroup.getJSONObject("tbk_uatm_favorites_get_response");
+
+        int totalResults = favoritesGetResponse.getIntValue("total_results");// 商品库中的商品组总数
+        if(totalResults == 0){
+            resultMap.put("code", "0");
+            resultMap.put("msg", "选品库总数为0");
+            return resultMap;
+        }
+
+        JSONArray jsonArray = favoritesGetResponse.getJSONObject("results").getJSONArray("tbk_favorites");
+        if(jsonArray == null || jsonArray.size() == 0){
+            resultMap.put("code", "0");
+            resultMap.put("msg", "选品库总数为0");
+            return resultMap;
+        }
+
+        // 遍历选品库
+        for(int i=0,len=jsonArray.size(); i<len; i++){
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            jsonObject.getInteger("type");// 选品库类型，1：普通类型，2高佣金类型
+            Long favoritesId = jsonObject.getLong("favorites_id");// 选品库id
+            String favoritesTitle = jsonObject.getString("favorites_title");// 选品组名称
+
+            GoodsType goodsType = goodsTypeService.findByName(favoritesTitle);
+
+            int total = 0;
+            long pageSize = 20L;
+            long pageNo = 1L;
+
+            total = this.saveGoodsFromSelectGroup(pageSize, pageNo, favoritesId, goodsType, operator);
+
+            if(total > 0 && total > 20){
+                while (total > pageSize*pageNo){
+                    pageNo++;
+                    this.saveGoodsFromSelectGroup(pageSize, pageNo, favoritesId, goodsType, operator);
+                }
+            }
+        }
+
+        resultMap.put("code", "1");
+        resultMap.put("msg", "拉取选品库成功！");
+        return resultMap;
+    }
+
+    /**
+     * 获取选品库中的商品详情
+     * @param pageSize
+     * @param pageNo
+     * @param favoritesId 选品库id
+     * @param goodsType 商品类目
+     * @param operator 操作人
+     */
+    public int saveGoodsFromSelectGroup(long pageSize, long pageNo, Long favoritesId, GoodsType goodsType, SysUser operator) throws ApiException {
+        TaobaoClient client = new DefaultTaobaoClient(serverUrl, appKey, appSecret);
+        TbkUatmFavoritesItemGetRequest req = new TbkUatmFavoritesItemGetRequest();
+        req.setPlatform(1L);// 链接形式：1：PC，2：无线，默认：１
+        req.setPageSize(pageSize);// 页大小，默认20，1~100
+        req.setAdzoneId(adzoneId);// 网站推广位 沃惠挑的 adzoneId 推广位id，需要在淘宝联盟后台创建；且属于appkey备案的媒体id（siteid），如何获取adzoneid，请参考，http://club.alimama.com/read-htm-tid-6333967.html?spm=0.0.0.0.msZnx5
+//        req.setUnid("3456");// 自定义输入串，英文和数字组成，长度不能大于12个字符，区分不同的推广渠道
+        req.setFavoritesId(favoritesId);// 选品库的id
+        req.setPageNo(pageNo);// 第几页，默认：1，从1开始计数
+        // 需要输出则字段列表，逗号分隔 num_iid,title,pict_url,small_images,reserve_price,zk_final_price,user_type,provcity,item_url,seller_id,volume,nick,shop_title,zk_final_price_wap,event_start_time,event_end_time,tk_rate,status,type
+        req.setFields("num_iid,title,pict_url,click_url,category,coupon_total_count,coupon_remain_count,coupon_click_url,coupon_info,coupon_end_time,coupon_start_time,small_images,reserve_price,zk_final_price,user_type,provcity,item_url,seller_id,volume,nick,shop_title,zk_final_price_wap,event_start_time,event_end_time,tk_rate,status,type");
+        TbkUatmFavoritesItemGetResponse rsp = client.execute(req);
+
+        String rspBody = rsp.getBody();
+        if(StringUtils.isBlank(rspBody)){
+            return 0;
+        }
+
+        JSONObject rspBodyJSONObject = JSONObject.parseObject(rspBody);
+        if(rspBodyJSONObject == null || rspBodyJSONObject.size() == 0){
+            return 0;
+        }
+
+        JSONObject itemGetResponse = rspBodyJSONObject.getJSONObject("tbk_uatm_favorites_item_get_response");
+        if(itemGetResponse == null || itemGetResponse.size() == 0){
+            return 0;
+        }
+
+        int totalResults = itemGetResponse.getIntValue("total_results");// 选品库中的商品总条数
+
+        JSONArray itemJsonArray = itemGetResponse.getJSONObject("results").getJSONArray("uatm_tbk_item");
+        if(itemJsonArray == null || itemJsonArray.size() == 0){
+            return 0;
+        }
+
+        // 遍历选品库中的商品
+        for(int i=0,len=itemJsonArray.size(); i<len; i++){
+            JSONObject jsonObject = itemJsonArray.getJSONObject(i);
+            this.saveGoodsFromSelectGroup(jsonObject, goodsType, operator);
+        }
+
+        return totalResults;
+    }
+
+    /**
+     * 保存淘宝联盟选品库的商品
+     * @param jsonObject
+     */
+    private void saveGoodsFromSelectGroup(JSONObject jsonObject, GoodsType goodsType, SysUser operator) throws ApiException {
+        Long numIid = jsonObject.getLong("num_iid");// 商品ID
+        String title = jsonObject.getString("title");// 商品标题
+        String pictUrl = jsonObject.getString("pict_url");// 商品主图
+        jsonObject.getJSONObject("small_images");// 商品小图列表
+        jsonObject.getBigDecimal("reserve_price");// 商品一口价格
+        BigDecimal finalPrice = jsonObject.getBigDecimal("zk_final_price");// 商品折扣价格
+        int userType = jsonObject.getIntValue("user_type");// 卖家类型，0表示集市，1表示商城
+        jsonObject.getString("provcity");// 宝贝所在地
+        jsonObject.getString("item_url");// 商品地址
+        String clickUrl = jsonObject.getString("click_url");// 淘客地址
+        jsonObject.getString("nick");// 卖家昵称
+        jsonObject.getLong("seller_id");// 卖家id
+        Integer volume = jsonObject.getInteger("volume");// 30天销量
+        jsonObject.getBigDecimal("tk_rate");// 收入比例，举例，取值为20.00，表示比例20.00%
+        jsonObject.getBigDecimal("zk_final_price_wap");// 无线折扣价，即宝贝在无线上的实际售卖价格。
+        jsonObject.getString("shop_title");
+        jsonObject.getDate("event_start_time");// 招商活动开始时间；如果该宝贝取自普通选品组，则取值为1970-01-01 00:00:00；
+        jsonObject.getDate("event_end_time");// 招行活动的结束时间；如果该宝贝取自普通的选品组，则取值为1970-01-01 00:00:00
+        jsonObject.getIntValue("type");// 宝贝类型：1 普通商品； 2 鹊桥高佣金商品；3 定向招商商品；4 营销计划商品;
+        String status = jsonObject.getString("status");// 宝贝状态，0失效，1有效；注：失效可能是宝贝已经下线或者是被处罚不能在进行推广
+        jsonObject.getLong("category");// 后台一级类目
+        String couponClickUrl = jsonObject.getString("coupon_click_url");// 商品优惠券推广链接
+        jsonObject.getString("coupon_end_time");// 优惠券结束时间
+        String couponInfo = jsonObject.getString("coupon_info");// 优惠券面额
+        jsonObject.getString("coupon_start_time");// 优惠券开始时间
+        jsonObject.getIntValue("coupon_total_count");// 优惠券总量
+        jsonObject.getIntValue("coupon_remain_count");// 优惠券剩余量
+
+        Goods goods = this.findByGoodsId(numIid);
+        boolean isInsert = false;
+        if(goods == null){
+            goods = new Goods();
+            isInsert = true;
+        }
+
+        goods.setGoodsType(goodsType);
+
+        goods.setName(title);
+        goods.setPrice(finalPrice);
+        goods.setStatus(status);
+        goods.setSalesNum(volume);
+        goods.setSort(4);
+        goods.setUrlLink(clickUrl);
+        goods.setUrlLinkCoupon(couponClickUrl);
+        if(StringUtils.isNotBlank(couponInfo)){
+            String coupon = couponInfo.split("减")[1].split("元")[0];
+            if(NumberUtils.isNumber(coupon)){
+                goods.setCouponAmount(new BigDecimal(coupon));
+            }
+        }
+        goods.setIsTmall(userType==1);
+
+        // 淘口令
+        String taoKouLing = this.createTaoKouLing(title, clickUrl);
+        goods.setTaoCommand(taoKouLing);
+
+        if(isInsert){
+            goods.setGoodsId(numIid);
+            goods.setAddTime(new Date());
+            goods.setAddOperator(operator);
+            goods.setAddOperatorName(operator.getName());
+            this.save(goods);
+
+            GoodsRes goodsRes = new GoodsRes();
+            goodsRes.setGoods(goods);
+            goodsRes.setType("thumbnail");
+            goodsRes.setPicUrl(pictUrl);
+            goodsRes.setSort(1);
+            goodsResService.save(goodsRes);
+        }else{
+            goods.setUpdateTime(new Date());
+            goods.setUpdateOperator(operator);
+            goods.setUpdateOperatorName(operator.getName());
+            this.update(goods);
+
+            GoodsRes goodsRes = goodsResService.findThumbnailGoodsRes(goods.getId());
+            if(goodsRes == null){
+                goodsRes = new GoodsRes();
+                goodsRes.setGoods(goods);
+                goodsRes.setType("thumbnail");
+                goodsRes.setPicUrl(pictUrl);
+                goodsRes.setSort(1);
+                goodsResService.save(goodsRes);
+            }else{
+                goodsRes.setPicUrl(pictUrl);
+                goodsResService.update(goodsRes);
+            }
+        }
+    }
+
+    /**
+     * 生成淘口令
+     * @param text 口令弹框内容
+     * @param url 口令跳转目标页
+     * @return
+     */
+    public String createTaoKouLing(String text, String url) throws ApiException {
+        TaobaoClient client = new DefaultTaobaoClient(serverUrl, appKey, appSecret);
+        TbkTpwdCreateRequest req = new TbkTpwdCreateRequest();
+//        req.setUserId("123");
+        req.setText(text);
+        req.setUrl(url);
+//        req.setLogo("https://uland.taobao.com/");
+//        req.setExt("{}");
+        TbkTpwdCreateResponse rsp = client.execute(req);
+        String rspBody = rsp.getBody();
+        if(StringUtils.isBlank(rspBody)){
+            return null;
+        }
+
+        JSONObject rspBodyJSONObject = JSONObject.parseObject(rspBody);
+        if(rspBodyJSONObject.containsKey("error_response")){
+            return null;
+        }
+
+        return rspBodyJSONObject.getJSONObject("tbk_tpwd_create_response").getJSONObject("data").getString("model");
+    }
+
+    /**
+     * 通过淘宝商品ID查找
+     * @param goodsId 淘宝商品ID
+     * @return
+     */
+    public Goods findByGoodsId(Long goodsId){
+        return goodsRepository.findByGoodsId(goodsId);
     }
 }
