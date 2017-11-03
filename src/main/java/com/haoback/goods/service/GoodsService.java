@@ -377,7 +377,7 @@ public class GoodsService extends BaseService<Goods, Long> {
     /**
      * 从淘宝联盟选品库拉取商品
      */
-    public Map<String, Object> saveGoodsFromTaobao(SysUser operator) throws ApiException {
+    public Map<String, Object> saveGoodsFromTaobao(String type, String operate, SysUser operator) throws ApiException {
         // 获取选品库列表
         Map<String, Object> resultMap = new HashMap<>();
 
@@ -426,7 +426,34 @@ public class GoodsService extends BaseService<Goods, Long> {
             Long favoritesId = jsonObject.getLong("favorites_id");// 选品库id
             String favoritesTitle = jsonObject.getString("favorites_title");// 选品组名称
 
-            GoodsType goodsType = goodsTypeService.findByName(favoritesTitle);
+            // 选品库名称需以#分隔
+            GoodsType goodsType = null;
+            if("all".equals(type)){// 拉取所有选品库
+                goodsType = goodsTypeService.findByName(favoritesTitle.split("#")[0]);
+                if(goodsType == null){
+                    continue;
+                }
+            }else{
+                String gtype = null;
+                if("equals".equals(operate)){
+                    if(type.contains(",") ? !type.contains(favoritesTitle+",") : !type.equals(favoritesTitle)){
+                        continue;
+                    }else{
+                        gtype = favoritesTitle.split("#")[0];
+                    }
+                }else if("like".equals(operate)){
+                    if(!favoritesTitle.contains(type)){
+                        continue;
+                    }else{
+                        gtype = favoritesTitle.split("#")[0];
+                    }
+                }
+
+                goodsType = goodsTypeService.findByName(gtype);
+                if(goodsType == null){
+                    continue;
+                }
+            }
 
             int total = 0;
             long pageSize = 20L;

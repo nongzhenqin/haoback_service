@@ -350,7 +350,11 @@
         }
 
         // 保存pv
-        $.post('./goods/pv_uv', {goodsId: 0, referer: document.referrer.toLowerCase(), titileName: "首页", flag: "pc"});
+        var source = 'normal';
+        if(getUrlParms('_s') == 'e'){
+            source = 'email';
+        }
+        $.post('./goods/pv_uv', {goodsId: 0, referer: document.referrer.toLowerCase(), titileName: "首页", flag: "pc", source: source});
 
         // 回到顶部按钮
         $(window).scroll(function () {
@@ -432,5 +436,14 @@
         var key = key || $('#header-search-input').val();
         var url = window.location.href.split('?')[0].split('#')[0];
         window.location.href = !!key ? url + '?key=' + key + '&pageNo=' + pageNo: url;
+    }
+
+    //获取地址栏参数，name:参数名称
+    function getUrlParms(name){
+        var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if(r != null)
+            return unescape(r[2]);
+        return null;
     }
 </script>

@@ -8,6 +8,7 @@ import com.haoback.goods.vo.GoodsVo;
 import com.haoback.sys.entity.SysUser;
 import com.taobao.api.ApiException;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -162,18 +163,29 @@ public class GoodsServiceController {
 
     /**
      * 从淘宝联盟选品库拉取商品
+     * @param type 商品类目，对应选品库的名称 如果为all则拉取所有选品库
+     * @param operate 操作类型 equals=等于 like=模糊查询
+     * @param request
      * @return
      */
     @RequestMapping(value = "/getGoods", method = RequestMethod.POST)
     @ResponseBody
     @PreAuthorize("hasPermission('com.haoback.goods.controller.GoodsServiceController', 'update')")
-    public AjaxResult getGoodsFromTaobao(HttpServletRequest request){
+    public AjaxResult getGoodsFromTaobao(String type, String operate, HttpServletRequest request){
         AjaxResult ajaxresult = new AjaxResult();
         Map<String, Object> datas = new HashMap<>();
 
+        if(StringUtils.isBlank(type) || StringUtils.isBlank(operate)){
+            datas.put("code", "0");
+            datas.put("msg", "参数错误！");
+            ajaxresult.setDatas(datas);
+            ajaxresult.setStatus(HttpStatus.SC_OK);
+            return ajaxresult;
+        }
+
         SysUser sysUser = CommonUtils.getSysUser(request);
         try {
-            datas = goodsService.saveGoodsFromTaobao(sysUser);
+            datas = goodsService.saveGoodsFromTaobao(type, operate, sysUser);
         } catch (ApiException e) {
             e.printStackTrace();
             datas.put("code", "0");

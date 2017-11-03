@@ -75,4 +75,10 @@ public class PvUvDetail extends BaseEntity<Long> {
      */
     @Column(name = "FLAG", length=10)
     private String flag;
+
+    /**
+     * 来源渠道 normal-正常（通过地址访问） email-邮件广告
+     */
+    @Column(name = "source", length=20)
+    private String source;
 }
