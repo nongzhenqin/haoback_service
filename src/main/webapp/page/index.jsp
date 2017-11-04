@@ -159,7 +159,7 @@
                 </c:if>
                 <div class="col-md-4 col-style">
                     <div class="row product-pvuv" style="cursor:pointer;position: relative;height: 100%;" id-data="${goods.id}"
-                         url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
+                         url-data="${goods.urlLink}">
                         <div class="col-md-24">
                             <img class="product-img" src="${goods.picUrl == null ? (ctx==null?'':ctx).concat('upload/').concat(goods.fileId).concat('.jpg') : goods.picUrl}">
                         </div>
@@ -183,7 +183,7 @@
                             </div>
                         </c:if>
                     </div>
-                    <a class="a-coupon" <c:if test="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0}">href="${goods.urlLinkCoupon}" target="_blank" </c:if>>
+                    <a class="a-coupon" href="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}" target="_blank">
                         <c:if test="${goods.couponAmount != null}">
                             立即领取<span style="font-weight: bold;"><fmt:formatNumber type="number" value="${goods.couponAmount } " maxFractionDigits="0"/></span>元劵
                         </c:if>
@@ -213,7 +213,7 @@
                     </c:if>
                     <div class="col-md-4 col-style" style="<c:if test="${status.index > 4}">margin-top: 60px;</c:if>">
                         <div class="row product-pvuv" style="cursor:pointer;position: relative;height: 100%;" id-data="${goods.id}"
-                             url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
+                             url-data="${goods.urlLink}">
                             <div class="col-md-24">
                                 <img class="product-img" src="${goods.picUrl == null ? (ctx==null?'':ctx).concat('upload/').concat(goods.fileId).concat('.jpg') : goods.picUrl}">
                             </div>
@@ -237,7 +237,7 @@
                                 </div>
                             </c:if>
                         </div>
-                        <a class="a-coupon" <c:if test="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0}">href="${goods.urlLinkCoupon}" target="_blank" </c:if>>
+                        <a class="a-coupon" href="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}" target="_blank">
                             <c:if test="${goods.couponAmount != null}">
                                 立即领取<span style="font-weight: bold;"><fmt:formatNumber type="number" value="${goods.couponAmount } " maxFractionDigits="0"/></span>元劵
                             </c:if>
@@ -265,7 +265,7 @@
                 </c:if>
                 <div class="col-md-4 col-style" style="<c:if test="${status.index > 4}">margin-top: 60px;</c:if>">
                     <div class="row product-pvuv" style="cursor:pointer;position: relative;height: 100%;" id-data="${goods.id}"
-                         url-data="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}">
+                         url-data="${goods.urlLink}">
                         <div class="col-md-24">
                             <img class="product-img" src="${goods.picUrl == null ? (ctx==null?'':ctx).concat('upload/').concat(goods.fileId).concat('.jpg') : goods.picUrl}">
                         </div>
@@ -289,7 +289,7 @@
                             </div>
                         </c:if>
                     </div>
-                    <a class="a-coupon" <c:if test="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0}">href="${goods.urlLinkCoupon}" target="_blank" </c:if>>
+                    <a class="a-coupon" href="${goods.urlLinkCoupon != null && goods.urlLinkCoupon.length() > 0 ? goods.urlLinkCoupon : goods.urlLink}" target="_blank">
                         <c:if test="${goods.couponAmount != null}">
                             立即领取<span style="font-weight: bold;"><fmt:formatNumber type="number" value="${goods.couponAmount } " maxFractionDigits="0"/></span>元劵
                         </c:if>

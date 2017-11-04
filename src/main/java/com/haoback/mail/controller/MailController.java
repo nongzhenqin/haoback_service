@@ -2,6 +2,7 @@ package com.haoback.mail.controller;
 
 import com.haoback.common.entity.AjaxResult;
 import com.haoback.mail.service.MailInfoService;
+import com.haoback.mail.service.MailListService;
 import org.apache.commons.httpclient.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,6 +23,8 @@ public class MailController {
 
     @Autowired
     private MailInfoService mailInfoService;
+    @Autowired
+    private MailListService mailListService;
 
     /**
      * 发送广告邮件
@@ -29,14 +32,22 @@ public class MailController {
      */
     @RequestMapping(value = "/sendAd", method = RequestMethod.POST)
     @ResponseBody
-//    @PreAuthorize("hasPermission('com.haoback.mail.controller.MailController', 'update')")
-    public AjaxResult sendAd(){
+    public AjaxResult sendAd(int sendTotal){
         AjaxResult ajaxresult = new AjaxResult();
         Map<String, Object> datas = new HashMap<>();
 
-        List<Map> list = mailInfoService.sendAd();
+        if(sendTotal <= 0){
+            datas.put("msg", "请填写发送数量");
+            ajaxresult.setDatas(datas);
+            ajaxresult.setStatus(HttpStatus.SC_OK);
+            return ajaxresult;
+        }
 
-        datas.put("result", list);
+//        List<Map> list = mailInfoService.sendAd();
+        Map<String, Object> map = mailListService.sendAd(sendTotal);
+
+        datas.put("result", map.get("resultList"));
+        datas.put("msg", map.get("msg"));
         ajaxresult.setDatas(datas);
         ajaxresult.setStatus(HttpStatus.SC_OK);
         return ajaxresult;

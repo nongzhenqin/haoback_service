@@ -53,6 +53,29 @@ body>a{display: none;}
     border: 0px solid #ddd;
 }
 
+.a-coupon {
+    cursor:pointer;
+    color: #fff!important;
+    font-size: 13px;
+    width: 95% !important;
+    height: 35px !important;
+    line-height: 35px;
+    background-size: auto;
+    position: absolute;
+    left: 5px;
+    top: 250px;
+    /*right: 8px;*/
+    text-align: center;
+    background: url(../img/baseico.png) 0 -151px no-repeat;;
+}
+
+.a-coupon:hover {
+    text-decoration: none;
+}
+
+
+
+
 
 .jd-header-home-wrapper {
     width: 100%;

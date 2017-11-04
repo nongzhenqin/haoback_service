@@ -55,11 +55,12 @@ public class GoodsController {
         params.put("pageNo", pageNo);
         params.put("pageSize", pageSize);
         params.put("goodsType", goodsType);
+        params.put("key", key);
 
         Page<GoodsVo> page = goodsService.findByPageWeb(params);
 
         datas.put("code", "1");
-        datas.put("data", page);
+        datas.put("goods", page);
 
         ajaxresult.setDatas(datas);
         ajaxresult.setStatus(HttpStatus.SC_OK);
