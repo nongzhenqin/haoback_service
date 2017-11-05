@@ -302,8 +302,8 @@
                             var ctx = '${ctx}';
                             for(var i=0,len=goodsList.length; i<len; i++){
                                 var goods = goodsList[i];
-                                html += '<li class="ui-col ui-col-50 product-pvuv" style="position: relative;text-align: left;height: 290px;background-color: rgb(255,255,255);margin-top:10px;">';
-                                html += '<img class="product-img" onclick="clickGoods(this)" data-clipboard-text="'+goods.taoCommand+'" id-data="'+goods.id+'" url-data="'+goods.urlLink+'" style="width: 100%; height: auto;" src="'+(goods.picUrl == null ? (!ctx||ctx==null?'':ctx)+'upload/'+goods.fileId+'.jpg' : goods.picUrl)+'">';
+                                html += '<li class="ui-col ui-col-50" style="position: relative;text-align: left;height: 290px;background-color: rgb(255,255,255);margin-top:10px;">';
+                                html += '<img class="product-img product-pvuv" onclick="clickGoods(this)" data-clipboard-text="'+goods.taoCommand+'" id-data="'+goods.id+'" url-data="'+goods.urlLink+'" style="width: 100%; height: auto;" src="'+(goods.picUrl == null ? (!ctx||ctx==null?'':ctx)+'upload/'+goods.fileId+'.jpg' : goods.picUrl)+'">';
                                 html += '<strong style="padding-left: 8px;float: left;font-size: 20px;font-family: arial; color: #F40;">￥'+goods.price+'</strong>';
                                 html += '<span style="padding-right: 8px;padding-top:6px;float: right;color: #888;font-size: 10px;">销量&nbsp;'+goods.salesNum+'</span>';
                                 html += '<span class="ui-nowrap-multi ui-whitespace" style="font-size: 14px;color: rgb(61,61,61);float: left;padding-left: 8px;padding-right: 8px;font-family: arial,\'Hiragino Sans GB\', 宋体,sans-serif;">';

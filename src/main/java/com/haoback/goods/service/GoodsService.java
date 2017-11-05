@@ -584,7 +584,7 @@ public class GoodsService extends BaseService<Goods, Long> {
         goods.setIsTmall(userType==1);
 
         // 淘口令
-        String taoKouLing = this.createTaoKouLing(title, clickUrl);
+        String taoKouLing = this.createTaoKouLing(title, clickUrl, pictUrl);
         goods.setTaoCommand(taoKouLing);
 
         if(isInsert){
@@ -625,15 +625,16 @@ public class GoodsService extends BaseService<Goods, Long> {
      * 生成淘口令
      * @param text 口令弹框内容
      * @param url 口令跳转目标页
+     * @param logoURL 口令弹框logoURL 用商品主图即可
      * @return
      */
-    public String createTaoKouLing(String text, String url) throws ApiException {
+    public String createTaoKouLing(String text, String url, String logoURL) throws ApiException {
         TaobaoClient client = new DefaultTaobaoClient(serverUrl, appKey, appSecret);
         TbkTpwdCreateRequest req = new TbkTpwdCreateRequest();
 //        req.setUserId("123");
         req.setText(text);
         req.setUrl(url);
-//        req.setLogo("https://uland.taobao.com/");
+        req.setLogo(logoURL);
 //        req.setExt("{}");
         TbkTpwdCreateResponse rsp = client.execute(req);
         String rspBody = rsp.getBody();

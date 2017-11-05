@@ -27,7 +27,7 @@ public class MailListService extends BaseService<MailList, Long> {
      * @param sendTotal
      * @return
      */
-    public Map<String, Object> sendAd(int sendTotal){
+    public Map<String, Object> sendAd(int sendTotal) throws InterruptedException {
         Map<String, Object> resultMap = new HashMap<>();
         Pageable pageable = new PageRequest(0, sendTotal);
 
@@ -38,8 +38,8 @@ public class MailListService extends BaseService<MailList, Long> {
         List<MailList> mailListsContent = mailLists.getContent();
 
         com.haoback.common.utils.email.MailInfo mailInfo = new com.haoback.common.utils.email.MailInfo();
+        String content = mailConfig.getContent();
         mailInfo.setSubject(mailConfig.getSubject());
-        mailInfo.setContent(mailConfig.getContent());
 
         List<Map> resultList = new ArrayList<>();
         Map map = null;
@@ -49,17 +49,40 @@ public class MailListService extends BaseService<MailList, Long> {
         for(MailList m : mailListsContent){
             map = new HashMap();
             mailInfo.setToAddress(Arrays.asList(m.getMailAccount()));
+            // 替换@tihuan_mail_account，写入收件人的邮箱地址
+            String sendContent = content.replaceAll("@tihuan_mail_account", m.getMailAccount());
+            mailInfo.setContent(sendContent);
             boolean result = MailUtil.sendEmail(mailInfo, mailConfig);
-            if(result) sendSuccess++;
+            if(result) {
+                sendSuccess++;
+                m.setSendStatus(1);
+                m.setSendCount(m.getSendCount() == null ? 1 : m.getSendCount() + 1);
+                m.setSendTime(new Date());
+            }else {
+                m.setSendStatus(0);
+            }
             m.setIsSend(true);// 发送后设置已发送标志，无论是否成功
             this.update(m);
             map.put(m.getMailAccount(), result ? "发送成功" : "发送失败");
             resultList.add(map);
+
+            Random random = new Random();
+            int sleep = (random.nextInt(3) + 1) * 1000;
+            Thread.sleep(sleep);
         }
 
         resultMap.put("resultList", resultList);
         resultMap.put("msg", "发送成功数："+sendSuccess+"，发送失败数："+(sendTotal - sendSuccess));
 
         return resultMap;
+    }
+
+    /**
+     * 通过有效账号查找
+     * @param mailAccount
+     * @return
+     */
+    public MailList findByMailAccount(String mailAccount){
+        return mailListRepository.findByMailAccount(mailAccount);
     }
 }

@@ -12,7 +12,10 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Iterator;
+import java.util.UUID;
 
 /**
  * 工具类 - 图片处理
@@ -203,6 +206,40 @@ public class ImageUtil {
         g.drawImage(image, 0, 0, null);
         g.dispose();
         return bimage;
+    }
+
+    /**
+     * 下载图片
+     * @param imageUrl 图片URL
+     * @param savePath 保存地址
+     * @return
+     */
+    public static String downLoadImage(String imageUrl, String savePath){
+        try {
+            URL url = new URL(imageUrl);
+            DataInputStream dataInputStream = new DataInputStream(url.openStream());
+            String fileId = UUID.randomUUID().toString();
+            String path = savePath + "upload" + File.separator + fileId + ".jpg";
+            FileOutputStream fileOutputStream = new FileOutputStream(new File(path));
+
+            byte[] buffer = new byte[1024];
+            int length;
+
+            while ((length = dataInputStream.read(buffer)) > 0) {
+                fileOutputStream.write(buffer, 0, length);
+            }
+
+            dataInputStream.close();
+            fileOutputStream.close();
+
+            return fileId;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
 

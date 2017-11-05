@@ -66,7 +66,7 @@ body>a{display: none;}
     top: 250px;
     /*right: 8px;*/
     text-align: center;
-    background: url(../img/baseico.png) 0 -151px no-repeat;;
+    background: url(../img/baseico.png) 0 -151px no-repeat;
 }
 
 .a-coupon:hover {

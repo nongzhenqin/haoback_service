@@ -3,6 +3,10 @@ package com.haoback.goods.controller;
 import com.haoback.common.entity.AjaxResult;
 import com.haoback.common.service.autotask.AutoTaskService;
 import com.haoback.common.utils.CommonUtils;
+import com.haoback.common.utils.ImageUtil;
+import com.haoback.goods.entity.Goods;
+import com.haoback.goods.entity.GoodsRes;
+import com.haoback.goods.service.GoodsResService;
 import com.haoback.goods.service.GoodsService;
 import com.haoback.goods.vo.GoodsVo;
 import com.haoback.sys.entity.SysUser;
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,6 +41,8 @@ public class GoodsServiceController {
     private GoodsService goodsService;
     @Autowired
     private AutoTaskService autoTaskService;
+    @Autowired
+    private GoodsResService goodsResService;
 
     /**
      * 分页查找商品
@@ -191,6 +198,43 @@ public class GoodsServiceController {
             datas.put("code", "0");
             datas.put("msg", e.getErrCode()+" | "+e.getErrMsg());
         }
+
+        ajaxresult.setDatas(datas);
+        ajaxresult.setStatus(HttpStatus.SC_OK);
+        return ajaxresult;
+    }
+
+    /**
+     * 下载淘宝商品图片
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/downloadImage", method = RequestMethod.GET)
+    @ResponseBody
+    @PreAuthorize("hasPermission('com.haoback.goods.controller.GoodsServiceController', 'update')")
+    public AjaxResult downloadImage(HttpServletRequest request){
+        AjaxResult ajaxresult = new AjaxResult();
+        Map<String, Object> datas = new HashMap<>();
+        String realPath = request.getSession().getServletContext().getRealPath("/");
+
+        List<Goods> goodsList = goodsService.findAll();
+        int i = 0;
+        for(Goods goods : goodsList){
+            i++;
+            if(goods.getGoodsId() == null){
+                continue;
+            }
+
+            GoodsRes goodsRes = goodsResService.findThumbnailGoodsRes(goods.getId());
+            if(goodsRes == null || StringUtils.isBlank(goodsRes.getPicUrl())) continue;
+
+            String image = ImageUtil.downLoadImage(goodsRes.getPicUrl(), realPath);
+            goodsRes.setFileId(image);
+            System.out.println("第"+i+"个商品，图片FileId="+image);
+            goodsResService.update(goodsRes);
+        }
+
+        datas.put("msg", "success!!!");
 
         ajaxresult.setDatas(datas);
         ajaxresult.setStatus(HttpStatus.SC_OK);

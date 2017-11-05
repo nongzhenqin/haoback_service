@@ -14,4 +14,12 @@ public interface MailListRepository extends BaseRepository<MailList, Long> {
      */
     @Query("select t from MailList t where t.isSend = false")
     Page<MailList> find(Pageable pageable);
+
+    /**
+     * 通过有效账号查找
+     * @param mailAccount
+     * @return
+     */
+    @Query("select t from MailList t where t.mailAccount = ?1")
+    MailList findByMailAccount(String mailAccount);
 }
