@@ -377,7 +377,7 @@ public class GoodsService extends BaseService<Goods, Long> {
     /**
      * 从淘宝联盟选品库拉取商品
      */
-    public Map<String, Object> saveGoodsFromTaobao(String type, String operate, SysUser operator) throws ApiException {
+    public Map<String, Object> saveGoodsFromTaobao(String type, String operate, SysUser operator, String realPath) throws ApiException {
         // 获取选品库列表
         Map<String, Object> resultMap = new HashMap<>();
 
@@ -459,12 +459,12 @@ public class GoodsService extends BaseService<Goods, Long> {
             long pageSize = 20L;
             long pageNo = 1L;
 
-            total = this.saveGoodsFromSelectGroup(pageSize, pageNo, favoritesId, goodsType, operator);
+            total = this.saveGoodsFromSelectGroup(pageSize, pageNo, favoritesId, goodsType, operator, realPath);
 
             if(total > 0 && total > 20){
                 while (total > pageSize*pageNo){
                     pageNo++;
-                    this.saveGoodsFromSelectGroup(pageSize, pageNo, favoritesId, goodsType, operator);
+                    this.saveGoodsFromSelectGroup(pageSize, pageNo, favoritesId, goodsType, operator, realPath);
                 }
             }
         }
@@ -482,7 +482,7 @@ public class GoodsService extends BaseService<Goods, Long> {
      * @param goodsType 商品类目
      * @param operator 操作人
      */
-    public int saveGoodsFromSelectGroup(long pageSize, long pageNo, Long favoritesId, GoodsType goodsType, SysUser operator) throws ApiException {
+    public int saveGoodsFromSelectGroup(long pageSize, long pageNo, Long favoritesId, GoodsType goodsType, SysUser operator, String realPath) throws ApiException {
         TaobaoClient client = new DefaultTaobaoClient(serverUrl, appKey, appSecret);
         TbkUatmFavoritesItemGetRequest req = new TbkUatmFavoritesItemGetRequest();
         req.setPlatform(1L);// 链接形式：1：PC，2：无线，默认：１
@@ -520,7 +520,7 @@ public class GoodsService extends BaseService<Goods, Long> {
         // 遍历选品库中的商品
         for(int i=0,len=itemJsonArray.size(); i<len; i++){
             JSONObject jsonObject = itemJsonArray.getJSONObject(i);
-            this.saveGoodsFromSelectGroup(jsonObject, goodsType, operator);
+            this.saveGoodsFromSelectGroup(jsonObject, goodsType, operator, realPath);
         }
 
         return totalResults;
@@ -530,7 +530,7 @@ public class GoodsService extends BaseService<Goods, Long> {
      * 保存淘宝联盟选品库的商品
      * @param jsonObject
      */
-    private void saveGoodsFromSelectGroup(JSONObject jsonObject, GoodsType goodsType, SysUser operator) throws ApiException {
+    private void saveGoodsFromSelectGroup(JSONObject jsonObject, GoodsType goodsType, SysUser operator, String realPath) throws ApiException {
         Long numIid = jsonObject.getLong("num_iid");// 商品ID
         String title = jsonObject.getString("title");// 商品标题
         String pictUrl = jsonObject.getString("pict_url");// 商品主图
@@ -594,10 +594,14 @@ public class GoodsService extends BaseService<Goods, Long> {
             goods.setAddOperatorName(operator.getName());
             this.save(goods);
 
+            // 下载商品主图到服务器
+            String image = ImageUtil.downLoadImage(pictUrl, realPath);
+
             GoodsRes goodsRes = new GoodsRes();
             goodsRes.setGoods(goods);
             goodsRes.setType("thumbnail");
             goodsRes.setPicUrl(pictUrl);
+            goodsRes.setFileId(image);
             goodsRes.setSort(1);
             goodsResService.save(goodsRes);
         }else{

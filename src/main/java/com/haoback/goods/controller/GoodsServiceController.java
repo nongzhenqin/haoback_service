@@ -191,8 +191,9 @@ public class GoodsServiceController {
         }
 
         SysUser sysUser = CommonUtils.getSysUser(request);
+        String realPath = request.getSession().getServletContext().getRealPath("/");
         try {
-            datas = goodsService.saveGoodsFromTaobao(type, operate, sysUser);
+            datas = goodsService.saveGoodsFromTaobao(type, operate, sysUser, realPath);
         } catch (ApiException e) {
             e.printStackTrace();
             datas.put("code", "0");
@@ -226,7 +227,8 @@ public class GoodsServiceController {
             }
 
             GoodsRes goodsRes = goodsResService.findThumbnailGoodsRes(goods.getId());
-            if(goodsRes == null || StringUtils.isBlank(goodsRes.getPicUrl())) continue;
+            if(goodsRes == null || StringUtils.isBlank(goodsRes.getPicUrl()) ||
+                    StringUtils.isNotBlank(goodsRes.getFileId())) continue;
 
             String image = ImageUtil.downLoadImage(goodsRes.getPicUrl(), realPath);
             goodsRes.setFileId(image);
@@ -235,6 +237,7 @@ public class GoodsServiceController {
         }
 
         datas.put("msg", "success!!!");
+        datas.put("code", "1");
 
         ajaxresult.setDatas(datas);
         ajaxresult.setStatus(HttpStatus.SC_OK);
