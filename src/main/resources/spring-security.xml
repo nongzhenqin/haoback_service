@@ -18,6 +18,7 @@
 	<http pattern="/**/img/**" security="none" />
 	<http pattern="/**/static/**" security="none" />
 	<http pattern="/**/upload/**" security="none" />
+	<http pattern="/favicon.ico" security="none" />
 	<!--cxf URL不拦截-->
 	<!--<http pattern="/**/webservice/**" security="none" />-->
 
