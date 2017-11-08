@@ -13,9 +13,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="format-detection" content="telephone=no">
-    <title>沃惠挑-精挑细选优质商品</title>
-    <meta name="Keywords" content="沃惠挑,优选,生活,9块9,热销推荐,特卖,优选折扣,优品">
-    <meta name="Description" content="沃惠挑,优选-优惠券折扣，人工筛选，每天更新，折扣多多">
+    <title>沃惠挑-优惠券免费领</title>
+    <meta name="Description" content="沃惠挑免费领取优惠券、vip券、内部券、优选-优惠券折扣、人工筛选、每天更新，折扣多多，为你省钱！">
+    <meta name="Keywords" content="优惠券,优惠券网,vip内部优惠券,vip券,内部券,沃惠挑,优选,生活,9块9,热销推荐,特卖,优选折扣,优品">
 
     <link href="img/favicon.ico" rel="shortcut icon" type="image/x-icon">
     <link href="img/favicon.ico" rel="icon" type="image/x-icon">

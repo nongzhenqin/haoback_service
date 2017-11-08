@@ -39,7 +39,8 @@ public class MailListService extends BaseService<MailList, Long> {
 
         com.haoback.common.utils.email.MailInfo mailInfo = new com.haoback.common.utils.email.MailInfo();
         String content = mailConfig.getContent();
-        mailInfo.setSubject(mailConfig.getSubject());
+        String subject = mailConfig.getSubject();
+        mailInfo.setSubject(subject);
 
         List<Map> resultList = new ArrayList<>();
         Map map = null;
@@ -52,6 +53,7 @@ public class MailListService extends BaseService<MailList, Long> {
             // 替换@tihuan_mail_account，写入收件人的邮箱地址
             String sendContent = content.replaceAll("@tihuan_mail_account", m.getMailAccount());
             mailInfo.setContent(sendContent);
+
             boolean result = MailUtil.sendEmail(mailInfo, mailConfig);
             if(result) {
                 sendSuccess++;
