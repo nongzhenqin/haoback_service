@@ -80,9 +80,9 @@ public class GoodsService extends BaseService<Goods, Long> {
         hql.append("select t FROM Goods t where t.deleted = false and t.status = '1' ");
         if(StringUtils.isNotBlank(goodsType)){
             if("hot".equals(goodsType)){
-                hql.append("and exists (select 1 from GoodsType g where t.goodsType = g.id and g.deleted = 0) ");
+                hql.append("and exists (select 1 from GoodsType g where t.goodsType = g.id and g.deleted = false) ");
             }else{
-                hql.append("and exists (select 1 from GoodsType g where t.goodsType = g.id and g.code = ? and g.deleted = 0) ");
+                hql.append("and exists (select 1 from GoodsType g where t.goodsType = g.id and g.code = ? and g.deleted = false) ");
                 paramters.add(goodsType);
             }
         }
@@ -93,13 +93,13 @@ public class GoodsService extends BaseService<Goods, Long> {
             paramters.add("%"+key+"%");
             paramters.add("%"+key+"%");
 
-            hql.append("and exists (select 1 from GoodsType g where t.goodsType = g.id and g.deleted = 0) ");
+            hql.append("and exists (select 1 from GoodsType g where t.goodsType = g.id and g.deleted = false) ");
         }
 
         if("hot".equals(goodsType)){
             hql.append("order by t.salesNum desc ");
         }else{
-            hql.append("order by t.sort,t.addTime desc ");
+            hql.append("order by t.sort desc,t.addTime desc ");
         }
 
         Page<Goods> page = this.findByPage(hql.toString(), paramters, pageable);
