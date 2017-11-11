@@ -12,6 +12,7 @@
 	<http pattern="/index.html" security="none" />
 	<http pattern="/**/goods/**" security="none" />
 	<http pattern="/mail/tuiding" security="none" />
+	<http pattern="/robots.txt" security="none" />
 	<!-- 静态文件不拦截 -->
 	<http pattern="/**/css/**" security="none" />
 	<http pattern="/**/js/**" security="none" />
