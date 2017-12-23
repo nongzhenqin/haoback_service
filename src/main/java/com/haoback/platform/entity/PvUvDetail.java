@@ -81,4 +81,10 @@ public class PvUvDetail extends BaseEntity<Long> {
      */
     @Column(name = "source", length=20)
     private String source;
+
+    /**
+     * 微信用户openid
+     */
+    @Column(name = "wx_openid", length=50)
+    private String wxOpenid;
 }

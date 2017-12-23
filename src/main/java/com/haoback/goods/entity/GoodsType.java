@@ -37,6 +37,18 @@ public class GoodsType extends BaseEntity<Long> {
     private String rootCode;
 
     /**
+     * 商品图标
+     */
+    @Column(name = "icon", length = 20)
+    private String icon;
+
+    /**
+     * 排序顺序 升序
+     */
+    @Column(name = "sort")
+    private Integer sort;
+
+    /**
      * 备用字段
      */
     @Column(name = "REMARK", length = 25)

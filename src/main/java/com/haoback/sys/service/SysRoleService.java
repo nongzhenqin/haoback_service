@@ -11,5 +11,14 @@ public class SysRoleService extends BaseService<SysRole, Long> {
 	
 	@Autowired
 	private SysRoleRepository sysRoleRepository;
+
+	/**
+	 * 通过角色编码查找角色
+	 * @param code
+	 * @return
+	 */
+	public SysRole findByCode(String code){
+		return sysRoleRepository.findByCode(code);
+	}
 	
 }

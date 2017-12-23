@@ -22,7 +22,7 @@ public class GoodsTypeService extends BaseService<GoodsType, Long> {
      * @return
      */
     public List<GoodsType> findList(){
-        return goodsTypeRepository.findAll();
+        return goodsTypeRepository.findList();
     }
 
     /**
@@ -45,4 +45,5 @@ public class GoodsTypeService extends BaseService<GoodsType, Long> {
     public GoodsType findByName(String name){
         return goodsTypeRepository.findByName(name);
     }
+
 }

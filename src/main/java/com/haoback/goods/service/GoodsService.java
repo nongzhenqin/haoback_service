@@ -71,6 +71,8 @@ public class GoodsService extends BaseService<Goods, Long> {
         Integer pageSize = (Integer) params.get("pageSize");
         String goodsType = (String) params.get("goodsType");
         String key = (String) params.get("key");
+        // 排序条件 zonghe-综合 new-最新 sales-销量 price-价格
+        String sortKey = (String) params.get("sortKey");
 
         Pageable pageable = new PageRequest(pageNo, pageSize);
 
@@ -99,7 +101,27 @@ public class GoodsService extends BaseService<Goods, Long> {
         if("hot".equals(goodsType)){
             hql.append("order by t.salesNum desc ");
         }else{
-            hql.append("order by t.sort desc,t.addTime desc ");
+            if(StringUtils.isBlank(sortKey)){
+                hql.append("order by t.sort desc,t.addTime desc ");
+            }else{
+                switch (sortKey){
+                    case "zonghe":
+                        hql.append("order by t.sort desc,t.addTime desc ");
+                        break;
+                    case "new":
+                        hql.append("order by t.addTime desc ");
+                        break;
+                    case "sales":
+                        hql.append("order by t.salesNum desc ");
+                        break;
+                    case "price":
+                        hql.append("order by t.price asc ");
+                        break;
+                    default:
+                        hql.append("order by t.sort desc,t.addTime desc ");
+                        break;
+                }
+            }
         }
 
         Page<Goods> page = this.findByPage(hql.toString(), paramters, pageable);
@@ -455,13 +477,14 @@ public class GoodsService extends BaseService<Goods, Long> {
                 }
             }
 
+            // 每次取100条，分页取
             int total = 0;
-            long pageSize = 20L;
+            long pageSize = 100L;
             long pageNo = 1L;
 
             total = this.saveGoodsFromSelectGroup(pageSize, pageNo, favoritesId, goodsType, operator, realPath);
 
-            if(total > 0 && total > 20){
+            if(total > pageSize){
                 while (total > pageSize*pageNo){
                     pageNo++;
                     this.saveGoodsFromSelectGroup(pageSize, pageNo, favoritesId, goodsType, operator, realPath);
@@ -534,15 +557,15 @@ public class GoodsService extends BaseService<Goods, Long> {
         Long numIid = jsonObject.getLong("num_iid");// 商品ID
         String title = jsonObject.getString("title");// 商品标题
         String pictUrl = jsonObject.getString("pict_url");// 商品主图
-        jsonObject.getJSONObject("small_images");// 商品小图列表
+        JSONObject smallImages = jsonObject.getJSONObject("small_images");// 商品小图列表
         jsonObject.getBigDecimal("reserve_price");// 商品一口价格
         BigDecimal finalPrice = jsonObject.getBigDecimal("zk_final_price");// 商品折扣价格
         int userType = jsonObject.getIntValue("user_type");// 卖家类型，0表示集市，1表示商城
-        jsonObject.getString("provcity");// 宝贝所在地
-        jsonObject.getString("item_url");// 商品地址
+        String provcity = jsonObject.getString("provcity");// 宝贝所在地
+        String itemUrl = jsonObject.getString("item_url");// 商品地址
         String clickUrl = jsonObject.getString("click_url");// 淘客地址
-        jsonObject.getString("nick");// 卖家昵称
-        jsonObject.getLong("seller_id");// 卖家id
+        String nick = jsonObject.getString("nick");// 卖家昵称
+        String sellerId = jsonObject.getString("seller_id");// 卖家id
         Integer volume = jsonObject.getInteger("volume");// 30天销量
         jsonObject.getBigDecimal("tk_rate");// 收入比例，举例，取值为20.00，表示比例20.00%
         jsonObject.getBigDecimal("zk_final_price_wap");// 无线折扣价，即宝贝在无线上的实际售卖价格。
@@ -573,6 +596,10 @@ public class GoodsService extends BaseService<Goods, Long> {
         goods.setStatus(status);
         goods.setSalesNum(volume);
         goods.setSort(4);
+        goods.setProvcity(provcity);
+        goods.setItemUrl(itemUrl);
+        goods.setNick(nick);
+        goods.setSellerId(sellerId);
         goods.setUrlLink(clickUrl);
         goods.setUrlLinkCoupon(couponClickUrl);
         if(StringUtils.isNotBlank(couponInfo)){
@@ -583,11 +610,10 @@ public class GoodsService extends BaseService<Goods, Long> {
         }
         goods.setIsTmall(userType==1);
 
-        // 淘口令
-        String taoKouLing = this.createTaoKouLing(title, clickUrl, pictUrl);
-        goods.setTaoCommand(taoKouLing);
-
         if(isInsert){
+            // 淘口令
+            String taoKouLing = this.createTaoKouLing(title, couponClickUrl, pictUrl);
+            goods.setTaoCommand(taoKouLing);
             goods.setGoodsId(numIid);
             goods.setAddTime(new Date());
             goods.setAddOperator(operator);
@@ -595,8 +621,10 @@ public class GoodsService extends BaseService<Goods, Long> {
             this.save(goods);
 
             // 下载商品主图到服务器
-            String image = ImageUtil.downLoadImage(pictUrl, realPath);
+//            String image = ImageUtil.downLoadImage(pictUrl, realPath);
+            String image = null;
 
+                    // 商品主图
             GoodsRes goodsRes = new GoodsRes();
             goodsRes.setGoods(goods);
             goodsRes.setType("thumbnail");
@@ -604,12 +632,25 @@ public class GoodsService extends BaseService<Goods, Long> {
             goodsRes.setFileId(image);
             goodsRes.setSort(1);
             goodsResService.save(goodsRes);
+
+            // 商品小图
+            JSONArray jsonArray = smallImages.getJSONArray("string");
+            for(int i=0,len=jsonArray.size(); i<len; i++){
+                GoodsRes goodsResDetail = new GoodsRes();
+                goodsResDetail.setGoods(goods);
+                goodsResDetail.setType("detail");
+                goodsResDetail.setPicUrl(jsonArray.getString(i));
+                goodsResDetail.setFileId(null);
+                goodsResDetail.setSort(i);
+                goodsResService.save(goodsResDetail);
+            }
         }else{
             goods.setUpdateTime(new Date());
             goods.setUpdateOperator(operator);
             goods.setUpdateOperatorName(operator.getName());
             this.update(goods);
 
+            // 商品主图
             GoodsRes goodsRes = goodsResService.findThumbnailGoodsRes(goods.getId());
             if(goodsRes == null){
                 goodsRes = new GoodsRes();
@@ -621,6 +662,24 @@ public class GoodsService extends BaseService<Goods, Long> {
             }else{
                 goodsRes.setPicUrl(pictUrl);
                 goodsResService.update(goodsRes);
+            }
+
+            // 商品小图
+            JSONArray jsonArray = smallImages.getJSONArray("string");
+            for(int i=0,len=jsonArray.size(); i<len; i++){
+                GoodsRes goodsRes1 = goodsResService.findByTypeAndPic(goods.getId(), "detail", jsonArray.getString(i));
+                if(goodsRes1 == null){
+                    GoodsRes goodsResDetail = new GoodsRes();
+                    goodsResDetail.setGoods(goods);
+                    goodsResDetail.setType("detail");
+                    goodsResDetail.setPicUrl(jsonArray.getString(i));
+                    goodsResDetail.setFileId(null);
+                    goodsResDetail.setSort(i);
+                    goodsResService.save(goodsResDetail);
+                }else{
+                    goodsRes1.setPicUrl(jsonArray.getString(i));
+                    goodsResService.save(goodsRes1);
+                }
             }
         }
     }

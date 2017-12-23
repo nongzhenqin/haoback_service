@@ -48,6 +48,18 @@ public class GoodsCarousel extends BaseEntity<Long> {
     private String taoCommand;
 
     /**
+     * 是否微信小程序
+     */
+    @Column(name = "IS_WX_APP")
+    private Boolean isWxApp;
+
+    /**
+     * 商品id
+     */
+    @Column(name = "GOODS_ID")
+    private Long goodsId;
+
+    /**
      * 逻辑删除 false/0-未删除 true/1-删除
      */
     @Column(name = "IS_DELETED")

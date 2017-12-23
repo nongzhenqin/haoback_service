@@ -30,6 +30,17 @@ public class GoodsResService extends BaseService<GoodsRes, Long> {
     }
 
     /**
+     * 查找商品图片
+     * @param goodsId
+     * @param type
+     * @param picPath 淘宝图片路径
+     * @return
+     */
+    public GoodsRes findByTypeAndPic(Long goodsId, String type, String picPath){
+        return goodsResRepository.getByTypeAndPic(goodsId, type, picPath);
+    }
+
+    /**
      * 查找商品缩略图URL
      * @param goodsId
      * @return

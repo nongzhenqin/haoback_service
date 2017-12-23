@@ -107,7 +107,7 @@ public class IndexController {
         mav.addObject("search", isSearch);
 
         // 查询商品分类
-        List<GoodsType> goodsTypes = goodsTypeService.findAll();
+        List<GoodsType> goodsTypes = goodsTypeService.findList();
         // 搜索页面
         if(isSearch){
             mav.addObject("goodsTypes", goodsTypes);

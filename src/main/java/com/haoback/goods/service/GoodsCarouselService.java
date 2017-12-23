@@ -22,14 +22,15 @@ public class GoodsCarouselService extends BaseService<GoodsCarousel, Long> {
 
     /**
      * 新增/编辑
+     *
      * @param goodsCarouselVo
      */
-    public void saveOrUpdate(GoodsCarouselVo goodsCarouselVo, String realPath){
-        if(goodsCarouselVo.getId() ==  null){// 新增
+    public void saveOrUpdate(GoodsCarouselVo goodsCarouselVo, String realPath) {
+        if (goodsCarouselVo.getId() == null) {// 新增
             GoodsCarousel goodsCarousel = new GoodsCarousel();
             // 保存商品图片
             String image = goodsCarouselVo.getImage();
-            image = image.substring(image.indexOf(",")+1);
+            image = image.substring(image.indexOf(",") + 1);
 
             String fileId = UUID.randomUUID().toString();
             String path = realPath + "upload" + File.separator + fileId + ".jpg";
@@ -39,9 +40,9 @@ public class GoodsCarouselService extends BaseService<GoodsCarousel, Long> {
             BeanUtils.copyProperties(goodsCarouselVo, goodsCarousel);
             goodsCarousel.setFileId(fileId);
             this.save(goodsCarousel);
-        }else{// 更新
+        } else {// 更新
             GoodsCarousel goodsCarousel1 = this.findById(goodsCarouselVo.getId());
-            if(goodsCarousel1 == null){
+            if (goodsCarousel1 == null) {
                 return;
             }
 
@@ -50,11 +51,13 @@ public class GoodsCarouselService extends BaseService<GoodsCarousel, Long> {
             goodsCarousel1.setUrlLink(goodsCarouselVo.getUrlLink());
             goodsCarousel1.setUrlLinkCoupon(goodsCarouselVo.getUrlLinkCoupon());
             goodsCarousel1.setTaoCommand(goodsCarouselVo.getTaoCommand());
+            goodsCarousel1.setIsWxApp(goodsCarouselVo.getIsWxApp());
+            goodsCarousel1.setGoodsId(goodsCarouselVo.getGoodsId());
 
             // 当图片更改后是base64字符串，必然包含英文逗号，否则是url
-            if(StringUtils.isNotBlank(goodsCarouselVo.getImage()) && goodsCarouselVo.getImage().contains(",")){
+            if (StringUtils.isNotBlank(goodsCarouselVo.getImage()) && goodsCarouselVo.getImage().contains(",")) {
                 String image = goodsCarouselVo.getImage();
-                image = image.substring(image.indexOf(",")+1);
+                image = image.substring(image.indexOf(",") + 1);
 
                 String fileId = goodsCarousel1.getFileId() == null ? UUID.randomUUID().toString() : goodsCarousel1.getFileId();
                 String path = realPath + "upload" + File.separator + fileId + ".jpg";
@@ -69,9 +72,18 @@ public class GoodsCarouselService extends BaseService<GoodsCarousel, Long> {
 
     /**
      * 查找有效轮播图
+     *
      * @return
      */
-    public List<GoodsCarousel> findValidGoodsCarousel(){
+    public List<GoodsCarousel> findValidGoodsCarousel() {
         return goodsCarouselRepository.findValidGoodsCarousel();
+    }
+
+    /**
+     * 查找微信小程序有效轮播图
+     * @return
+     */
+    public List<GoodsCarousel> findWxValidGoodsCarousel() {
+        return goodsCarouselRepository.findWxValidGoodsCarousel();
     }
 }

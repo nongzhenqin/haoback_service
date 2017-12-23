@@ -39,11 +39,12 @@ public class GoodsCarouselController {
     /**
      * 查询，不分页
      * @param deleted
+     * @param isWxApp
      * @return
      */
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     @ResponseBody
-    public AjaxResult search(Boolean deleted){
+    public AjaxResult search(Boolean deleted, Boolean isWxApp){
         AjaxResult ajaxresult = new AjaxResult();
         Map<String, Object> datas = new HashMap<>();
 
@@ -54,6 +55,10 @@ public class GoodsCarouselController {
             List<Predicate> condition = new ArrayList<>();
             if(deleted != null){
                 Predicate deletedPredicate = cb.equal(root.get("deleted").as(Boolean.class), deleted);
+                condition.add(deletedPredicate);
+            }
+            if(isWxApp != null){
+                Predicate deletedPredicate = cb.equal(root.get("isWxApp").as(Boolean.class), isWxApp);
                 condition.add(deletedPredicate);
             }
 

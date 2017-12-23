@@ -24,6 +24,7 @@ public class AuthenticationSuccess implements AuthenticationSuccessHandler {
         httpServletResponse.setContentType("application/json; charset=utf-8");
 
         result.put("code", "1");
+        result.put("sessionId", httpServletRequest.getSession().getId());
 
         PrintWriter out = httpServletResponse.getWriter();
         out.append(JSONObject.toJSONString(result));

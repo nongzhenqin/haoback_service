@@ -129,13 +129,15 @@ public class GoodsController {
      * @param referer
      * @param titileName
      * @param flag
+     * @param opid 微信openid
      * @param source
      * @param request
      * @return
      */
     @RequestMapping(value = "/pv_uv", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxResult savePvUv(Long goodsId, String referer, String titileName, String flag, String source, HttpServletRequest request){
+    public AjaxResult savePvUv(Long goodsId, String referer, String titileName,
+                               String opid, String flag, String source, HttpServletRequest request){
         AjaxResult ajaxresult = new AjaxResult();
         Map<String, Object> datas = new HashMap<>();
 
@@ -143,6 +145,7 @@ public class GoodsController {
         pvUvDetail.setAddTime(new Date());
         pvUvDetail.setIp(IpUtils.getIpAddr(request));
         pvUvDetail.setReferer(referer);
+        pvUvDetail.setWxOpenid(opid);
         pvUvDetail.setTitleName(titileName);
         pvUvDetail.setFlag(flag);
         pvUvDetail.setGoods(goodsService.findById(goodsId));

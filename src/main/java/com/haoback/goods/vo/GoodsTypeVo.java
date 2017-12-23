@@ -7,15 +7,20 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Created by nong on 2017/6/21.
+ *
+ * @author nong
+ * @date 2017/6/21
  */
 @Getter
 @Setter
 public class GoodsTypeVo implements Serializable {
+    private static final long serialVersionUID = -2334930337337516853L;
     private Long id;
     private String code;
     private String name;
+    private Integer sort;
     private String rootCode;
+    private String icon;
     private String remark;
 
     private List<GoodsVo> goodsList;

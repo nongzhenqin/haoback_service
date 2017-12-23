@@ -15,8 +15,8 @@ public interface GoodsTypeRepository extends BaseRepository<GoodsType, Long> {
      * 查询有效分类
      * @return
      */
-    @Query("select t from GoodsType t where t.deleted = false")
-    List<GoodsType> findAll();
+    @Query("select t from GoodsType t where t.deleted = false order by t.sort asc")
+    List<GoodsType> findList();
 
     /**
      * 通过类目名称查找

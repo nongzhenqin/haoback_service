@@ -66,7 +66,7 @@ public class Goods extends BaseEntity<Long> {
     /**
      * 所属商品类目
      */
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name ="GOODS_TYPE_ID")
     @NotFound(action= NotFoundAction.IGNORE)
     private GoodsType goodsType;
@@ -120,6 +120,30 @@ public class Goods extends BaseEntity<Long> {
     private Boolean isTmall = Boolean.FALSE;
 
     /**
+     * 商品所在地
+     */
+    @Column(name = "provcity", length=100)
+    private String provcity;
+
+    /**
+     * 商品地址
+     */
+    @Column(name = "item_url", length=255)
+    private String itemUrl;
+
+    /**
+     * 卖家昵称
+     */
+    @Column(name = "nick", length=50)
+    private String nick;
+
+    /**
+     * 卖家id
+     */
+    @Column(name = "seller_id", length=50)
+    private String sellerId;
+
+    /**
      * 新增时间
      */
     @Temporal(TemporalType.TIMESTAMP)
@@ -129,7 +153,7 @@ public class Goods extends BaseEntity<Long> {
     /**
      * 新增人
      */
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name ="ADD_OPERATOR_ID")
     @NotFound(action=NotFoundAction.IGNORE)
     private SysUser addOperator;
@@ -150,7 +174,7 @@ public class Goods extends BaseEntity<Long> {
     /**
      * 更新人
      */
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name ="UPDATE_OPERATOR_ID")
     @NotFound(action=NotFoundAction.IGNORE)
     private SysUser updateOperator;

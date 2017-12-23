@@ -42,6 +42,54 @@ public class SysUser extends BaseEntity<Long> implements UserDetails {
 	
 	@Column(name = "salt", length = 10)
 	private String salt;
+
+	/**
+	 * 是否微信用户
+	 */
+	@Column(name = "is_wx_user")
+	private Boolean isWxUser;
+
+	/**
+	 * 微信用户-昵称
+	 */
+	@Column(name = "nick_name", length = 50)
+	private String nickName;
+
+	/**
+	 * 微信用户-城市
+	 */
+	@Column(name = "city", length = 50)
+	private String city;
+
+	/**
+	 * 微信用户-国家
+	 */
+	@Column(name = "country", length = 50)
+	private String country;
+
+	/**
+	 * 微信用户-语言
+	 */
+	@Column(name = "language", length = 20)
+	private String language;
+
+	/**
+	 * 微信用户- 1-男 2-女 0-未知
+	 */
+	@Column(name = "gender", length = 1)
+	private String gender;
+
+	/**
+	 * 微信用户-省
+	 */
+	@Column(name = "province", length = 50)
+	private String province;
+
+	/**
+	 * 积分
+	 */
+	@Column(name = "integration")
+	private Integer integration;
 	
 //	@Column(name = "role", length = 300)
 //	private String role;
@@ -195,5 +243,69 @@ public class SysUser extends BaseEntity<Long> implements UserDetails {
 
 	public void setMenus(Object menus) {
 		this.menus = menus;
+	}
+
+	public Boolean getWxUser() {
+		return isWxUser;
+	}
+
+	public void setWxUser(Boolean wxUser) {
+		isWxUser = wxUser;
+	}
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getProvince() {
+		return province;
+	}
+
+	public void setProvince(String province) {
+		this.province = province;
+	}
+
+	public Integer getIntegration() {
+		return integration;
+	}
+
+	public void setIntegration(Integer integration) {
+		this.integration = integration;
 	}
 }
