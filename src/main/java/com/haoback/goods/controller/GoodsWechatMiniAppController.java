@@ -156,6 +156,13 @@ public class GoodsWechatMiniAppController {
         goodsDetailsVo.setId(goods.getId());
 
         List<String> smallImgs = new ArrayList<>();
+        // 商品主图
+        List<GoodsRes> goodsResMainList = goodsResService.findByType(goods.getId(), "thumbnail");
+        for(GoodsRes goodsRes : goodsResMainList){
+            smallImgs.add(goodsRes.getPicUrl());
+        }
+
+        // 商品小图
         List<GoodsRes> goodsResList = goodsResService.findByType(goods.getId(), "detail");
         for(GoodsRes goodsRes : goodsResList){
             smallImgs.add(goodsRes.getPicUrl());
