@@ -242,5 +242,40 @@ public class ImageUtil {
         return null;
     }
 
+    /**
+     * 下载图片并且压缩
+     * @param imageUrl 图片URL
+     * @param savePath 保存地址
+     * @param quality 压缩质量 0~1
+     * @return
+     */
+    public static String downLoadImageAndCompress(String imageUrl, String savePath, float quality){
+        try {
+            URL url = new URL(imageUrl);
+            DataInputStream dataInputStream = new DataInputStream(url.openStream());
+            String fileId = UUID.randomUUID().toString();
+
+            String path = savePath + "upload" + File.separator + fileId + ".jpg";
+            File file = new File(path);
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+
+            byte[] bytes = ImageUtil.toByteArray(dataInputStream);
+            bytes = ImageUtil.compress(bytes, quality);
+
+            fileOutputStream.write(bytes);
+
+            dataInputStream.close();
+            fileOutputStream.close();
+
+            return fileId;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
 
 }

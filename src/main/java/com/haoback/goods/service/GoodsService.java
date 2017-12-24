@@ -621,8 +621,8 @@ public class GoodsService extends BaseService<Goods, Long> {
             this.save(goods);
 
             // 下载商品主图到服务器
-//            String image = ImageUtil.downLoadImage(pictUrl, realPath);
-            String image = null;
+            String image = ImageUtil.downLoadImageAndCompress(pictUrl, realPath, 0.8f);
+//            String image = null;
 
                     // 商品主图
             GoodsRes goodsRes = new GoodsRes();
@@ -634,15 +634,19 @@ public class GoodsService extends BaseService<Goods, Long> {
             goodsResService.save(goodsRes);
 
             // 商品小图
-            JSONArray jsonArray = smallImages.getJSONArray("string");
-            for(int i=0,len=jsonArray.size(); i<len; i++){
-                GoodsRes goodsResDetail = new GoodsRes();
-                goodsResDetail.setGoods(goods);
-                goodsResDetail.setType("detail");
-                goodsResDetail.setPicUrl(jsonArray.getString(i));
-                goodsResDetail.setFileId(null);
-                goodsResDetail.setSort(i);
-                goodsResService.save(goodsResDetail);
+            if(smallImages != null){
+                JSONArray jsonArray = smallImages.getJSONArray("string");
+                if(jsonArray != null && jsonArray.size() > 0){
+                    for(int i=0,len=jsonArray.size(); i<len; i++){
+                        GoodsRes goodsResDetail = new GoodsRes();
+                        goodsResDetail.setGoods(goods);
+                        goodsResDetail.setType("detail");
+                        goodsResDetail.setPicUrl(jsonArray.getString(i));
+                        goodsResDetail.setFileId(null);
+                        goodsResDetail.setSort(i);
+                        goodsResService.save(goodsResDetail);
+                    }
+                }
             }
         }else{
             goods.setUpdateTime(new Date());
@@ -653,32 +657,47 @@ public class GoodsService extends BaseService<Goods, Long> {
             // 商品主图
             GoodsRes goodsRes = goodsResService.findThumbnailGoodsRes(goods.getId());
             if(goodsRes == null){
+                // 下载商品主图到服务器
+                String image = ImageUtil.downLoadImageAndCompress(pictUrl, realPath, 0.8f);
+
                 goodsRes = new GoodsRes();
                 goodsRes.setGoods(goods);
                 goodsRes.setType("thumbnail");
                 goodsRes.setPicUrl(pictUrl);
+                goodsRes.setFileId(image);
                 goodsRes.setSort(1);
                 goodsResService.save(goodsRes);
             }else{
-                goodsRes.setPicUrl(pictUrl);
-                goodsResService.update(goodsRes);
+                // 图片地址不同则更新
+                if(!pictUrl.equals(goodsRes.getPicUrl()) || StringUtils.isBlank(goodsRes.getPicUrl()) ||
+                        StringUtils.isBlank(goodsRes.getFileId())){
+                    // 下载商品主图到服务器
+                    String image = ImageUtil.downLoadImageAndCompress(pictUrl, realPath, 0.8f);
+                    goodsRes.setFileId(image);
+                    goodsRes.setPicUrl(pictUrl);
+                    goodsResService.update(goodsRes);
+                }
             }
 
             // 商品小图
-            JSONArray jsonArray = smallImages.getJSONArray("string");
-            for(int i=0,len=jsonArray.size(); i<len; i++){
-                GoodsRes goodsRes1 = goodsResService.findByTypeAndPic(goods.getId(), "detail", jsonArray.getString(i));
-                if(goodsRes1 == null){
-                    GoodsRes goodsResDetail = new GoodsRes();
-                    goodsResDetail.setGoods(goods);
-                    goodsResDetail.setType("detail");
-                    goodsResDetail.setPicUrl(jsonArray.getString(i));
-                    goodsResDetail.setFileId(null);
-                    goodsResDetail.setSort(i);
-                    goodsResService.save(goodsResDetail);
-                }else{
-                    goodsRes1.setPicUrl(jsonArray.getString(i));
-                    goodsResService.save(goodsRes1);
+            if(smallImages != null){
+                JSONArray jsonArray = smallImages.getJSONArray("string");
+                if(jsonArray != null && jsonArray.size() > 0){
+                    for(int i=0,len=jsonArray.size(); i<len; i++){
+                        GoodsRes goodsRes1 = goodsResService.findByTypeAndPic(goods.getId(), "detail", jsonArray.getString(i));
+                        if(goodsRes1 == null){
+                            GoodsRes goodsResDetail = new GoodsRes();
+                            goodsResDetail.setGoods(goods);
+                            goodsResDetail.setType("detail");
+                            goodsResDetail.setPicUrl(jsonArray.getString(i));
+                            goodsResDetail.setFileId(null);
+                            goodsResDetail.setSort(i);
+                            goodsResService.save(goodsResDetail);
+                        }else{
+                            goodsRes1.setPicUrl(jsonArray.getString(i));
+                            goodsResService.save(goodsRes1);
+                        }
+                    }
                 }
             }
         }
