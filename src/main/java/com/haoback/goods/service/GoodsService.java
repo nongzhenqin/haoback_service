@@ -397,9 +397,15 @@ public class GoodsService extends BaseService<Goods, Long> {
     }
 
     /**
-     * 从淘宝联盟选品库拉取商品
+     * 从淘宝联盟选品库拉取商品，只能同步执行，防止数据混乱
+     * @param type
+     * @param operate
+     * @param operator
+     * @param realPath
+     * @return
+     * @throws ApiException
      */
-    public Map<String, Object> saveGoodsFromTaobao(String type, String operate, SysUser operator, String realPath) throws ApiException {
+    public synchronized Map<String, Object> saveGoodsFromTaobao(String type, String operate, SysUser operator, String realPath) throws ApiException {
         // 获取选品库列表
         Map<String, Object> resultMap = new HashMap<>();
 
