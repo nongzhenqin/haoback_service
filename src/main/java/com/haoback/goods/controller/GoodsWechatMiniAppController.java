@@ -13,8 +13,10 @@ import com.haoback.goods.service.GoodsService;
 import com.haoback.goods.service.GoodsTypeService;
 import com.haoback.goods.vo.GoodsDetailsVo;
 import com.haoback.goods.vo.GoodsVo;
+import com.haoback.sys.entity.SysConfig;
 import com.haoback.sys.entity.SysUser;
 import com.haoback.sys.service.RegisterService;
+import com.haoback.sys.service.SysConfigService;
 import com.haoback.sys.service.SysUserService;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.lang3.StringUtils;
@@ -51,12 +53,34 @@ public class GoodsWechatMiniAppController {
     private SysUserService sysUserService;
     @Autowired
     private GoodsResService goodsResService;
+    @Autowired
+    private SysConfigService sysConfigService;
 
     @Value("${weixin.mini.app.AppID}")
     private String appId;
 
     @Value("${weixin.mini.app.AppSecret}")
     private String appSecret;
+
+    /**
+     * 获取系统配置
+     * @return
+     */
+    @RequestMapping(value = "/sys/cf", method = RequestMethod.GET)
+    @ResponseBody
+    public AjaxResult getConfig(){
+        AjaxResult ajaxresult = new AjaxResult();
+        Map<String, Object> datas = new HashMap<>();
+
+        List<SysConfig> sysConfigList = sysConfigService.findAll();
+
+        datas.put("code", "1");
+        datas.put("data", sysConfigList.get(0));
+
+        ajaxresult.setDatas(datas);
+        ajaxresult.setStatus(HttpStatus.SC_OK);
+        return ajaxresult;
+    }
 
     /**
      * 查询微信小程序轮播图
