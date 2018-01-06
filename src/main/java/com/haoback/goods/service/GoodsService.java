@@ -575,18 +575,18 @@ public class GoodsService extends BaseService<Goods, Long> {
         Integer volume = jsonObject.getInteger("volume");// 30天销量
         jsonObject.getBigDecimal("tk_rate");// 收入比例，举例，取值为20.00，表示比例20.00%
         jsonObject.getBigDecimal("zk_final_price_wap");// 无线折扣价，即宝贝在无线上的实际售卖价格。
-        jsonObject.getString("shop_title");
+        jsonObject.getString("shop_title");// 店铺名
         jsonObject.getDate("event_start_time");// 招商活动开始时间；如果该宝贝取自普通选品组，则取值为1970-01-01 00:00:00；
         jsonObject.getDate("event_end_time");// 招行活动的结束时间；如果该宝贝取自普通的选品组，则取值为1970-01-01 00:00:00
         jsonObject.getIntValue("type");// 宝贝类型：1 普通商品； 2 鹊桥高佣金商品；3 定向招商商品；4 营销计划商品;
         String status = jsonObject.getString("status");// 宝贝状态，0失效，1有效；注：失效可能是宝贝已经下线或者是被处罚不能在进行推广
-        jsonObject.getLong("category");// 后台一级类目
+        Long category = jsonObject.getLong("category");// 后台一级类目
         String couponClickUrl = jsonObject.getString("coupon_click_url");// 商品优惠券推广链接
-        jsonObject.getString("coupon_end_time");// 优惠券结束时间
+        Date couponEndTime = jsonObject.getDate("coupon_end_time");// 优惠券结束时间
         String couponInfo = jsonObject.getString("coupon_info");// 优惠券面额
-        jsonObject.getString("coupon_start_time");// 优惠券开始时间
-        jsonObject.getIntValue("coupon_total_count");// 优惠券总量
-        jsonObject.getIntValue("coupon_remain_count");// 优惠券剩余量
+        Date couponStartTime = jsonObject.getDate("coupon_start_time");// 优惠券开始时间
+        Integer couponTotalCount = jsonObject.getIntValue("coupon_total_count");// 优惠券总量
+        Integer couponRemainCount = jsonObject.getIntValue("coupon_remain_count");// 优惠券剩余量
 
         Goods goods = this.findByGoodsId(numIid);
         boolean isInsert = false;
@@ -606,8 +606,13 @@ public class GoodsService extends BaseService<Goods, Long> {
         goods.setItemUrl(itemUrl);
         goods.setNick(nick);
         goods.setSellerId(sellerId);
+        goods.setCategory(category);
         goods.setUrlLink(clickUrl);
         goods.setUrlLinkCoupon(couponClickUrl);
+        goods.setCouponStartTime(couponStartTime);
+        goods.setCouponEndTime(couponEndTime);
+        goods.setCouponTotalCount(couponTotalCount);
+        goods.setCouponRemainCount(couponRemainCount);
         if(StringUtils.isNotBlank(couponInfo)){
             String coupon = couponInfo.split("减")[1].split("元")[0];
             if(NumberUtils.isNumber(coupon)){
@@ -618,7 +623,12 @@ public class GoodsService extends BaseService<Goods, Long> {
 
         if(isInsert){
             // 淘口令
-            String taoKouLing = this.createTaoKouLing(title, couponClickUrl, pictUrl);
+            String taoKouLing = null;
+            if(goods.getCouponAmount() == null || goods.getCouponAmount().doubleValue() <= 0){
+                taoKouLing = this.createTaoKouLing(title, clickUrl, pictUrl);
+            }else{
+                taoKouLing = this.createTaoKouLing(title, couponClickUrl, pictUrl);
+            }
             goods.setTaoCommand(taoKouLing);
             goods.setGoodsId(numIid);
             goods.setAddTime(new Date());

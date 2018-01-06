@@ -3,6 +3,7 @@ package com.haoback.goods.entity;
 import com.haoback.common.entity.BaseEntity;
 import com.haoback.sys.entity.SysUser;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
@@ -17,6 +18,7 @@ import java.util.Date;
 @Entity
 @Table(name = "goods")
 @Data
+@ToString
 public class Goods extends BaseEntity<Long> {
 
     private static final long serialVersionUID = 382622447525273329L;
@@ -142,6 +144,38 @@ public class Goods extends BaseEntity<Long> {
      */
     @Column(name = "seller_id", length=50)
     private String sellerId;
+
+    /**
+     * 淘宝后台一级类目
+     */
+    @Column(name = "category")
+    private Long category;
+
+    /**
+     * 优惠券开始时间
+     */
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "coupon_start_time")
+    private Date couponStartTime;
+
+    /**
+     * 优惠券结束时间
+     */
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "coupon_end_time")
+    private Date couponEndTime;
+
+    /**
+     * 优惠券总量
+     */
+    @Column(name = "coupon_total_count")
+    private Integer couponTotalCount;
+
+    /**
+     * 优惠券剩余量
+     */
+    @Column(name = "coupon_remain_count")
+    private Integer couponRemainCount;
 
     /**
      * 新增时间
