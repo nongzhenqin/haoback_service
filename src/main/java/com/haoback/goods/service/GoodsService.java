@@ -8,14 +8,17 @@ import com.haoback.goods.entity.Goods;
 import com.haoback.goods.entity.GoodsRes;
 import com.haoback.goods.entity.GoodsType;
 import com.haoback.goods.repository.GoodsRepository;
+import com.haoback.goods.vo.GoodsSuperSearchVo;
 import com.haoback.goods.vo.GoodsVo;
 import com.haoback.sys.entity.SysUser;
 import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
+import com.taobao.api.request.TbkDgItemCouponGetRequest;
 import com.taobao.api.request.TbkTpwdCreateRequest;
 import com.taobao.api.request.TbkUatmFavoritesGetRequest;
 import com.taobao.api.request.TbkUatmFavoritesItemGetRequest;
+import com.taobao.api.response.TbkDgItemCouponGetResponse;
 import com.taobao.api.response.TbkTpwdCreateResponse;
 import com.taobao.api.response.TbkUatmFavoritesGetResponse;
 import com.taobao.api.response.TbkUatmFavoritesItemGetResponse;
@@ -31,12 +34,21 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 import java.io.File;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by nong on 2017/6/5.
@@ -755,5 +767,136 @@ public class GoodsService extends BaseService<Goods, Long> {
      */
     public Goods findByGoodsId(Long goodsId){
         return goodsRepository.findByGoodsId(goodsId);
+    }
+
+    /**
+     * 超级搜
+     * @param pageSize
+     * @param pageNo 从1开始
+     * @param key
+     * @return
+     */
+    public Page<GoodsSuperSearchVo> superSearch(Integer pageSize, Integer pageNo, String key){
+        Pageable pageable = new PageRequest(pageNo, pageSize);
+
+        TaobaoClient client = new DefaultTaobaoClient(serverUrl, appKey, appSecret);
+        TbkDgItemCouponGetRequest req = new TbkDgItemCouponGetRequest();
+        req.setAdzoneId(adzoneId);
+//        req.setPlatform(1L);
+//        req.setCat("16,18");
+        req.setPageSize(Long.valueOf(pageSize));
+        req.setQ(key);
+        req.setPageNo(Long.valueOf(pageNo));
+        TbkDgItemCouponGetResponse rsp = null;
+        try {
+            rsp = client.execute(req);
+        } catch (ApiException e) {
+            e.printStackTrace();
+            return new PageImpl(new ArrayList(), pageable, 0);
+        }
+//        System.out.println(rsp.getBody());
+
+        String rspBody = rsp.getBody();
+
+        if(StringUtils.isBlank(rspBody)){
+            return new PageImpl(new ArrayList(), pageable, 0);
+        }
+
+        JSONObject rspBodyJSONObject = JSONObject.parseObject(rspBody);
+        if(rspBodyJSONObject.containsKey("error_response")){
+            return new PageImpl(new ArrayList(), pageable, 0);
+        }
+
+        List<GoodsSuperSearchVo> resultList = new ArrayList<>();
+        JSONObject couponGetResponse = rspBodyJSONObject.getJSONObject("tbk_dg_item_coupon_get_response");
+        JSONObject results = couponGetResponse.getJSONObject("results");
+        if(results == null){
+            return new PageImpl(new ArrayList(), pageable, 0);
+        }
+        JSONArray jsonArray = results.getJSONArray("tbk_coupon");
+        if(jsonArray == null || jsonArray.size() == 0){
+            return new PageImpl(new ArrayList(), pageable, 0);
+        }
+
+        GoodsSuperSearchVo goodsSuperSearchVo = null;
+        for(int i=0,len=jsonArray.size(); i<len; i++){
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            goodsSuperSearchVo = new GoodsSuperSearchVo();
+            // 商品主图
+            String pictUrl = jsonObject.getString("pict_url");
+            // 商品小图列表
+            List<String> smallImages = new ArrayList<>();
+            smallImages.add(pictUrl);
+            JSONObject images = jsonObject.getJSONObject("small_images");
+            if(images != null && images.containsKey("string")){
+                JSONArray string = images.getJSONArray("string");
+                if(string != null && string.size() > 0){
+                    List<String> strings = string.toJavaList(String.class);
+                    smallImages.addAll(strings);
+                }
+            }
+
+            // 卖家类型，0表示集市，1表示商城
+            int userType = jsonObject.getIntValue("user_type");
+            // 商品价格
+            BigDecimal price = jsonObject.getBigDecimal("zk_final_price");
+            // 商品标题
+            String title = jsonObject.getString("title");
+            // 月销
+            Integer volume = jsonObject.getInteger("volume");
+            // 卖家昵称
+            String nick = jsonObject.getString("nick");
+            // 卖家ID
+            String sellerId = jsonObject.getString("seller_id");
+            // 商品详情页链接地址
+            String itemUrl = jsonObject.getString(" item_url");
+            // 优惠券总量
+            Integer couponTotalCount = jsonObject.getInteger("coupon_total_count");
+            // 佣金比率(%)
+            String commissionRate = jsonObject.getString("commission_rate");
+            // 满16元减10元 优惠券面额
+            String couponInfo = jsonObject.getString("coupon_info");
+            // 后台一级类目
+            Integer category = jsonObject.getInteger("category");
+            // itemId
+            Long itemId = jsonObject.getLong("num_iid");
+            // 优惠券剩余量
+            Integer couponRemainCount = jsonObject.getInteger("coupon_remain_count");
+            // 优惠券开始时间
+            Date couponStartTime = jsonObject.getDate("coupon_start_time");
+            // 优惠券结束时间
+            Date couponEndTime = jsonObject.getDate("coupon_end_time");
+            // 商品优惠券推广链接
+            String couponClickUrl = jsonObject.getString("coupon_click_url");
+            // 宝贝描述（推荐理由）
+            String itemDescription = jsonObject.getString("item_description");
+
+            goodsSuperSearchVo.setGoodsId(itemId);
+            goodsSuperSearchVo.setName(title);
+            goodsSuperSearchVo.setInfo(itemDescription);
+            goodsSuperSearchVo.setPrice(price);
+            goodsSuperSearchVo.setSalesNum(volume);
+            goodsSuperSearchVo.setPicUrl(pictUrl);
+            goodsSuperSearchVo.setSmallUrls(smallImages);
+            goodsSuperSearchVo.setUrlLinkCoupon(couponClickUrl);
+            if(StringUtils.isNotBlank(couponInfo)){
+                String coupon = couponInfo.split("减")[1].split("元")[0];
+                if(NumberUtils.isNumber(coupon)){
+                    goodsSuperSearchVo.setCouponAmount(new BigDecimal(coupon));
+                }
+            }
+            try {
+                String taoKouLing = this.createTaoKouLing(title, couponClickUrl, pictUrl);
+                goodsSuperSearchVo.setTaoCommand(taoKouLing);
+            } catch (ApiException e) {
+                e.printStackTrace();
+            }
+            goodsSuperSearchVo.setIsTmall(userType == 1);
+
+            resultList.add(goodsSuperSearchVo);
+        }
+
+
+        return new PageImpl(resultList, pageable, couponGetResponse.getInteger("total_results"));
     }
 }

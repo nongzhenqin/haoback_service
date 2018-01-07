@@ -12,6 +12,7 @@ import com.haoback.goods.service.GoodsResService;
 import com.haoback.goods.service.GoodsService;
 import com.haoback.goods.service.GoodsTypeService;
 import com.haoback.goods.vo.GoodsDetailsVo;
+import com.haoback.goods.vo.GoodsSuperSearchVo;
 import com.haoback.goods.vo.GoodsVo;
 import com.haoback.sys.entity.SysConfig;
 import com.haoback.sys.entity.SysUser;
@@ -24,6 +25,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -266,6 +269,33 @@ public class GoodsWechatMiniAppController {
 
         datas.put("code", "1");
         datas.put("openid", openid);
+
+        ajaxresult.setDatas(datas);
+        ajaxresult.setStatus(HttpStatus.SC_OK);
+        return ajaxresult;
+    }
+
+    /**
+     * 超级搜
+     * @param pageSize
+     * @param pageNo 从1开始
+     * @param key
+     * @return
+     */
+    @RequestMapping(value = "/superSearch", method = RequestMethod.GET)
+    @ResponseBody
+    public AjaxResult superSearch(Integer pageSize, Integer pageNo, String key){
+        AjaxResult ajaxresult = new AjaxResult();
+        Map<String, Object> datas = new HashMap<>(16);
+
+        if(pageNo == null || pageSize == null || pageNo < 1 || pageSize <= 0 || pageSize > 100){
+            datas.put("data", new PageImpl(new ArrayList(), new PageRequest(pageNo, pageSize), 0));
+        }else{
+            Page<GoodsSuperSearchVo> page = goodsService.superSearch(pageSize, pageNo, key);
+            datas.put("data", page);
+        }
+
+        datas.put("code", "1");
 
         ajaxresult.setDatas(datas);
         ajaxresult.setStatus(HttpStatus.SC_OK);
