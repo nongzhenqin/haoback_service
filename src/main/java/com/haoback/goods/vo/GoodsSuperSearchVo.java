@@ -39,4 +39,6 @@ public class GoodsSuperSearchVo implements Serializable {
     private BigDecimal couponAmount;
     private String taoCommand;
     private Boolean isTmall;
+    private BigDecimal commissionRate;
+    private BigDecimal commissionAmount;
 }

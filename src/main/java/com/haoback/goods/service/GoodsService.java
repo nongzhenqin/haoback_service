@@ -41,6 +41,7 @@ import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -892,6 +893,12 @@ public class GoodsService extends BaseService<Goods, Long> {
                 e.printStackTrace();
             }
             goodsSuperSearchVo.setIsTmall(userType == 1);
+            // 佣金比例
+            BigDecimal commissionRateDec = new BigDecimal(commissionRate).divide(new BigDecimal("100"));
+            goodsSuperSearchVo.setCommissionRate(commissionRateDec);
+            // 佣金=券后价 * 佣金比例
+            BigDecimal commissionAmount = price.subtract(goodsSuperSearchVo.getCouponAmount()).multiply(commissionRateDec).setScale(2, RoundingMode.HALF_UP);
+            goodsSuperSearchVo.setCommissionAmount(commissionAmount);
 
             resultList.add(goodsSuperSearchVo);
         }
